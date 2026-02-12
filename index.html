@@ -17,26 +17,32 @@
         <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" alt="DHL Logo" class="logo">
 
         <h2>Data Architect Portal</h2>
-        <p class="subtitle">Master Data Hierarchy Blueprint</p>
+        <p class="subtitle">MDM Hierarchy Explorer</p>
 
         <div class="search-box">
-            <input type="text" id="nodeSearch" placeholder="🔍 Search IDs, Locations, or Roles...">
+            <input type="text" id="nodeSearch" placeholder="🔍 Search IDs or Cities...">
         </div>
 
         <select id="scenarioSelector">
-            <option value="">-- Select Business Scenario --</option>
+            <option value="">-- Select Scenario --</option>
         </select>
+
+        <button id="resetZoom"
+            style="margin-top: 10px; width: 100%; padding: 10px; cursor: pointer; background: #fff; border: 1px solid #333; font-weight: bold;">
+            🔄 Reset Diagram Position
+        </button>
 
         <div id="details">
         </div>
 
         <div id="json-viewer">
             <h3>MDM RAW OBJECT</h3>
-            <pre id="json-display">// Select a scenario to inspect the data model</pre>
+            <pre id="json-display">// Select a scenario to view JSON</pre>
         </div>
     </aside>
 
     <main id="viz-container">
+
         <div class="legend">
             <div class="legend-item">
                 <span class="dot" style="background:var(--global-black)"></span> GLOBAL PARENT
@@ -48,13 +54,15 @@
                 <span class="dot" style="background:var(--dhl-yellow)"></span> ACCOUNT (COMMERCIAL)
             </div>
             <div class="legend-item">
-                <span class="dot" style="background:var(--gray-scale)"></span> DATA ATTRIBUTES
+                <span class="dot" style="background:var(--gray-scale)"></span> DATA ATTRIBUTE
             </div>
-            <p style="font-size: 9px; color: #999; margin-top: 10px; font-weight: normal;">
-                * Use Mouse Wheel to Zoom<br>
-                * Click and Drag to Pan
+            <hr style="border: 0; border-top: 1px solid #ddd; margin: 10px 0;">
+            <p style="font-size: 10px; color: #666; font-weight: normal; margin: 0;">
+                🖱️ <b>Scroll</b> to Zoom<br>
+                🖱️ <b>Drag</b> to Pan
             </p>
         </div>
+
     </main>
 
     <script src="script.js"></script>
