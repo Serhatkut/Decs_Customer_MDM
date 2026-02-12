@@ -1,59 +1,53 @@
 [
   {
-    "scenarioName": "1. Strategic: Inditex Global (Multi-Brand & Country)",
+    "scenarioName": "1. Strategic: Inditex (Multi-Country Blueprint)",
     "customer": {
       "customerType": "Strategic Customers",
-      "customerLevel": "STRATEGIC",
-      "mdmCustomerId": "CUST-IND-GLB",
       "officialName": "Inditex S.A.",
       "globalGroupCode": "INDITEX",
       "accounts": [
         {
-          "mdmAccountId": "ACC-IND-ES-HQ",
-          "tradingName": "Inditex Spain HQ",
-          "businessRoles": [
-            "SOLDTO",
-            "PAYER"
-          ],
-          "billingAgreements": [
-            {
-              "paymentTerms": "NET_60",
-              "currency": "EUR",
-              "invoiceMedia": "EDI"
-            }
-          ],
-          "contracts": [
-            {
-              "contractId": "CON-GLOBAL-001",
-              "contractName": "Global Master Services Agreement"
-            }
-          ],
+          "mdmAccountId": "INDITEX-ES-COUNTRY",
+          "tradingName": "Inditex Spain (Country Level)",
+          "type": "COUNTRY_CUSTOMER",
           "children": [
             {
-              "mdmAccountId": "ACC-ZARA-ES",
-              "tradingName": "Zara Spain Retail",
-              "businessRoles": [
-                "SOLDTO"
+              "mdmAccountId": "ZARA-ES-SOLDTO",
+              "tradingName": "Zara Spain Sold-To",
+              "type": "SOLD_TO",
+              "billingAgreements": [
+                {
+                  "paymentTerms": "NET_60",
+                  "currency": "EUR"
+                }
+              ],
+              "bankAccounts": [
+                {
+                  "iban": "ES1234...",
+                  "bankCountryCode": "ES"
+                }
               ],
               "children": [
                 {
-                  "mdmAccountId": "ACC-ZARA-MAD-DC",
-                  "tradingName": "Zara Madrid Logistics",
-                  "businessRoles": [
-                    "PICKUP"
-                  ],
+                  "mdmAccountId": "ZARA-MADRID-WH1",
+                  "tradingName": "Madrid WH1",
+                  "type": "PICKUP",
                   "addresses": [
                     {
                       "city": "Madrid",
-                      "street": "Av. Logística 12",
                       "country": "ES"
                     }
                   ],
                   "contactPersons": [
                     {
-                      "firstName": "Lucia",
                       "lastName": "Fernandez",
-                      "jobTitle": "Logistics Mgr"
+                      "jobTitle": "WH Mgr",
+                      "commChannels": [
+                        {
+                          "type": "EMAIL",
+                          "value": "l.fer@inditex.com"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -65,125 +59,47 @@
     }
   },
   {
-    "scenarioName": "2. Relationship: Müller Auto (Functional B2B)",
+    "scenarioName": "2. Relationship: Müller Auto (Full Functional Model)",
     "customer": {
       "customerType": "Relationship Customers",
-      "customerLevel": "KEY_ACCT",
-      "mdmCustomerId": "CUST-MULLER-DE",
       "officialName": "Müller Auto Parts GmbH",
       "accounts": [
         {
-          "mdmAccountId": "MULLER-SOLDTO-HQ",
-          "businessRoles": [
-            "SOLDTO",
-            "PAYER"
-          ],
-          "billingAgreements": [
-            {
-              "paymentTerms": "NET_30",
-              "currency": "EUR"
-            }
-          ],
+          "mdmAccountId": "MULLER-DE-SOLDTO",
+          "tradingName": "Müller HQ Sold-To",
+          "type": "SOLD_TO",
           "contracts": [
             {
-              "contractId": "MULLER-DE-2026",
-              "contractName": "Local Framework v2"
+              "contractId": "M-2026",
+              "contractName": "Service Framework"
+            }
+          ],
+          "bankAccounts": [
+            {
+              "iban": "DE9988...",
+              "bankCountryCode": "DE"
             }
           ],
           "contactPersons": [
             {
-              "firstName": "Hans",
               "lastName": "Müller",
-              "jobTitle": "General Manager"
+              "jobTitle": "CEO",
+              "commChannels": [
+                {
+                  "type": "MOBILE",
+                  "value": "+49123456"
+                }
+              ]
             }
           ],
           "children": [
             {
-              "mdmAccountId": "MULLER-WH-HAMBURG",
-              "tradingName": "Müller Warehouse North",
-              "businessRoles": [
-                "PICKUP"
-              ],
+              "mdmAccountId": "MULLER-HAMBURG-WH",
+              "type": "PICKUP",
               "addresses": [
                 {
                   "city": "Hamburg",
                   "country": "DE"
-                }
-              ],
-              "contactPersons": [
-                {
-                  "firstName": "Dirk",
-                  "lastName": "Bauer",
-                  "jobTitle": "Warehouse Lead"
-                }
-              ]
-            },
-            {
-              "mdmAccountId": "MULLER-RETURNS-Bonn",
-              "tradingName": "Returns Depot",
-              "businessRoles": [
-                "SHIPPER"
-              ],
-              "addresses": [
-                {
-                  "city": "Bonn",
-                  "country": "DE"
-                }
-              ],
-              "contactPersons": [
-                {
-                  "firstName": "Sarah",
-                  "lastName": "Kemp",
-                  "jobTitle": "Operations"
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "scenarioName": "3. Partner: Amazon FBA (Marketplace Bridge)",
-    "customer": {
-      "customerType": "Partners",
-      "mdmCustomerId": "CUST-AMZN-EU",
-      "officialName": "Amazon EU S.a.r.l.",
-      "accounts": [
-        {
-          "mdmAccountId": "ACC-AMZN-FBA-LOG",
-          "businessRoles": [
-            "SOLDTO",
-            "PAYER"
-          ],
-          "platformObject": {
-            "name": "Amazon Seller Central",
-            "platformId": "API-AMZN-99"
-          },
-          "children": [
-            {
-              "mdmAccountId": "SME-SELLER-VINTAGE",
-              "tradingName": "Vintage Goods Ltd (SME)",
-              "businessRoles": [
-                "PICKUP"
-              ],
-              "referenceIds": [
-                {
-                  "refType": "AMZN_ID",
-                  "refValue": "MERC-4455"
-                }
-              ],
-              "addresses": [
-                {
-                  "city": "Berlin",
-                  "country": "DE"
-                }
-              ],
-              "contactPersons": [
-                {
-                  "firstName": "Mark",
-                  "lastName": "Edison",
-                  "jobTitle": "Shop Owner"
                 }
               ]
             }
