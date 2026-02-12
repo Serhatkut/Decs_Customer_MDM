@@ -1,184 +1,96 @@
-/* DHL Master Data Blueprint Identity */
 :root {
     --dhl-red: #D40511;
     --dhl-yellow: #FFCC00;
     --global-black: #111111;
     --gray-scale: #666666;
-    --text-light: #FFFFFF;
-    --text-dark: #333333;
     --grid-line: #e0e0e0;
-}
-
-* {
-    box-sizing: border-box;
 }
 
 body {
     margin: 0;
-    padding: 0;
     display: flex;
     height: 100vh;
-    font-family: 'Delivery', Arial, sans-serif;
-    background-color: #ffffff;
     overflow: hidden;
-    /* Critical for D3 Zoom */
+    font-family: sans-serif;
 }
 
-/* --- SIDEBAR NAVIGATION --- */
 #sidebar {
     width: 380px;
-    background-color: #f4f4f4;
+    background: #f4f4f4;
     border-right: 5px solid var(--dhl-yellow);
+    padding: 20px;
+    z-index: 20;
     display: flex;
     flex-direction: column;
-    padding: 25px;
-    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
-    z-index: 2000;
-    /* Above everything */
 }
 
-.logo {
-    width: 140px;
-    margin-bottom: 25px;
-}
-
-h2 {
-    color: var(--dhl-red);
-    font-size: 1.1rem;
-    margin: 0;
-    text-transform: uppercase;
-    font-weight: 900;
-}
-
-.subtitle {
-    font-size: 0.8rem;
-    color: #777;
-    margin-bottom: 20px;
-}
-
-/* Controls */
-#nodeSearch,
-#scenarioSelector,
-#resetZoom {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    outline: none;
-}
-
-#scenarioSelector,
-#resetZoom {
-    background: #fff;
-    border: 2px solid var(--global-black);
-    font-weight: bold;
-    cursor: pointer;
-}
-
-#resetZoom:hover {
-    background: var(--global-black);
-    color: #fff;
-}
-
-/* JSON Terminal */
-#json-viewer {
-    margin-top: auto;
-    background: #1a1a1a;
-    border-radius: 4px;
-    padding: 15px;
-    height: 220px;
-    overflow: auto;
-}
-
-#json-viewer h3 {
-    color: var(--dhl-yellow);
-    font-size: 10px;
-    margin-top: 0;
-    text-transform: uppercase;
-}
-
-#json-display {
-    color: #00FF41;
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    margin: 0;
-}
-
-/* --- VISUALIZATION CANVAS --- */
-#viz-container {
+#main-viewport {
     flex-grow: 1;
     position: relative;
-    cursor: grab;
-    background-color: #ffffff;
-    /* Architect Grid */
-    background-image:
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    overflow: hidden;
+}
+
+#viz-container {
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 20px 20px;
+    cursor: grab;
 }
 
 #viz-container:active {
     cursor: grabbing;
 }
 
-/* --- THE LEGEND (FIXED OVERLAY) --- */
+/* LEGEND OVERLAY */
 .legend {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255, 255, 255, 0.95);
+    background: white;
     padding: 15px;
-    border: 2px solid var(--global-black);
-    box-shadow: 4px 4px 0px var(--dhl-yellow);
-    z-index: 1500;
-    /* Stays above the SVG diagram */
+    border: 2px solid black;
+    box-shadow: 4px 4px 0 var(--dhl-yellow);
+    z-index: 100;
+    /* Stays above the D3 SVG */
     pointer-events: none;
-    /* Allows zoom/pan clicks to pass through to SVG */
+    /* Mouse clicks pass through to the diagram below */
 }
 
 .legend-item {
     display: flex;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     font-size: 11px;
     font-weight: bold;
 }
 
 .dot {
-    width: 14px;
-    height: 14px;
-    margin-right: 10px;
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
     border: 1px solid #333;
 }
 
-/* --- D3 SVG ELEMENTS --- */
+/* D3 Styles */
 .node rect {
     stroke: #333;
-    stroke-width: 1.5px;
     rx: 4;
-    ry: 4;
-    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
-}
-
-.label-main {
-    fill: var(--text-light);
-    font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.label-sub {
-    fill: rgba(255, 255, 255, 0.8);
-    font-size: 9px;
-}
-
-.label-yellow {
-    fill: var(--text-dark) !important;
+    filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
 }
 
 .link {
     fill: none;
-    stroke: #888;
+    stroke: #999;
     stroke-width: 2px;
+}
+
+.label-main {
+    fill: white;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.label-yellow {
+    fill: black !important;
 }
