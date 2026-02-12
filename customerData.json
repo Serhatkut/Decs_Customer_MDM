@@ -1,0 +1,280 @@
+[
+  {
+    "scenarioName": "Inditex Group - Strategic Customer",
+    "customer": {
+      "customerType": "Strategic Customers",
+      "customerLevel": "STRATEGIC",
+      "mdmCustomerId": "CUST-GLOBAL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Inditex S.A.",
+      "tradingName": "Inditex Group",
+      "globalGroupCode": "INDITEX",
+      "industrySector": "FASHION_RETAIL",
+      "taxId": "ESA12345678",
+      "countryOfRegistration": "ES",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-IND-HQ-01",
+          "mdmCustomerId": "CUST-GLOBAL-001",
+          "businessRoles": ["SOLDTO", "PAYER"],
+          "accountStatus": "ACTIVE",
+          "isNaturalPerson": false,
+          "currency": "EUR",
+          "paymentTerms": "NET_60",
+          "salesManager": "Global_Account_Director_01",
+          "segmentGroup": "STRATEGIC",
+          "addresses": [
+            {
+              "addressId": "ADDR-ES-01",
+              "addressType": "BUSINESS",
+              "city": "Arteixo",
+              "postalcode": "15143",
+              "country": "ES"
+            }
+          ]
+        },
+        {
+          "mdmAccountId": "ACC-ZARA-DC-MAD",
+          "parentAccountId": "ACC-IND-HQ-01",
+          "mdmCustomerId": "CUST-GLOBAL-001",
+          "businessRoles": ["PICKUP", "SHIPPER"],
+          "accountStatus": "ACTIVE",
+          "addresses": [
+            {
+              "addressId": "ADDR-ES-02",
+              "city": "Madrid",
+              "postalcode": "28001",
+              "country": "ES"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "Müller Auto Parts - Relationship Customer",
+    "customer": {
+      "customerType": "Relationship Customers",
+      "customerLevel": "KEY_ACCT",
+      "mdmCustomerId": "CUST-REL-002",
+      "officialName": "Müller Auto Parts GmbH",
+      "tradingName": "Müller B2B",
+      "industrySector": "AUTOMOTIVE",
+      "taxId": "DE987654321",
+      "countryOfRegistration": "DE",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-MULLER-MAIN",
+          "mdmCustomerId": "CUST-REL-002",
+          "businessRoles": ["SOLDTO", "PAYER", "PICKUP"],
+          "accountStatus": "ACTIVE",
+          "currency": "EUR",
+          "paymentTerms": "NET_30",
+          "salesManager": "Field_Sales_North",
+          "addresses": [
+            {
+              "addressId": "ADDR-DE-01",
+              "city": "Hamburg",
+              "postalcode": "20095",
+              "country": "DE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "SendCloud B.V. - Reseller",
+    "customer": {
+      "customerType": "Resellers",
+      "customerLevel": "KEY_ACCT",
+      "mdmCustomerId": "CUST-RES-003",
+      "officialName": "SendCloud B.V.",
+      "industrySector": "LOGISTICS_TECH",
+      "countryOfRegistration": "NL",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-SND-PLATFORM",
+          "mdmCustomerId": "CUST-RES-003",
+          "businessRoles": ["SOLDTO", "PAYER"],
+          "accountStatus": "ACTIVE"
+        },
+        {
+          "mdmAccountId": "ACC-SME-PICKUP-99",
+          "parentAccountId": "ACC-SND-PLATFORM",
+          "mdmCustomerId": "CUST-RES-003",
+          "businessRoles": ["PICKUP"],
+          "tradingName": "TechStore GmbH",
+          "referenceIds": [
+            {
+              "refType": "SUB_MERCHANT_ID",
+              "refValue": "TECH-STORE-DE-99",
+              "issuedByAuthority": "SENDCLOUD"
+            }
+          ],
+          "addresses": [
+            {
+              "addressId": "ADDR-DE-BER",
+              "city": "Berlin",
+              "postalcode": "10115",
+              "country": "DE"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "John Smith - Retail / Cash Customer",
+    "customer": {
+      "customerType": "Retail / Cash Customers",
+      "customerLevel": "RETAIL",
+      "mdmCustomerId": "CUST-RET-004",
+      "officialName": "John Smith",
+      "countryOfRegistration": "UK",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-CASH-SMITH",
+          "mdmCustomerId": "CUST-RET-004",
+          "businessRoles": ["SOLDTO", "PAYER", "SHIPPER"],
+          "isNaturalPerson": true,
+          "paymentTerms": "IMMEDIATE",
+          "addresses": [
+            {
+              "addressId": "ADDR-UK-RES",
+              "addressType": "RESIDENTIAL",
+              "city": "London",
+              "postalcode": "SW1A 1AA",
+              "country": "GB"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "Vinted Marketplace - Partner",
+    "customer": {
+      "customerType": "Partners",
+      "customerLevel": "STRATEGIC",
+      "mdmCustomerId": "CUST-PRT-005",
+      "officialName": "Vinted, UAB",
+      "industrySector": "MARKETPLACE",
+      "countryOfRegistration": "LT",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-VIN-PICKUP-SARAH",
+          "mdmCustomerId": "CUST-PRT-005",
+          "businessRoles": ["PICKUP"],
+          "platformObject": {
+            "name": "Vinted_Seller_Portal",
+            "mdmCustomerIdLink": "CUST-RET-SARAH-99"
+          },
+          "addresses": [
+            {
+              "addressId": "ADDR-FR-01",
+              "city": "Paris",
+              "postalcode": "75001",
+              "country": "FR"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "BioOrganic Supplements - Multichannel / Digital Customer",
+    "customer": {
+      "customerType": "Multichannel / Digital Customers",
+      "customerLevel": "SME",
+      "mdmCustomerId": "CUST-DIGI-006",
+      "officialName": "BioOrganic Supplements Ltd",
+      "industrySector": "HEALTH_BEAUTY",
+      "countryOfRegistration": "US",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-DIGI-MAIN",
+          "mdmCustomerId": "CUST-DIGI-006",
+          "businessRoles": ["SOLDTO", "PAYER", "PICKUP"],
+          "salesManager": "DIGITAL_SALES_BOT",
+          "platformObject": {
+            "name": "Shopify_Plugin"
+          },
+          "addresses": [
+            {
+              "addressId": "ADDR-US-01",
+              "city": "Austin",
+              "country": "US"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "DHL Supply Chain IT Services - Internal Customer",
+    "customer": {
+      "customerType": "Internal Customers",
+      "customerLevel": "INTERNAL",
+      "mdmCustomerId": "CUST-INT-007",
+      "officialName": "DHL Supply Chain Management GmbH",
+      "industrySector": "DHL_INTERNAL",
+      "countryOfRegistration": "DE",
+      "accounts": [
+        {
+          "mdmAccountId": "ACC-INT-COST-01",
+          "mdmCustomerId": "CUST-INT-007",
+          "businessRoles": ["SOLDTO", "PAYER"],
+          "paymentTerms": "INTERNAL_TRANSFER",
+          "currency": "EUR"
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "Master Data Blueprint - Generic Recursive Model",
+    "customer": {
+      "customerType": "Generic Blueprint",
+      "customerLevel": "STRATEGIC",
+      "mdmCustomerId": "ROOT-CUST-999",
+      "officialName": "Global Blueprint Corp",
+      "globalGroupCode": "BLUEPRINT_HOLDING",
+      "industrySector": "LOGISTICS_ARCHITECTURE",
+      "taxId": "GENERIC-000",
+      "countryOfRegistration": "DE",
+      "accounts": [
+        {
+          "mdmAccountId": "PARENT-SOLD-TO-01",
+          "mdmCustomerId": "ROOT-CUST-999",
+          "businessRoles": ["SOLDTO"],
+          "accountStatus": "ACTIVE",
+          "children": [
+            {
+              "mdmAccountId": "SUB-ACCOUNT-PICKUP-A",
+              "parentAccountId": "PARENT-SOLD-TO-01",
+              "businessRoles": ["PICKUP"],
+              "addresses": [
+                {
+                  "addressId": "ADDR-BLUE-01",
+                  "city": "Recursive City",
+                  "country": "DE"
+                }
+              ]
+            },
+            {
+              "mdmAccountId": "SUB-ACCOUNT-PAYER-B",
+              "parentAccountId": "PARENT-SOLD-TO-01",
+              "businessRoles": ["PAYER"],
+              "contracts": [
+                {
+                  "contractId": "CON-RECURSIVE-01",
+                  "contractName": "Sub-Account Service Agreement"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
