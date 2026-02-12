@@ -1,27 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>DHL MDM Blueprint</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHL Master Data Architect | Blueprint Visualizer</title>
+
     <link rel="stylesheet" href="style.css">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 
 <body>
+
     <aside id="sidebar">
-        <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" class="logo">
-        <h2>Data Architect</h2>
-        <p class="subtitle">Master Data Hierarchy Visualizer</p>
-        <input type="text" id="nodeSearch" placeholder="Search...">
+        <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" alt="DHL Logo" class="logo">
+
+        <h2>Data Architect Portal</h2>
+        <p class="subtitle">Master Data Hierarchy Blueprint</p>
+
+        <div class="search-box">
+            <input type="text" id="nodeSearch" placeholder="🔍 Search IDs, Locations, or Roles...">
+        </div>
+
         <select id="scenarioSelector">
-            <option>-- Select --</option>
+            <option value="">-- Select Business Scenario --</option>
         </select>
+
+        <div id="details">
+        </div>
+
         <div id="json-viewer">
-            <h3>RAW JSON</h3>
-            <pre id="json-display"></pre>
+            <h3>MDM RAW OBJECT</h3>
+            <pre id="json-display">// Select a scenario to inspect the data model</pre>
         </div>
     </aside>
-    <div id="viz-container"></div>
+
+    <main id="viz-container">
+        <div class="legend">
+            <div class="legend-item">
+                <span class="dot" style="background:var(--global-black)"></span> GLOBAL PARENT
+            </div>
+            <div class="legend-item">
+                <span class="dot" style="background:var(--dhl-red)"></span> CUSTOMER (LEGAL)
+            </div>
+            <div class="legend-item">
+                <span class="dot" style="background:var(--dhl-yellow)"></span> ACCOUNT (COMMERCIAL)
+            </div>
+            <div class="legend-item">
+                <span class="dot" style="background:var(--gray-scale)"></span> DATA ATTRIBUTES
+            </div>
+            <p style="font-size: 9px; color: #999; margin-top: 10px; font-weight: normal;">
+                * Use Mouse Wheel to Zoom<br>
+                * Click and Drag to Pan
+            </p>
+        </div>
+    </main>
+
     <script src="script.js"></script>
 </body>
 

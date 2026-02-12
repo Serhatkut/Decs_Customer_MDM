@@ -1,55 +1,72 @@
+/* DHL Master Data Blueprint Identity */
 :root {
     --dhl-red: #D40511;
     --dhl-yellow: #FFCC00;
     --global-black: #111111;
-    --text-dark: #333;
-    --grid-size: 20px;
+    --gray-scale: #666666;
+    --text-light: #FFFFFF;
+    --text-dark: #333333;
+    --grid-line: #e0e0e0;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
     margin: 0;
+    padding: 0;
     display: flex;
     height: 100vh;
     font-family: 'Delivery', Arial, sans-serif;
-    background-color: #fff;
+    background-color: #ffffff;
+    overflow: hidden;
 }
 
-/* Sidebar */
+/* --- SIDEBAR NAVIGATION --- */
 #sidebar {
-    width: 360px;
-    background: #f4f4f4;
+    width: 380px;
+    background-color: #f4f4f4;
     border-right: 5px solid var(--dhl-yellow);
-    padding: 25px;
     display: flex;
     flex-direction: column;
-    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
     z-index: 10;
 }
 
 .logo {
     width: 140px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 h2 {
     color: var(--dhl-red);
     font-size: 1.1rem;
-    text-transform: uppercase;
     margin: 0;
+    text-transform: uppercase;
+    font-weight: 900;
+    letter-spacing: 0.5px;
 }
 
 .subtitle {
     font-size: 0.8rem;
     color: #777;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
+/* Input Styles */
 #nodeSearch {
     width: 100%;
     padding: 12px;
-    margin-bottom: 10px;
     border: 1px solid #ccc;
+    font-size: 14px;
+    margin-bottom: 10px;
     outline: none;
+}
+
+#nodeSearch:focus {
+    border-color: var(--dhl-red);
 }
 
 #scenarioSelector {
@@ -58,34 +75,68 @@ h2 {
     background: #fff;
     border: 2px solid var(--global-black);
     font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
 }
 
-/* Canvas & Grid */
+/* JSON Terminal View */
+#json-viewer {
+    margin-top: auto;
+    background: #1a1a1a;
+    border-radius: 4px;
+    padding: 15px;
+    height: 220px;
+    overflow: auto;
+}
+
+#json-viewer h3 {
+    color: var(--dhl-yellow);
+    font-size: 10px;
+    margin-top: 0;
+    text-transform: uppercase;
+}
+
+#json-display {
+    color: #00FF41;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    margin: 0;
+}
+
+/* --- VISUALIZATION CANVAS --- */
 #viz-container {
     flex-grow: 1;
-    overflow: auto;
+    position: relative;
+    cursor: grab;
     background-color: #ffffff;
+    /* Architect Grid Paper Effect */
     background-image:
-        linear-gradient(#e5e5e5 1px, transparent 1px),
-        linear-gradient(90deg, #e5e5e5 1px, transparent 1px);
-    background-size: var(--grid-size) var(--grid-size);
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
-/* Boxes (Nodes) */
+#viz-container:active {
+    cursor: grabbing;
+}
+
+/* --- D3.js NODE (BOX) STYLING --- */
 .node rect {
     stroke: #333;
     stroke-width: 1.5px;
     rx: 4;
+    /* Rounded Corners */
     ry: 4;
-    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
+    filter: drop-shadow(3px 4px 2px rgba(0, 0, 0, 0.15));
 }
 
 .node text {
     pointer-events: none;
 }
 
+/* Label Classes based on Hierarchical Role */
 .label-main {
-    fill: #fff;
+    fill: var(--text-light);
     font-size: 11px;
     font-weight: bold;
     text-transform: uppercase;
@@ -94,30 +145,44 @@ h2 {
 .label-sub {
     fill: rgba(255, 255, 255, 0.8);
     font-size: 9px;
+    font-weight: normal;
 }
 
+/* Yellow Contrast Overrides for Accounts */
 .label-yellow {
-    fill: #000 !important;
+    fill: var(--text-dark) !important;
 }
 
-/* Arrows (Links) */
+/* --- LINK (ARROW) STYLING --- */
 .link {
     fill: none;
-    stroke: #666;
+    stroke: #888888;
     stroke-width: 2px;
 }
 
-#json-viewer {
-    margin-top: auto;
-    background: #222;
+/* Legend Component */
+.legend {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
     padding: 15px;
-    border-radius: 4px;
-    height: 200px;
-    overflow: auto;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 5;
 }
 
-#json-display {
-    color: #0f0;
-    font-family: monospace;
-    font-size: 11px;
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    margin-right: 8px;
+    border: 1px solid #333;
 }
