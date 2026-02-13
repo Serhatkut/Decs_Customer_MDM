@@ -1,499 +1,638 @@
-/**
- * DHL eCommerce – Master Data Scenarios Explorer
- * Expects customerData.json to be a JSON array of 7 scenario root objects (as provided).
- */
+/* DHL eCommerce - Customer Master Data Viewer
+   - Loads /data/customerData.json
+   - Renders interactive hierarchy using D3 tree layout
+   - Click node -> shows JSON
+   - Search -> highlights nodes
+*/
 
-let scenarios = [];
-let currentScenario = null;
-let currentRoot = null;
+const DATA_URL = "data/customerData.json";
 
-const nodeW = 260;
-const nodeH = 160;
-
-const colors = {
-    CUSTOMER: "#FFCC00",      // DHL Yellow
-    ACCOUNT: "#D40511",       // DHL Red
-    FINANCIAL: "#003399",
-    PERSONNEL: "#007D8A",
-    LOCATION: "#666666",
-    GROUP: "#111111"
+const UI = {
+    selector: document.getElementById("scenarioSelector"),
+    search: document.getElementById("nodeSearch"),
+    json: document.getElementById("json-display"),
+    reset: document.getElementById("resetZoom"),
+    viz: document.getElementById("viz-container"),
 };
 
-const svg = d3.select("#viz-container").append("svg").attr("width", "100%").attr("height", "100%");
-const g = svg.append("g");
+const THEME = {
+    dhlRed: "#D40511",
+    dhlYellow: "#FFCC00",
+    ink: "#111",
+    paper: "#FFFFFF",
+    soft: "#FFF6CC",
+    grid: "#ECECEC",
+    global: "#111111",      // dark header
+    account: "#D40511",     // DHL red header
+    contract: "#7A0008",    // darker red for contracts/billing
+    contact: "#111111",     // dark
+    address: "#6B6B6B"      // grey
+};
 
-const zoom = d3.zoom().scaleExtent([0.2, 2.5]).on("zoom", (e) => g.attr("transform", e.transform));
-svg.call(zoom);
+// Node geometry
+const NODE_W = 320;
+const NODE_H = 170;
+const HEADER_H = 34;
 
-/* ---------- Helpers ---------- */
+// D3 globals
+let svg, g, zoom;
+let scenarios = [];
+let selectedScenario = null;
+let selectedNodeDatum = null;
 
-const safe = (v) => (v === null || v === undefined) ? "" : String(v);
+// ---------- Helpers (safe access / normalization) ----------
+function asArray(x) {
+    return Array.isArray(x) ? x : [];
+}
 
-function headerColor(type) {
-    switch (type) {
-        case "CUSTOMER": return colors.CUSTOMER;
-        case "ACCOUNT": return colors.ACCOUNT;
-        case "CONTRACT":
-        case "REFERENCE_ID": return colors.FINANCIAL;
-        case "CONTACT":
-        case "COMM": return colors.PERSONNEL;
-        case "ADDRESS": return colors.LOCATION;
-        case "GROUP": return colors.GROUP;
-        default: return "#444";
+function safeString(x) {
+    if (x === null || x === undefined) return "";
+    return String(x);
+}
+
+function normalizeScenarioShape(s) {
+    // Supports BOTH shapes:
+    // A) { scenarioName, customer:{...}, accounts:[...], relatedCustomers:[...] }
+    // B) legacy: { scenarioName, customerType..., accounts:[...], children:[...] } (older file)
+    if (s.customer) return s;
+
+    // Build scenario.customer from legacy fields (if needed)
+    const legacyCustomer = {
+        customerType: s.customerType,
+        customerLevel: s.customerLevel,
+        mdmCustomerId: s.mdmCustomerId,
+        parentMdmCustomerId: s.parentMdmCustomerId ?? null,
+        officialName: s.officialName,
+        tradingName: s.tradingName,
+        globalGroupCode: s.globalGroupCode ?? null,
+        industrySector: s.industrySector ?? null,
+        taxId: s.taxId ?? null,
+        countryOfRegistration: s.countryOfRegistration ?? null,
+        addresses: asArray(s.addresses),
+        contactPersons: asArray(s.contactPersons),
+    };
+
+    return {
+        scenarioName: s.scenarioName,
+        customer: legacyCustomer,
+        accounts: asArray(s.accounts),
+        relatedCustomers: asArray(s.relatedCustomers).length ? asArray(s.relatedCustomers) : asArray(s.children),
+    };
+}
+
+// Key line picker per type
+function pickKeyLines(type, data) {
+    const lines = [];
+
+    const push = (k, v) => {
+        const val = safeString(v);
+        if (!val) return;
+        lines.push([k, val]);
+    };
+
+    if (!data) return lines;
+
+    if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") {
+        push("mdmCustomerId", data.mdmCustomerId);
+        push("customerType", data.customerType);
+        push("customerLevel", data.customerLevel);
+        push("globalGroupCode", data.globalGroupCode);
+        push("industrySector", data.industrySector);
+        push("countryOfRegistration", data.countryOfRegistration);
     }
+
+    if (type.startsWith("ACCOUNT")) {
+        push("mdmAccountId", data.mdmAccountId);
+        push("roles", asArray(data.businessRoles).join(", "));
+        push("salesChannel", data.salesChannel);
+        push("salesManager", data.salesManager);
+        if (data.platformObject) push("platformId", data.platformObject.platformId || data.platformObject.name);
+        push("paymentTerms", data.paymentTerms);
+        push("currency", data.currency);
+    }
+
+    if (type === "CONTRACT") {
+        push("contractId", data.contractId);
+        push("startDate", data.startDate);
+        const cd = data.contractDetail || {};
+        push("contractType", cd.contractType);
+        push("billingModel", cd.billingModel);
+        push("billingFrequency", cd.billingFrequency);
+        if (Array.isArray(cd.services)) push("services", cd.services.join(", "));
+    }
+
+    if (type === "BILLING_PROFILE") {
+        push("billingProfileId", data.billingProfileId);
+        push("billingAccountNumber", data.billingAccountNumber);
+        push("billingCurrency", data.billingCurrency);
+        push("invoiceDelivery", data.invoiceDelivery);
+        if (data.paymentMethod) {
+            push("payMethod", data.paymentMethod.type);
+            push("iban", data.paymentMethod.iban);
+        }
+    }
+
+    if (type.startsWith("ADDRESS")) {
+        push("addressId", data.addressId);
+        push("addressType", data.addressType);
+        push("city", data.city);
+        push("country", data.country);
+        push("postalcode", data.postalcode);
+    }
+
+    if (type === "CONTACT") {
+        push("contactPersonId", data.contactPersonId);
+        push("jobTitle", data.jobTitle);
+        const ch = asArray(data.communicationChannels);
+        const email = ch.find(c => c.type === "EMAIL");
+        const phone = ch.find(c => c.type === "PHONE");
+        push("email", email?.value);
+        push("phone", phone?.value);
+    }
+
+    if (type === "COMM") {
+        push("type", data.type);
+        push("value", data.value);
+    }
+
+    if (type === "REFERENCE_ID") {
+        push("refType", data.refType);
+        push("refValue", data.refValue);
+        push("issuedBy", data.issuedByAuthority);
+    }
+
+    if (type === "PLATFORM") {
+        push("platformId", data.platformId);
+        push("name", data.name);
+        push("type", data.type);
+        push("provider", data.provider);
+    }
+
+    return lines.slice(0, 6);
 }
 
-function nodeTitle(d) {
-    const data = d.data.data || {};
-    if (d.data.type === "CUSTOMER") return safe(data.tradingName || data.officialName || data.mdmCustomerId);
-    if (d.data.type === "ACCOUNT") return safe(data.mdmAccountId || "Account");
-    if (d.data.type === "ADDRESS") return safe(`${data.city || ""} ${data.country || ""}`).trim() || "Address";
-    if (d.data.type === "CONTACT") return safe(`${data.firstName || ""} ${data.lastName || ""}`).trim() || "Contact";
-    if (d.data.type === "CONTRACT") return safe(data.contractName || data.contractId || "Contract");
-    if (d.data.type === "REFERENCE_ID") return safe(data.refValue || "Reference");
-    if (d.data.type === "GROUP") return safe(d.data.name || "Group");
-    return safe(d.data.name || "Object");
+function iconFor(type, data) {
+    // You asked: different icons for pickup address and other addresses + icons for customer/account/contract/contact
+    if (type === "GLOBAL_CUSTOMER") return "🌐";
+    if (type === "COUNTRY_CUSTOMER") return "🏢";
+
+    if (type === "ACCOUNT_SOLDTO") return "🧾";
+    if (type === "ACCOUNT_SUB") {
+        // If PICKUP role -> warehouse icon; else generic
+        const roles = asArray(data?.businessRoles);
+        if (roles.includes("PICKUP")) return "🏬";
+        return "📦";
+    }
+
+    if (type === "CONTRACT") return "📝";
+    if (type === "BILLING_PROFILE") return "💳";
+    if (type === "PLATFORM") return "🧩";
+    if (type === "REFERENCE_ID") return "🔗";
+    if (type === "CONTACT") return "👤";
+    if (type === "COMM") {
+        if (data?.type === "EMAIL") return "✉️";
+        if (data?.type === "PHONE") return "📞";
+        return "📡";
+    }
+
+    if (type.startsWith("ADDRESS")) {
+        const at = safeString(data?.addressType).toUpperCase();
+        if (at.includes("PICKUP")) return "📍";
+        if (at.includes("BILLING")) return "💼";
+        if (at.includes("RESIDENTIAL")) return "🏠";
+        return "🏷️";
+    }
+
+    return "•";
 }
 
-function buildIndexByCustomerId(scenario) {
-    const idx = new Map();
-    // root customer
-    idx.set(scenario.mdmCustomerId, scenario);
-    // children legal entities
-    if (Array.isArray(scenario.children)) {
-        scenario.children.forEach(c => {
-            if (c && c.mdmCustomerId) idx.set(c.mdmCustomerId, c);
+function headerColorFor(type) {
+    if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") return THEME.global;
+    if (type.startsWith("ACCOUNT")) return THEME.account;
+    if (type === "CONTRACT" || type === "BILLING_PROFILE") return THEME.contract;
+    if (type === "CONTACT" || type === "COMM") return THEME.contact;
+    if (type.startsWith("ADDRESS")) return THEME.address;
+    if (type === "REFERENCE_ID" || type === "PLATFORM") return THEME.contract;
+    return THEME.global;
+}
+
+function displayNameFor(type, obj) {
+    if (!obj) return "(unknown)";
+    if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") {
+        return obj.tradingName || obj.officialName || obj.mdmCustomerId;
+    }
+    if (type.startsWith("ACCOUNT")) {
+        return obj.mdmAccountId || "(account)";
+    }
+    if (type === "CONTRACT") return obj.contractName || obj.contractId;
+    if (type === "BILLING_PROFILE") return obj.billingProfileId || "Billing Profile";
+    if (type.startsWith("ADDRESS")) return `${obj.city || ""}${obj.country ? ", " + obj.country : ""}`.trim() || obj.addressId;
+    if (type === "CONTACT") return `${obj.firstName || ""} ${obj.lastName || ""}`.trim() || obj.contactPersonId;
+    if (type === "COMM") return obj.value || "(channel)";
+    if (type === "REFERENCE_ID") return obj.refType || "Reference";
+    if (type === "PLATFORM") return obj.platformId || obj.name || "Platform";
+    return obj.mdmCustomerId || obj.mdmAccountId || "(node)";
+}
+
+// Attach addresses + contacts + referenceIds + platform (optional) as children nodes
+function enrichWithCommonChildren(node, obj) {
+    const children = asArray(node.children);
+
+    // Platform (if present)
+    if (obj?.platformObject) {
+        children.push({
+            type: "PLATFORM",
+            data: obj.platformObject,
+            children: []
         });
     }
-    return idx;
+
+    // Reference IDs
+    asArray(obj?.referenceIds).forEach(r => {
+        children.push({
+            type: "REFERENCE_ID",
+            data: r,
+            children: []
+        });
+    });
+
+    // Contacts -> comm channels
+    asArray(obj?.contactPersons).forEach(cp => {
+        const commKids = asArray(cp.communicationChannels).map(cc => ({
+            type: "COMM",
+            data: cc,
+            children: []
+        }));
+        children.push({
+            type: "CONTACT",
+            data: cp,
+            children: commKids
+        });
+    });
+
+    // Addresses -> tag address type in node type for icon differentiation
+    asArray(obj?.addresses).forEach(a => {
+        const at = safeString(a.addressType).toUpperCase();
+        let t = "ADDRESS_OTHER";
+        if (at.includes("PICKUP")) t = "ADDRESS_PICKUP";
+        else if (at.includes("BILLING")) t = "ADDRESS_BILLING";
+        else if (at.includes("RESIDENTIAL")) t = "ADDRESS_RESIDENTIAL";
+        else t = "ADDRESS_BUSINESS";
+
+        children.push({
+            type: t,
+            data: a,
+            children: []
+        });
+    });
+
+    node.children = children;
+    return node;
 }
 
-/**
- * Normalizes incoming JSON so the renderer supports BOTH shapes:
- * A) Preferred: scenario is the CUSTOMER root object (7-scenario array)
- * B) Legacy:    { scenarioName, customer: { ...customerRoot } }
- *
- * Returns a CUSTOMER-root object with top-level fields expected by the UI.
- */
-function normalizeScenario(s) {
-    if (!s) return null;
+// Build account tree from flat accounts using parentAccountId
+function buildAccountTree(accounts) {
+    const byId = new Map();
+    const roots = [];
 
-    // If it already looks like a customer-root scenario (has mdmCustomerId + accounts or customerType)
-    const looksLikeRoot = (typeof s === "object") && (
-        "mdmCustomerId" in s || "accounts" in s || "customerType" in s || "customerLevel" in s
-    );
-    if (looksLikeRoot && !s.customer) return s;
+    accounts.forEach(acc => {
+        byId.set(acc.mdmAccountId, {
+            type: asArray(acc.businessRoles).includes("SOLDTO") ? "ACCOUNT_SOLDTO" : "ACCOUNT_SUB",
+            data: acc,
+            children: []
+        });
+    });
 
-    // Legacy shape: { scenarioName, customer: {...} }
-    if (s.customer && typeof s.customer === "object") {
-        const c = s.customer;
-        return {
-            // Keep scenario name at root for selector display
-            scenarioName: s.scenarioName || c.scenarioName || c.tradingName || c.officialName,
-            // Promote customer fields
-            ...c,
-            // Ensure mandatory fields exist on root (some legacy data only had these inside customer)
-            customerType: c.customerType,
-            customerLevel: c.customerLevel,
-            mdmCustomerId: c.mdmCustomerId,
-            accounts: Array.isArray(c.accounts) ? c.accounts : [],
-            children: Array.isArray(c.children) ? c.children : []
+    // Link children
+    byId.forEach((node, id) => {
+        const parentId = node.data.parentAccountId;
+        if (parentId && byId.has(parentId)) {
+            byId.get(parentId).children.push(node);
+        } else {
+            roots.push(node);
+        }
+    });
+
+    // Attach contract under each account node
+    byId.forEach(node => {
+        const contracts = asArray(node.data.contracts);
+        contracts.forEach(c => {
+            const contractNode = enrichWithCommonChildren({
+                type: "CONTRACT",
+                data: c,
+                children: []
+            }, c);
+
+            // Billing profile nested under contract
+            if (c.billingProfile) {
+                const billingNode = enrichWithCommonChildren({
+                    type: "BILLING_PROFILE",
+                    data: c.billingProfile,
+                    children: []
+                }, c.billingProfile);
+
+                contractNode.children.push(billingNode);
+            }
+
+            node.children.push(contractNode);
+        });
+
+        // Add common children for accounts themselves (addresses/contacts/reference/platform)
+        enrichWithCommonChildren(node, node.data);
+    });
+
+    return roots;
+}
+
+function buildHierarchy(scenario) {
+    const s = normalizeScenarioShape(scenario);
+
+    // Root = Global customer
+    let root = {
+        type: "GLOBAL_CUSTOMER",
+        data: s.customer,
+        children: []
+    };
+    root = enrichWithCommonChildren(root, s.customer);
+
+    // Country customers (optional)
+    const countryCustomers = asArray(s.relatedCustomers);
+    countryCustomers.forEach(cc => {
+        let ccNode = {
+            type: "COUNTRY_CUSTOMER",
+            data: cc,
+            children: []
         };
-    }
+        ccNode = enrichWithCommonChildren(ccNode, cc);
+        root.children.push(ccNode);
+    });
 
-    // Unexpected shape: best-effort return
-    return s;
-}
+    // Accounts under root (full account tree)
+    const accounts = asArray(s.accounts);
+    const accountRoots = buildAccountTree(accounts);
 
-function toNode(name, type, data, children = []) {
-    return { name, type, data, children };
-}
-
-/**
- * Build a hierarchy suitable for d3.hierarchy from the scenario JSON.
- * - Root: CUSTOMER (scenario legal entity)
- * - Under root: groups for Accounts + (optional) Child Legal Entities
- * - Under each Account: Address, Contacts (+ comm), Contracts, Reference IDs
- * - For "bridge" accounts (e.g., Vinted pickup): if mdmCustomerId points to a legal entity that exists in children, show it;
- *   otherwise show a placeholder linked legal entity node (mdmCustomerId only).
- */
-function mapScenarioToHierarchy(scenario) {
-    scenario = normalizeScenario(scenario);
-    if (!scenario) return toNode("Invalid Scenario", "CUSTOMER", {}, []);
-    const customerIndex = buildIndexByCustomerId(scenario);
-
-    const rootChildren = [];
-
-    // Accounts group
-    if (Array.isArray(scenario.accounts) && scenario.accounts.length) {
-        const accountsChildren = scenario.accounts.map(acc => {
-            const accountChildren = [];
-
-            // Addresses
-            if (Array.isArray(acc.addresses)) {
-                acc.addresses.forEach(a => {
-                    accountChildren.push(toNode(`${safe(a.city)}, ${safe(a.country)}`.trim(), "ADDRESS", a));
-                });
-            }
-
-            // Contacts + comm channels
-            if (Array.isArray(acc.contactPersons)) {
-                acc.contactPersons.forEach(cp => {
-                    const commChildren = [];
-                    const ch = Array.isArray(cp.communicationChannels) ? cp.communicationChannels : [];
-                    ch.forEach(cc => commChildren.push(toNode(`${safe(cc.type)}: ${safe(cc.value)}`, "COMM", cc)));
-                    accountChildren.push(toNode(`${safe(cp.firstName)} ${safe(cp.lastName)}`.trim(), "CONTACT", cp, commChildren));
-                });
-            }
-
-            // Contracts
-            if (Array.isArray(acc.contracts)) {
-                acc.contracts.forEach(c => accountChildren.push(toNode(c.contractName || c.contractId, "CONTRACT", c)));
-            }
-
-            // Reference IDs
-            if (Array.isArray(acc.referenceIds)) {
-                acc.referenceIds.forEach(r => accountChildren.push(toNode(r.refValue || r.refType, "REFERENCE_ID", r)));
-            }
-
-            // Bridge: account -> linked legal entity (mdmCustomerId)
-            if (acc.mdmCustomerId && acc.mdmCustomerId !== scenario.mdmCustomerId) {
-                const linked = customerIndex.get(acc.mdmCustomerId);
-                if (linked) {
-                    accountChildren.push(toNode(linked.tradingName || linked.officialName || linked.mdmCustomerId, "CUSTOMER", linked));
-                } else {
-                    accountChildren.push(toNode(`Linked Legal Entity`, "CUSTOMER", {
-                        mdmCustomerId: acc.mdmCustomerId,
-                        officialName: null,
-                        tradingName: null
-                    }));
-                }
-            }
-
-            const name = (acc.businessRoles && acc.businessRoles.length)
-                ? `${safe(acc.mdmAccountId)}  (${acc.businessRoles.join(", ")})`
-                : safe(acc.mdmAccountId);
-
-            return toNode(name, "ACCOUNT", acc, accountChildren);
+    // Attach account roots under: if country customers exist, attach Sold-To roots to best match by mdmCustomerId; else attach to root
+    if (countryCustomers.length > 0) {
+        const countryByCustomerId = new Map(countryCustomers.map(c => [c.mdmCustomerId, c]));
+        const countryNodeById = new Map();
+        root.children.forEach(n => {
+            if (n.type === "COUNTRY_CUSTOMER") countryNodeById.set(n.data.mdmCustomerId, n);
         });
 
-        rootChildren.push(toNode("Accounts", "GROUP", { group: "ACCOUNTS" }, accountsChildren));
+        accountRoots.forEach(ar => {
+            const custId = ar.data.mdmCustomerId;
+            if (countryByCustomerId.has(custId) && countryNodeById.has(custId)) {
+                countryNodeById.get(custId).children.push(ar);
+            } else {
+                root.children.push(ar);
+            }
+        });
+    } else {
+        accountRoots.forEach(ar => root.children.push(ar));
     }
 
-    // Child legal entities group (for strategic hierarchy)
-    if (Array.isArray(scenario.children) && scenario.children.length) {
-        const legalChildren = scenario.children.map(le => toNode(le.tradingName || le.officialName || le.mdmCustomerId, "CUSTOMER", le));
-        rootChildren.push(toNode("Legal Entity Hierarchy", "GROUP", { group: "LEGAL_ENTITIES" }, legalChildren));
+    // Decorate node names for D3
+    function decorate(node) {
+        node.name = displayNameFor(node.type, node.data);
+        node.icon = iconFor(node.type, node.data);
+        node.keyLines = pickKeyLines(node.type, node.data);
+        node.headerColor = headerColorFor(node.type);
+        node.children = asArray(node.children).map(decorate);
+        return node;
     }
 
-    // Root customer node
-    return toNode(
-        scenario.tradingName || scenario.officialName || scenario.scenarioName,
-        "CUSTOMER",
-        scenario,
-        rootChildren
-    );
+    return decorate(root);
 }
 
-/* ---------- Rendering ---------- */
+// ---------- Render ----------
+function initViz() {
+    UI.viz.innerHTML = "";
 
-function fitToCanvas() {
-    const container = document.getElementById("viz-container");
-    const w = container.clientWidth;
-    svg.transition().duration(600).call(
-        zoom.transform,
-        d3.zoomIdentity.translate(Math.max(20, w / 2 - nodeW / 2), 40).scale(0.85)
-    );
+    const w = UI.viz.clientWidth || 1200;
+    const h = UI.viz.clientHeight || 800;
+
+    svg = d3.select("#viz-container")
+        .append("svg")
+        .attr("width", "100%")
+        .attr("height", "100%");
+
+    g = svg.append("g");
+
+    zoom = d3.zoom()
+        .scaleExtent([0.2, 2.5])
+        .on("zoom", (event) => {
+            g.attr("transform", event.transform);
+        });
+
+    svg.call(zoom);
 }
 
 function renderScenario(scenario) {
-    scenario = normalizeScenario(scenario);
-    currentScenario = scenario;
+    selectedScenario = scenario;
+    selectedNodeDatum = null;
+    UI.json.textContent = JSON.stringify(scenario, null, 2);
+
     g.selectAll("*").remove();
 
-    const rootData = mapScenarioToHierarchy(scenario);
-    currentRoot = d3.hierarchy(rootData);
+    const hierarchyData = buildHierarchy(scenario);
+    const root = d3.hierarchy(hierarchyData);
 
-    d3.tree().nodeSize([nodeW + 60, nodeH + 90])(currentRoot);
+    d3.tree().nodeSize([NODE_W + 70, NODE_H + 70])(root);
+
+    // Center initial view
+    const container = UI.viz;
+    const tx = (container.clientWidth / 2) - (NODE_W / 2);
+    const ty = 60;
+    svg.call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(0.75));
 
     // Links
     g.selectAll(".link")
-        .data(currentRoot.links())
+        .data(root.links())
         .enter()
         .append("path")
         .attr("class", "link")
         .attr("d", d3.linkVertical()
-            .x(d => d.x + nodeW / 2)
-            .y(d => d.y + nodeH / 2)
+            .x(d => d.x + NODE_W / 2)
+            .y(d => d.y + NODE_H / 2)
         );
 
     // Nodes
     const node = g.selectAll(".node")
-        .data(currentRoot.descendants())
+        .data(root.descendants())
         .enter()
         .append("g")
-        .attr("class", "node")
+        .attr("class", d => `node node-${d.data.type}`)
         .attr("transform", d => `translate(${d.x},${d.y})`)
-        .on("click", (e, d) => {
-            e.stopPropagation();
-            showDetails(d);
-            highlightSelection(d);
+        .on("click", (event, d) => {
+            event.stopPropagation();
+            selectedNodeDatum = d;
+            UI.json.textContent = JSON.stringify(d.data.data, null, 2);
+            highlightSelected(d);
         });
 
+    // Card
     node.append("rect")
-        .attr("width", nodeW)
-        .attr("height", nodeH)
-        .attr("rx", 10)
-        .style("fill", "var(--card-body)")
-        .style("stroke", "var(--dhl-red)")
-        .style("stroke-width", 1.8);
+        .attr("class", "card")
+        .attr("width", NODE_W)
+        .attr("height", NODE_H)
+        .attr("rx", 14);
 
+    // Header
     node.append("rect")
-        .attr("width", nodeW)
-        .attr("height", 34)
-        .attr("rx", 10)
-        .style("fill", d => headerColor(d.data.type))
-        .style("stroke", "var(--dhl-red)")
-        .style("stroke-width", 1.8);
+        .attr("class", "header")
+        .attr("width", NODE_W)
+        .attr("height", HEADER_H)
+        .attr("rx", 14)
+        .attr("fill", d => d.data.headerColor);
 
+    // Icon
     node.append("text")
+        .attr("class", "icon")
         .attr("x", 12)
-        .attr("y", 22)
-        .style("fill", d => d.data.type === "CUSTOMER" ? "#000" : "#FFF")
-        .style("font-weight", "700")
-        .style("font-size", "11px")
-        .text(d => {
-            const t = nodeTitle(d);
-            return t.length > 34 ? (t.substring(0, 34) + "…") : t;
-        });
+        .attr("y", 23)
+        .text(d => d.data.icon);
 
-    // Body lines (compact)
+    // Title
+    node.append("text")
+        .attr("class", "title")
+        .attr("x", 42)
+        .attr("y", 22)
+        .text(d => safeString(d.data.name).slice(0, 34));
+
+    // Key lines
     node.each(function (d) {
         const el = d3.select(this);
-        const data = d.data.data || {};
-        let y = 54;
+        const lines = asArray(d.data.keyLines);
 
-        const addLine = (k, v) => {
-            const vv = safe(v);
-            if (!vv) return;
-            if (y > nodeH - 12) return;
-
+        let y = HEADER_H + 22;
+        lines.forEach(([k, v]) => {
             el.append("text")
-                .attr("x", 12)
+                .attr("class", "kv k")
+                .attr("x", 14)
                 .attr("y", y)
-                .style("font-size", "9px")
-                .style("fill", "#222")
-                .style("font-weight", "700")
                 .text(`${k}:`);
 
             el.append("text")
-                .attr("x", 12 + (k.length + 1) * 6)
+                .attr("class", "kv v")
+                .attr("x", 120)
                 .attr("y", y)
-                .style("font-size", "9px")
-                .style("fill", "#444")
-                .text(vv.length > 32 ? vv.substring(0, 32) + "…" : vv);
+                .text(safeString(v).slice(0, 34));
 
-            y += 14;
-        };
-
-        if (d.data.type === "CUSTOMER") {
-            addLine("customerType", data.customerType);
-            addLine("customerLevel", data.customerLevel);
-            addLine("mdmCustomerId", data.mdmCustomerId);
-            addLine("globalGroupCode", data.globalGroupCode);
-            addLine("country", data.countryOfRegistration);
-        } else if (d.data.type === "ACCOUNT") {
-            addLine("mdmAccountId", data.mdmAccountId);
-            addLine("roles", (data.businessRoles || []).join(", "));
-            addLine("status", data.accountStatus);
-            addLine("paymentTerms", data.paymentTerms);
-            addLine("currency", data.currency);
-            addLine("salesManager", data.salesManager);
-        } else if (d.data.type === "ADDRESS") {
-            addLine("type", data.addressType);
-            addLine("street", `${safe(data.street)} ${safe(data.houseNumber)}`.trim());
-            addLine("city", data.city);
-            addLine("postalcode", data.postalcode);
-            addLine("country", data.country);
-            addLine("timezone", data.timezone);
-        } else if (d.data.type === "CONTACT") {
-            addLine("jobTitle", data.jobTitle);
-            addLine("contactType", data.contactType);
-        } else if (d.data.type === "CONTRACT") {
-            addLine("contractId", data.contractId);
-            addLine("startDate", data.startDate);
-        } else if (d.data.type === "REFERENCE_ID") {
-            addLine("refType", data.refType);
-            addLine("issuedBy", data.issuedByAuthority);
-        } else if (d.data.type === "GROUP") {
-            addLine("group", data.group);
-            addLine("count", (d.children || []).length);
-        }
+            y += 18;
+        });
     });
 
-    // Default view
-    fitToCanvas();
-
-    // JSON (full scenario)
-    document.getElementById("json-display").textContent = JSON.stringify(scenario, null, 2);
-
-    // Clear selection details
-    clearDetails();
-    clearHighlights();
-}
-
-function clearHighlights() {
-    g.selectAll(".node").classed("is-highlight", false).classed("is-dim", false).classed("is-selected", false);
-    g.selectAll(".link").classed("is-dim", false);
-}
-
-function highlightSelection(d) {
-    // Dim everything, highlight path to root + selected subtree
-    g.selectAll(".node").classed("is-dim", true).classed("is-selected", false);
-    g.selectAll(".link").classed("is-dim", true);
-
-    const keep = new Set();
-
-    // Path to root
-    let p = d;
-    while (p) { keep.add(p); p = p.parent; }
-
-    // Subtree
-    d.each(x => keep.add(x));
-
-    g.selectAll(".node").each(function (n) {
-        if (keep.has(n)) d3.select(this).classed("is-dim", false).classed("is-highlight", true);
+    // Make background click clear selection
+    svg.on("click", () => {
+        selectedNodeDatum = null;
+        UI.json.textContent = JSON.stringify(selectedScenario, null, 2);
+        clearSelection();
     });
-
-    d3.select(d3.event?.currentTarget);
-
-    // Selected node
-    g.selectAll(".node").filter(n => n === d).classed("is-selected", true);
 }
 
-function clearDetails() {
-    document.getElementById("node-title").textContent = "Select a node";
-    document.getElementById("node-meta").textContent = "";
-    document.getElementById("node-attrs").textContent = "";
+function highlightSelected(d) {
+    g.selectAll(".node").classed("selected", false);
+    d3.select(d3.event?.currentTarget); // no-op (compat)
+    g.selectAll(".node").filter(n => n === d).classed("selected", true);
 }
 
-function showDetails(d) {
-    const title = `${d.data.type}: ${nodeTitle(d)}`;
-    document.getElementById("node-title").textContent = title;
-
-    const data = d.data.data || {};
-    const meta = {
-        depth: d.depth,
-        childrenCount: (d.children || []).length,
-        nodeType: d.data.type
-    };
-    document.getElementById("node-meta").textContent = JSON.stringify(meta, null, 2);
-    document.getElementById("node-attrs").textContent = JSON.stringify(data, null, 2);
+function clearSelection() {
+    g.selectAll(".node").classed("selected", false);
 }
 
-/* ---------- UI Wiring ---------- */
+// ---------- Search ----------
+function nodeTextIndex(d) {
+    const data = d.data?.data || {};
+    const type = d.data?.type || "";
+    const name = safeString(d.data?.name);
 
-function populateScenarioSelector(data) {
-    const sel = document.getElementById("scenarioSelector");
-    sel.innerHTML = `<option value="">-- Choose Scenario --</option>`;
-    data.forEach((raw, i) => {
-        const s = normalizeScenario(raw) || raw;
+    const fields = [
+        name,
+        type,
+        data.mdmCustomerId,
+        data.mdmAccountId,
+        data.contractId,
+        data.billingProfileId,
+        data.platformId,
+        data.addressId,
+        data.contactPersonId,
+        data.officialName,
+        data.tradingName,
+        data.contractName,
+    ].map(safeString).filter(Boolean);
+
+    return fields.join(" ").toLowerCase();
+}
+
+function applySearch(term) {
+    const t = safeString(term).trim().toLowerCase();
+    if (!t) {
+        g.selectAll(".node").classed("dim", false).classed("match", false);
+        return;
+    }
+
+    g.selectAll(".node").each(function (d) {
+        const hay = nodeTextIndex(d);
+        const isMatch = hay.includes(t);
+        d3.select(this).classed("match", isMatch).classed("dim", !isMatch);
+    });
+}
+
+// ---------- Boot ----------
+async function loadData() {
+    const res = await fetch(DATA_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Failed to load ${DATA_URL}: ${res.status}`);
+    const json = await res.json();
+    return asArray(json);
+}
+
+function populateDropdown(data) {
+    UI.selector.innerHTML = `<option value="">-- Choose Scenario --</option>`;
+    data.forEach((s, idx) => {
         const opt = document.createElement("option");
-        opt.value = i;
-        const name = s.scenarioName || s.tradingName || s.officialName || s.mdmCustomerId || `Scenario ${i + 1}`;
-        const type = s.customerType || (raw && raw.customer && raw.customer.customerType) || "";
-        opt.textContent = `${name}  •  ${type}`;
-        sel.appendChild(opt);
+        opt.value = String(idx);
+        opt.textContent = s.scenarioName || `Scenario ${idx + 1}`;
+        UI.selector.appendChild(opt);
     });
 }
 
-function applySearch(query) {
-    if (!currentRoot) return;
-    const q = (query || "").trim().toLowerCase();
-    if (!q) { clearHighlights(); return; }
-
-    const matches = [];
-    currentRoot.descendants().forEach(d => {
-        const data = d.data.data || {};
-        const hay = [
-            nodeTitle(d),
-            data.mdmCustomerId, data.parentMdmCustomerId,
-            data.mdmAccountId, data.parentAccountId,
-            data.officialName, data.tradingName,
-            data.taxId, data.globalGroupCode,
-            (data.businessRoles || []).join(", "),
-            data.refValue
-        ].map(safe).join(" ").toLowerCase();
-        if (hay.includes(q)) matches.push(d);
+function wireUI() {
+    UI.selector.addEventListener("change", (e) => {
+        const idx = e.target.value;
+        if (idx === "") return;
+        const s = scenarios[Number(idx)];
+        if (s) renderScenario(s);
     });
 
-    // Highlight matches; dim others
-    g.selectAll(".node").classed("is-dim", true).classed("is-highlight", false).classed("is-selected", false);
-    g.selectAll(".link").classed("is-dim", true);
-
-    const keep = new Set();
-    matches.forEach(m => {
-        keep.add(m);
-        // also keep path to root so user can understand context
-        let p = m;
-        while (p) { keep.add(p); p = p.parent; }
+    UI.search.addEventListener("input", (e) => {
+        applySearch(e.target.value);
     });
 
-    g.selectAll(".node").each(function (n) {
-        if (keep.has(n)) d3.select(this).classed("is-dim", false);
+    UI.reset.addEventListener("click", () => {
+        const container = UI.viz;
+        const tx = (container.clientWidth / 2) - (NODE_W / 2);
+        const ty = 60;
+        svg.transition()
+            .duration(500)
+            .call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(0.75));
     });
-
-    g.selectAll(".node").each(function (n) {
-        if (matches.includes(n)) d3.select(this).classed("is-highlight", true);
-    });
-
-    // If exactly one match, show details
-    if (matches.length === 1) showDetails(matches[0]);
 }
 
-/* ---------- Load Data ---------- */
+(async function main() {
+    initViz();
+    wireUI();
 
-fetch("customerData.json")
-    .then(res => res.json())
-    .then(data => {
-        // Accept either an array, or an object with a 'scenarios' array, or a map-of-scenarios.
-        let arr = data;
-        if (data && Array.isArray(data.scenarios)) arr = data.scenarios;
-        if (arr && !Array.isArray(arr) && typeof arr === "object") arr = Object.values(arr);
-        scenarios = Array.isArray(arr) ? arr : [];
+    try {
+        scenarios = await loadData();
+        populateDropdown(scenarios);
 
-        populateScenarioSelector(scenarios);
-
-        // Give an explicit hint if dataset is incomplete (common cause of “only 2 scenarios in dropdown”).
-        if (scenarios.length && scenarios.length !== 7) {
-            document.getElementById("json-display").textContent =
-                `WARNING: Loaded ${scenarios.length} scenario(s) from customerData.json. Expected 7.\n\n` +
-                JSON.stringify(data, null, 2);
+        // Auto-select first scenario (optional)
+        if (scenarios.length > 0) {
+            UI.selector.value = "0";
+            renderScenario(scenarios[0]);
         }
-    })
-    .catch(err => {
-        console.error("Failed to load customerData.json", err);
-        document.getElementById("json-display").textContent =
-            "ERROR: Could not load customerData.json. Put your 7-scenario JSON array in the same folder and name it customerData.json.";
-    });
-
-document.getElementById("scenarioSelector").addEventListener("change", (e) => {
-    const i = e.target.value;
-    if (i === "") return;
-    const scenario = scenarios[Number(i)];
-    if (scenario) renderScenario(scenario);
-});
-
-document.getElementById("resetZoom").addEventListener("click", () => fitToCanvas());
-
-document.getElementById("nodeSearch").addEventListener("input", (e) => applySearch(e.target.value));
-
-svg.on("click", () => {
-    clearDetails();
-    clearHighlights();
-});
-
-// Refit on resize
-window.addEventListener("resize", () => {
-    if (currentScenario) fitToCanvas();
-});
+    } catch (err) {
+        UI.json.textContent = `ERROR: ${err.message}`;
+        console.error(err);
+    }
+})();

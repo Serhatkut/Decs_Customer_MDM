@@ -1,0 +1,142 @@
+{
+    "version": "1.0.0",
+    "lastUpdated": "2026-02-13",
+    "domains": {
+        "customerType": [
+            "STRATEGIC_CUSTOMERS",
+            "RELATIONSHIP_CUSTOMERS",
+            "RESELLERS",
+            "RETAIL_CASH_CUSTOMERS",
+            "PARTNERS",
+            "MULTICHANNEL_DIGITAL_CUSTOMERS",
+            "INTERNAL_CUSTOMERS"
+        ],
+        "customerLevel": [
+            "STRATEGIC",
+            "KEY_ACCOUNT",
+            "SME",
+            "RETAIL",
+            "INTERNAL"
+        ],
+        "salesChannel": [
+            "MAJOR_ACCOUNT",
+            "KEY_ACCOUNT",
+            "FIELD_SALES",
+            "TELESALES",
+            "MULTICHANNEL",
+            "SERVICE_POINTS_RETAIL",
+            "PARTNER_MANAGERS",
+            "INTERNAL"
+        ],
+        "industrySector": [
+            "RETAIL_FASHION",
+            "RETAIL_GENERAL",
+            "ECOMMERCE",
+            "MARKETPLACE",
+            "AUTOMOTIVE",
+            "ELECTRONICS",
+            "PHARMA_HEALTH",
+            "FOOD_BEVERAGE",
+            "FMCG",
+            "INDUSTRIAL_MANUFACTURING",
+            "LOGISTICS_PROVIDER",
+            "TECHNOLOGY",
+            "FINANCIAL_SERVICES",
+            "EDUCATION",
+            "GOVERNMENT",
+            "MEDIA",
+            "CHEMICAL",
+            "CONSTRUCTION",
+            "ENERGY",
+            "AEROSPACE",
+            "JEWELRY_LUXURY",
+            "SPORTS_OUTDOOR",
+            "COSMETICS_BEAUTY",
+            "HOME_FURNITURE",
+            "TOYS_GAMES",
+            "BOOKS_PUBLISHING",
+            "AGRICULTURE",
+            "NON_PROFIT",
+            "DHL_INTERNAL",
+            "OTHER"
+        ],
+        "platformType": [
+            "MARKETPLACE",
+            "PLUGIN",
+            "API",
+            "EDI",
+            "PORTAL",
+            "INTEGRATOR",
+            "INTERNAL_SYSTEM"
+        ],
+        "businessRoles": [
+            "SOLDTO",
+            "PAYER",
+            "PICKUP",
+            "SHIPPER",
+            "BILLTO",
+            "RETURN",
+            "THIRD_PARTY"
+        ],
+        "addressType": [
+            "BUSINESS",
+            "RESIDENTIAL",
+            "PICKUP",
+            "DELIVERY",
+            "BILLING",
+            "RETURN",
+            "REGISTERED_OFFICE"
+        ],
+        "referenceIdType": [
+            "CUSTOMER_NUMBER",
+            "ERP_ID",
+            "CRM_ID",
+            "PLATFORM_SHIPPER_ID",
+            "MERCHANT_ID",
+            "SELLER_ID",
+            "EXTERNAL_ID",
+            "TAX_REFERENCE",
+            "DHL_INTERNAL_ID"
+        ]
+    },
+    "rules": {
+        "salesChannelByCustomerType": {
+            "STRATEGIC_CUSTOMERS": [
+                "MAJOR_ACCOUNT",
+                "KEY_ACCOUNT"
+            ],
+            "RELATIONSHIP_CUSTOMERS": [
+                "FIELD_SALES",
+                "TELESALES"
+            ],
+            "RESELLERS": [
+                "PARTNER_MANAGERS"
+            ],
+            "RETAIL_CASH_CUSTOMERS": [
+                "SERVICE_POINTS_RETAIL"
+            ],
+            "PARTNERS": [
+                "PARTNER_MANAGERS"
+            ],
+            "MULTICHANNEL_DIGITAL_CUSTOMERS": [
+                "MULTICHANNEL"
+            ],
+            "INTERNAL_CUSTOMERS": [
+                "INTERNAL"
+            ]
+        },
+        "mandatoryForAccount": [
+            "mdmAccountId",
+            "mdmCustomerId",
+            "businessRoles",
+            "accountStatus",
+            "isNaturalPerson",
+            "currency",
+            "paymentTerms",
+            "salesChannel",
+            "salesManager",
+            "segmentGroup",
+            "segmentGroup2"
+        ]
+    }
+}

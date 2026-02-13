@@ -3,59 +3,94 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>DHL eCommerce – Customer Master Data Scenarios</title>
-    <link rel="stylesheet" href="updated_style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DHL eCommerce · Customer Master Data Viewer</title>
+
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 
 <body>
-    <aside id="sidebar">
-        <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" class="logo" alt="DHL" />
-        <h2>Customer Master Data – Scenarios</h2>
-
-        <div class="small-note">
-            Load your dataset as <b>customerData.json</b> (7-scenario array). Select a scenario, then click nodes to
-            inspect attributes.
+    <!-- Top bar -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" class="dhl-logo"
+                alt="DHL" />
+            <div class="topbar-title">
+                <div class="title">Customer Master Data Viewer</div>
+                <div class="subtitle">DHL eCommerce · MDM Scenarios & Relationships</div>
+            </div>
         </div>
 
-        <input type="text" id="nodeSearch" placeholder="🔍 Search (IDs, names, taxId, roles, refValue)..." />
-        <select id="scenarioSelector">
-            <option value="">-- Choose Scenario --</option>
-        </select>
-
-        <div class="control-row">
-            <button id="resetZoom" class="secondary">Reset View</button>
+        <div class="topbar-right">
+            <button id="resetZoom" class="btn btn-secondary" title="Reset zoom & position">Reset</button>
         </div>
+    </header>
 
-        <div class="panel">
-            <h3>Selected Node</h3>
-            <div class="split">
-                <pre id="node-title">Select a node</pre>
-                <pre id="node-meta"></pre>
-                <pre id="node-attrs"></pre>
+    <!-- Main layout -->
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="panel">
+                <div class="panel-title">Scenario</div>
+
+                <label class="field-label" for="scenarioSelector">Select scenario</label>
+                <select id="scenarioSelector" class="select">
+                    <option value="">-- Choose Scenario --</option>
+                </select>
+
+                <label class="field-label" for="nodeSearch">Search (ID / Name)</label>
+                <input id="nodeSearch" class="input" type="text"
+                    placeholder="e.g., CUST-..., ACC-..., Inditex, Vinted..." />
+
+                <div class="hint">
+                    Tip: click a node to show its full JSON on the right.
+                </div>
             </div>
 
-            <h3>Scenario JSON (RAW)</h3>
-            <pre id="json-display"></pre>
-        </div>
-    </aside>
+            <div class="panel">
+                <div class="panel-title">Legend</div>
 
-    <main id="viewport">
-        <div class="legend">
-            <div class="legend-item"><span class="dot" style="background:#FFCC00"></span> CUSTOMER (Legal Entity)</div>
-            <div class="legend-item"><span class="dot" style="background:#D40511"></span> ACCOUNT (Commercial)</div>
-            <div class="legend-item"><span class="dot" style="background:#003399"></span> FINANCIAL (Contract / RefID)
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="legend-swatch sw-global"></span>
+                        Global / Customer
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-swatch sw-account"></span>
+                        Account
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-swatch sw-contract"></span>
+                        Contract / Billing
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-swatch sw-contact"></span>
+                        Contact / Channel
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-swatch sw-address"></span>
+                        Address
+                    </div>
+                </div>
             </div>
-            <div class="legend-item"><span class="dot" style="background:#007D8A"></span> PERSONNEL (Contacts)</div>
-            <div class="legend-item"><span class="dot" style="background:#666666"></span> LOCATION (Addresses)</div>
-            <div class="legend-item"><span class="dot" style="background:#111111"></span> GROUP</div>
-        </div>
 
-        <div id="viz-container"></div>
-    </main>
+            <div class="panel json-panel">
+                <div class="panel-title">Selected Object</div>
+                <pre id="json-display" class="json-display">{}</pre>
+            </div>
+        </aside>
 
-    <script src="updated_script.js"></script>
+        <!-- Canvas -->
+        <main class="canvas">
+            <div id="viz-container" class="viz-container"></div>
+            <div class="footer-note">
+                Data source: <code>/data/customerData.json</code>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 
 </html>

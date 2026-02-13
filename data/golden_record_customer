@@ -1,0 +1,268 @@
+{
+  "customer": {
+    "customerType": "Strategic Customers",
+    "customerLevel": "STRATEGIC",
+
+    "mdmCustomerId": "CUST-00001",
+    "parentMdmCustomerId": null,
+
+    "officialName": "Global Fashion Group Ltd.",
+    "tradingName": "GFG",
+    "globalGroupCode": "GFG",
+
+    "industrySector": "RETAIL_FASHION",
+    "taxId": "GB123456789",
+    "countryOfRegistration": "GB",
+
+    "addresses": [
+      {
+        "addressId": "ADDR-CUST-REG-001",
+        "addressType": "BUSINESS",
+        "isGeoManual": false,
+        "street": "Regent Street",
+        "houseNumber": "100",
+        "city": "London",
+        "postalcode": "W1B 5SR",
+        "country": "GB",
+        "latitude": 51.5142,
+        "longitude": -0.1419,
+        "timezone": "Europe/London"
+      }
+    ],
+
+    "contactPersons": [
+      {
+        "contactPersonId": "CONT-CUST-001",
+        "firstName": "Helen",
+        "lastName": "Price",
+        "jobTitle": "Legal Entity Representative",
+        "contactType": "BUSINESS",
+        "communicationChannels": [
+          { "type": "EMAIL", "value": "legal@gfg.example" },
+          { "type": "PHONE", "value": "+44-20-0000-0001" }
+        ]
+      }
+    ]
+  },
+
+  "accounts": [
+    {
+      "mdmAccountId": "ACC-10001",
+      "parentAccountId": null,
+      "mdmCustomerId": "CUST-00001",
+
+      "businessRoles": ["SOLDTO", "PAYER"],
+      "accountStatus": "ACTIVE",
+      "isNaturalPerson": false,
+
+      "currency": "EUR",
+      "paymentTerms": "NET_30",
+      "creditLimit": 500000,
+
+      "salesChannel": "KEY_ACCOUNT",
+      "salesManager": "GLOBAL_KAM",
+
+      "segmentGroup": "ENTERPRISE",
+      "segmentGroup2": "GLOBAL",
+
+      "platformObject": {
+        "platformId": "PLT-EDI-001",
+        "name": "SAP_Integration",
+        "type": "EDI",
+        "provider": "SAP"
+      },
+
+      "addresses": [
+        {
+          "addressId": "ADDR-ACC-HQ-001",
+          "addressType": "BUSINESS",
+          "isGeoManual": false,
+          "street": "Main Street",
+          "houseNumber": "10",
+          "city": "London",
+          "postalcode": "EC1A 1AA",
+          "country": "GB",
+          "latitude": 51.5074,
+          "longitude": -0.1278,
+          "timezone": "Europe/London"
+        }
+      ],
+
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-ACC-001",
+          "firstName": "Sarah",
+          "lastName": "Brown",
+          "jobTitle": "Head of Logistics",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            { "type": "EMAIL", "value": "sarah.brown@gfg.example" },
+            { "type": "PHONE", "value": "+44-1234-567-890" }
+          ]
+        }
+      ],
+
+      "contracts": [
+        {
+          "contractId": "CON-9001",
+          "contractName": "Global Logistics Agreement",
+          "startDate": "2025-01-01",
+
+          "contractDetail": {
+            "contractType": "MASTER",
+            "services": ["PARCEL", "RETURNS"],
+            "slaLevel": "ENTERPRISE",
+            "pricingModel": "CUSTOM",
+            "billingFrequency": "MONTHLY",
+            "billingModel": "CONSOLIDATED"
+          },
+
+          "addresses": [
+            {
+              "addressId": "ADDR-CONTRACT-NOTICE-001",
+              "addressType": "BUSINESS",
+              "isGeoManual": false,
+              "street": "Contract Street",
+              "houseNumber": "1",
+              "city": "London",
+              "postalcode": "EC2A 2BB",
+              "country": "GB",
+              "latitude": 51.5200,
+              "longitude": -0.0800,
+              "timezone": "Europe/London"
+            }
+          ],
+
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-CONTRACT-001",
+              "firstName": "Tom",
+              "lastName": "Wilson",
+              "jobTitle": "Contract Owner",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "contracts@gfg.example" }
+              ]
+            }
+          ],
+
+          "billingProfile": {
+            "billingProfileId": "BPROF-001",
+
+            "billingAccountNumber": "BILL-1001",
+            "billingCurrency": "EUR",
+            "billingFrequency": "MONTHLY",
+            "invoiceDelivery": "EDI",
+
+            "paymentMethod": {
+              "type": "BANK_TRANSFER",
+              "bankName": "HSBC",
+              "iban": "GB00BANK123456789",
+              "bic": "HSBCGB2L"
+            },
+
+            "addresses": [
+              {
+                "addressId": "ADDR-BILLING-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Finance Avenue",
+                "houseNumber": "22",
+                "city": "London",
+                "postalcode": "E14 5HQ",
+                "country": "GB",
+                "latitude": 51.5055,
+                "longitude": -0.0235,
+                "timezone": "Europe/London"
+              }
+            ],
+
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-BILLING-001",
+                "firstName": "Emily",
+                "lastName": "Clark",
+                "jobTitle": "Accounts Payable",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  { "type": "EMAIL", "value": "ap@gfg.example" }
+                ]
+              }
+            ],
+
+            "referenceIds": [
+              {
+                "refType": "EXTERNAL_ID",
+                "refValue": "ERP-BILL-7788",
+                "issuedByAuthority": "ERP_SYSTEM"
+              }
+            ]
+          }
+        }
+      ],
+
+      "referenceIds": [
+        {
+          "refType": "CUSTOMER_NUMBER",
+          "refValue": "GFG-ERP-8899",
+          "issuedByAuthority": "ERP_SYSTEM"
+        }
+      ]
+    },
+
+    {
+      "mdmAccountId": "ACC-10002",
+      "parentAccountId": "ACC-10001",
+      "mdmCustomerId": "CUST-00001",
+
+      "businessRoles": ["PICKUP", "SHIPPER"],
+      "accountStatus": "ACTIVE",
+      "isNaturalPerson": false,
+
+      "currency": "EUR",
+      "paymentTerms": "NET_30",
+      "creditLimit": 0,
+
+      "salesChannel": "KEY_ACCOUNT",
+      "salesManager": "GLOBAL_KAM",
+
+      "segmentGroup": "ENTERPRISE",
+      "segmentGroup2": "WAREHOUSE",
+
+      "platformObject": {
+        "platformId": "PLT-AMAZON-001",
+        "name": "Amazon",
+        "type": "MARKETPLACE",
+        "provider": "Amazon"
+      },
+
+      "addresses": [
+        {
+          "addressId": "ADDR-PICKUP-001",
+          "addressType": "BUSINESS",
+          "isGeoManual": true,
+          "street": "Warehouse Road",
+          "houseNumber": "55",
+          "city": "Manchester",
+          "postalcode": "M1 1AE",
+          "country": "GB",
+          "latitude": 53.4808,
+          "longitude": -2.2426,
+          "timezone": "Europe/London"
+        }
+      ],
+
+      "contactPersons": [],
+
+      "contracts": [],
+
+      "referenceIds": [
+        {
+          "refType": "PLATFORM_SHIPPER_ID",
+          "refValue": "AMZ-SELLER-829194",
+          "issuedByAuthority": "AMAZON"
+        }
+      ]
+    }
+  ]
+}

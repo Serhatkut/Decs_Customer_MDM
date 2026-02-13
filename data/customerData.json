@@ -1,0 +1,1521 @@
+[
+  {
+    "scenarioName": "Inditex Group",
+    "customer": {
+      "customerType": "STRATEGIC_CUSTOMERS",
+      "customerLevel": "STRATEGIC",
+      "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Industria de Diseño Textil, S.A. (Inditex Global)",
+      "tradingName": "Inditex",
+      "globalGroupCode": "INDITEX",
+      "industrySector": "RETAIL_FASHION",
+      "taxId": "ES-A48001826",
+      "countryOfRegistration": "ES",
+      "addresses": [
+        {
+          "addressId": "ADDR-INDITEX-GLOBAL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Avenida de la Diputación",
+          "houseNumber": "1",
+          "city": "Arteixo",
+          "postalcode": "15142",
+          "country": "ES",
+          "latitude": 43.3041,
+          "longitude": -8.5077,
+          "timezone": "Europe/Madrid"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-INDITEX-GLOBAL-001",
+          "firstName": "Ana",
+          "lastName": "García",
+          "jobTitle": "Global Logistics Governance Lead",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "global.logistics@inditex.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+34-900-000-001"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-INDITEX-ES-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 5000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "GLOBAL_STRATEGIC",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-EDI-001",
+          "name": "EDI_INTEGRATION",
+          "type": "EDI",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-ES-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Avenida de la Diputación",
+            "houseNumber": "1",
+            "city": "Arteixo",
+            "postalcode": "15142",
+            "country": "ES",
+            "latitude": 43.3041,
+            "longitude": -8.5077,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-ES-001",
+            "firstName": "Luis",
+            "lastName": "Pérez",
+            "jobTitle": "Spain Logistics Manager",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "spain.logistics@inditex.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-INDITEX-ES-001",
+            "contractName": "DHL Spain – Master Logistics Contract",
+            "startDate": "2025-01-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
+            },
+            "addresses": [
+              {
+                "addressId": "ADDR-INDITEX-CONTRACT-NOTICE-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Calle de Negocios",
+                "houseNumber": "10",
+                "city": "Madrid",
+                "postalcode": "28001",
+                "country": "ES",
+                "latitude": 40.4168,
+                "longitude": -3.7038,
+                "timezone": "Europe/Madrid"
+              }
+            ],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-INDITEX-CONTRACT-001",
+                "firstName": "María",
+                "lastName": "Santos",
+                "jobTitle": "Contract Owner (Inditex)",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts@inditex.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-INDITEX-ES-001",
+              "billingAccountNumber": "BILL-INDITEX-ES-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EDI",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Banco Santander",
+                "iban": "ES00BANK0000000000000001",
+                "bic": "BSCHESMM"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-INDITEX-BILLING-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Calle Finanzas",
+                  "houseNumber": "5",
+                  "city": "Madrid",
+                  "postalcode": "28046",
+                  "country": "ES",
+                  "latitude": 40.4515,
+                  "longitude": -3.6920,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-INDITEX-AP-001",
+                  "firstName": "Sofía",
+                  "lastName": "Ruiz",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@inditex.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "SAP-BILL-INDITEX-ES-1001",
+                  "issuedByAuthority": "INDITEX_SAP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "INDITEX-GLOBAL-CUST-001",
+            "issuedByAuthority": "DHL_ECOMMERCE"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARA-ES-SOLDTO-001",
+        "parentAccountId": "ACC-INDITEX-ES-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "businessRoles": [
+          "SOLDTO"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 2000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "BRAND",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-PORTAL-001",
+          "name": "ENTERPRISE_PORTAL",
+          "type": "PORTAL",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ZARA-ES-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Calle de la Moda",
+            "houseNumber": "10",
+            "city": "Madrid",
+            "postalcode": "28001",
+            "country": "ES",
+            "latitude": 40.4168,
+            "longitude": -3.7038,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ZARA-ES-OPS-001",
+            "firstName": "Carlos",
+            "lastName": "López",
+            "jobTitle": "Distribution Lead",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "distribution@zara.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "ERP_ID",
+            "refValue": "INDITEX-SAP-ZARA-ES-01",
+            "issuedByAuthority": "INDITEX_SAP"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARA-MAD-DC-PICKUP-001",
+        "parentAccountId": "ACC-ZARA-ES-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "FULFILLMENT_NODE",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-WMS-001",
+          "name": "WMS_CONNECTOR",
+          "type": "API",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ZARA-MAD-DC-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Polígono Logístico",
+            "houseNumber": "25",
+            "city": "Madrid",
+            "postalcode": "28850",
+            "country": "ES",
+            "latitude": 40.4321,
+            "longitude": -3.5610,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "ZARA-MAD-DC-001",
+            "issuedByAuthority": "INDITEX_WMS"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": [
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "STRATEGIC",
+        "mdmCustomerId": "CUST-INDITEX-ES-001",
+        "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "officialName": "Inditex España, S.L.",
+        "tradingName": "Inditex España",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "ES-B12345678",
+        "countryOfRegistration": "ES",
+        "addresses": [],
+        "contactPersons": []
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "KEY_ACCOUNT",
+        "mdmCustomerId": "CUST-ZARA-ES-001",
+        "parentMdmCustomerId": "CUST-INDITEX-ES-001",
+        "officialName": "Zara España, S.L.",
+        "tradingName": "Zara España",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "ES-B87654321",
+        "countryOfRegistration": "ES",
+        "addresses": [],
+        "contactPersons": []
+      }
+    ]
+  },
+  {
+    "scenarioName": "Müller Auto Parts",
+    "customer": {
+      "customerType": "RELATIONSHIP_CUSTOMERS",
+      "customerLevel": "KEY_ACCOUNT",
+      "mdmCustomerId": "CUST-MULLER-DE-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Müller Auto Parts GmbH",
+      "tradingName": "Müller Auto Parts",
+      "globalGroupCode": null,
+      "industrySector": "AUTOMOTIVE",
+      "taxId": "DE123456789",
+      "countryOfRegistration": "DE",
+      "addresses": [
+        {
+          "addressId": "ADDR-MULLER-HQ-001",
+          "addressType": "BUSINESS",
+          "isGeoManual": false,
+          "street": "Industriestraße",
+          "houseNumber": "12",
+          "city": "Stuttgart",
+          "postalcode": "70173",
+          "country": "DE",
+          "latitude": 48.7758,
+          "longitude": 9.1829,
+          "timezone": "Europe/Berlin"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-MULLER-LEGAL-001",
+          "firstName": "Klara",
+          "lastName": "Müller",
+          "jobTitle": "Head of Logistics",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "klara.mueller@muller.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+49-711-000-010"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-MULLER-HQ-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-MULLER-DE-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_14",
+        "creditLimit": 250000,
+        "salesChannel": "FIELD_SALES",
+        "salesManager": "FIELD_SALES_EXEC_DE",
+        "segmentGroup": "B2B_STANDARD",
+        "segmentGroup2": "AUTOMOTIVE",
+        "platformObject": {
+          "platformId": "PLT-DHL-PORTAL-DE-001",
+          "name": "ACCOUNT_PORTAL",
+          "type": "PORTAL",
+          "provider": "DHL"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-MULLER-HQ-OPS-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Industriestraße",
+            "houseNumber": "12",
+            "city": "Stuttgart",
+            "postalcode": "70173",
+            "country": "DE",
+            "latitude": 48.7758,
+            "longitude": 9.1829,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-MULLER-OPS-001",
+            "firstName": "Jonas",
+            "lastName": "Weber",
+            "jobTitle": "Warehouse Operations Coordinator",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "ops@muller.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-MULLER-001",
+            "contractName": "Müller Auto Parts – Standard B2B Contract",
+            "startDate": "2025-03-01",
+            "contractDetail": {
+              "contractType": "COUNTRY",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "INVOICE"
+            },
+            "addresses": [],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-MULLER-CONTRACT-001",
+                "firstName": "Nina",
+                "lastName": "Schmidt",
+                "jobTitle": "Contract Owner",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts@muller.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-MULLER-001",
+              "billingAccountNumber": "BILL-MULLER-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Deutsche Bank",
+                "iban": "DE00BANK0000000000000002",
+                "bic": "DEUTDEFF"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-MULLER-BILLING-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Rechnungsweg",
+                  "houseNumber": "2",
+                  "city": "Stuttgart",
+                  "postalcode": "70174",
+                  "country": "DE",
+                  "latitude": 48.7765,
+                  "longitude": 9.1838,
+                  "timezone": "Europe/Berlin"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-MULLER-AP-001",
+                  "firstName": "Lea",
+                  "lastName": "Klein",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@muller.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "MULLER-ERP-BILL-1001",
+                  "issuedByAuthority": "MULLER_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "MULLER-DE-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_DE"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-MULLER-WH-HAMBURG-PICKUP-001",
+        "parentAccountId": "ACC-MULLER-HQ-SOLDTO-001",
+        "mdmCustomerId": "CUST-MULLER-DE-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_14",
+        "creditLimit": 0,
+        "salesChannel": "FIELD_SALES",
+        "salesManager": "FIELD_SALES_EXEC_DE",
+        "segmentGroup": "B2B_STANDARD",
+        "segmentGroup2": "WAREHOUSE",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-MULLER-HH-WH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Hafenstraße",
+            "houseNumber": "5",
+            "city": "Hamburg",
+            "postalcode": "20457",
+            "country": "DE",
+            "latitude": 53.5511,
+            "longitude": 9.9937,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": []
+      },
+      {
+        "mdmAccountId": "ACC-MULLER-WH-MUNICH-PICKUP-001",
+        "parentAccountId": "ACC-MULLER-HQ-SOLDTO-001",
+        "mdmCustomerId": "CUST-MULLER-DE-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_14",
+        "creditLimit": 0,
+        "salesChannel": "FIELD_SALES",
+        "salesManager": "FIELD_SALES_EXEC_DE",
+        "segmentGroup": "B2B_STANDARD",
+        "segmentGroup2": "WAREHOUSE",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-MULLER-MUC-WH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Gewerbepark",
+            "houseNumber": "21",
+            "city": "Munich",
+            "postalcode": "80331",
+            "country": "DE",
+            "latitude": 48.1351,
+            "longitude": 11.5820,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": []
+      }
+    ],
+    "relatedCustomers": []
+  },
+  {
+    "scenarioName": "SendCloud B.V",
+    "customer": {
+      "customerType": "RESELLERS",
+      "customerLevel": "SME",
+      "mdmCustomerId": "CUST-SENDCLOUD-NL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "SendCloud B.V.",
+      "tradingName": "SendCloud",
+      "globalGroupCode": null,
+      "industrySector": "TECHNOLOGY",
+      "taxId": "NL123456789B01",
+      "countryOfRegistration": "NL",
+      "addresses": [
+        {
+          "addressId": "ADDR-SENDCLOUD-NL-001",
+          "addressType": "BUSINESS",
+          "isGeoManual": false,
+          "street": "Techlaan",
+          "houseNumber": "3",
+          "city": "Eindhoven",
+          "postalcode": "5611",
+          "country": "NL",
+          "latitude": 51.4416,
+          "longitude": 5.4697,
+          "timezone": "Europe/Amsterdam"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-SENDCLOUD-001",
+          "firstName": "Sven",
+          "lastName": "Jansen",
+          "jobTitle": "Carrier Partnerships Manager",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "partnerships@sendcloud.example"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-SENDCLOUD-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-SENDCLOUD-NL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 100000,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_NL",
+        "segmentGroup": "RESELLER",
+        "segmentGroup2": "AGGREGATOR",
+        "platformObject": {
+          "platformId": "PLT-SENDCLOUD-API-001",
+          "name": "SENDCLOUD_API",
+          "type": "API",
+          "provider": "SendCloud"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-SENDCLOUD-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Techlaan",
+            "houseNumber": "3",
+            "city": "Eindhoven",
+            "postalcode": "5611",
+            "country": "NL",
+            "latitude": 51.4416,
+            "longitude": 5.4697,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [
+          {
+            "contractId": "CON-SENDCLOUD-001",
+            "contractName": "SendCloud – Reseller Framework",
+            "startDate": "2025-02-01",
+            "contractDetail": {
+              "contractType": "SERVICE",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "PLATFORM_RATE",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED"
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-SENDCLOUD-001",
+              "billingAccountNumber": "BILL-SENDCLOUD-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "PORTAL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "ING",
+                "iban": "NL00BANK0000000000000003",
+                "bic": "INGBNL2A"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-SENDCLOUD-BILL-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Financeplein",
+                  "houseNumber": "8",
+                  "city": "Eindhoven",
+                  "postalcode": "5611",
+                  "country": "NL",
+                  "latitude": 51.4410,
+                  "longitude": 5.4705,
+                  "timezone": "Europe/Amsterdam"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-SENDCLOUD-AP-001",
+                  "firstName": "Lotte",
+                  "lastName": "de Vries",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@sendcloud.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "SENDCLOUD-ERP-BILL-1001",
+                  "issuedByAuthority": "SENDCLOUD_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "SENDCLOUD-NL-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_NL"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-TECHSTORE-DE-PICKUP-001",
+        "parentAccountId": "ACC-SENDCLOUD-SOLDTO-001",
+        "mdmCustomerId": "CUST-SENDCLOUD-NL-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_NL",
+        "segmentGroup": "RESELLER",
+        "segmentGroup2": "UNDERLYING_SME",
+        "platformObject": {
+          "platformId": "PLT-SENDCLOUD-API-001",
+          "name": "SENDCLOUD_API",
+          "type": "API",
+          "provider": "SendCloud"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-TECHSTORE-DE-001",
+            "addressType": "PICKUP",
+            "isGeoManual": true,
+            "street": "Handelsweg",
+            "houseNumber": "8",
+            "city": "Cologne",
+            "postalcode": "50667",
+            "country": "DE",
+            "latitude": 50.9375,
+            "longitude": 6.9603,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "SME-TECHSTORE-GMBH-000142",
+            "issuedByAuthority": "SENDCLOUD"
+          },
+          {
+            "refType": "PLATFORM_SHIPPER_ID",
+            "refValue": "SENDCLOUD-MERCHANT-000142",
+            "issuedByAuthority": "SENDCLOUD"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
+  },
+  {
+    "scenarioName": "John Smith",
+    "customer": {
+      "customerType": "RETAIL_CASH_CUSTOMERS",
+      "customerLevel": "RETAIL",
+      "mdmCustomerId": "CUST-RETAIL-JSMITH-001",
+      "parentMdmCustomerId": null,
+      "officialName": "John Smith",
+      "tradingName": "John Smith",
+      "globalGroupCode": null,
+      "industrySector": "RETAIL_GENERAL",
+      "taxId": null,
+      "countryOfRegistration": "ES",
+      "addresses": [
+        {
+          "addressId": "ADDR-JSMITH-HOME-001",
+          "addressType": "RESIDENTIAL",
+          "isGeoManual": false,
+          "street": "Carrer Major",
+          "houseNumber": "44",
+          "city": "Barcelona",
+          "postalcode": "08002",
+          "country": "ES",
+          "latitude": 41.3851,
+          "longitude": 2.1734,
+          "timezone": "Europe/Madrid"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-JSMITH-001",
+          "firstName": "John",
+          "lastName": "Smith",
+          "jobTitle": "N/A",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "john.smith@example.com"
+            },
+            {
+              "type": "PHONE",
+              "value": "+34-600-000-001"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-RETAIL-JSMITH-SP-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-RETAIL-JSMITH-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": true,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "SERVICE_POINTS_RETAIL",
+        "salesManager": "SERVICEPOINT_POS",
+        "segmentGroup": "RETAIL",
+        "segmentGroup2": "WALK_IN",
+        "platformObject": {
+          "platformId": "PLT-DHL-SPAIN-SP-001",
+          "name": "SERVICEPOINT_POS",
+          "type": "PORTAL",
+          "provider": "DHL"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-JSMITH-SERVICEPOINT-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Avinguda del Portal",
+            "houseNumber": "12",
+            "city": "Barcelona",
+            "postalcode": "08007",
+            "country": "ES",
+            "latitude": 41.3902,
+            "longitude": 2.1540,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "POS-TXN-CUST-JSMITH-001",
+            "issuedByAuthority": "DHL_SERVICEPOINT"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Vinted Marketplace",
+    "customer": {
+      "customerType": "PARTNERS",
+      "customerLevel": "KEY_ACCOUNT",
+      "mdmCustomerId": "CUST-VINTED-LT-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Vinted, UAB",
+      "tradingName": "Vinted",
+      "globalGroupCode": null,
+      "industrySector": "MARKETPLACE",
+      "taxId": "LT123456789",
+      "countryOfRegistration": "LT",
+      "addresses": [
+        {
+          "addressId": "ADDR-VINTED-HQ-001",
+          "addressType": "BUSINESS",
+          "isGeoManual": false,
+          "street": "Marketplace Avenue",
+          "houseNumber": "7",
+          "city": "Vilnius",
+          "postalcode": "01100",
+          "country": "LT",
+          "latitude": 54.6872,
+          "longitude": 25.2797,
+          "timezone": "Europe/Vilnius"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-VINTED-001",
+          "firstName": "Eglė",
+          "lastName": "Kazlauskaitė",
+          "jobTitle": "Logistics Partnerships Lead",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "logistics.partners@vinted.example"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-VINTED-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-VINTED-LT-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 750000,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_EU",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "MARKETPLACE",
+        "platformObject": {
+          "platformId": "PLT-VINTED-API-001",
+          "name": "VINTED_ECOSYSTEM",
+          "type": "API",
+          "provider": "Vinted"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-VINTED-BILLING-OPS-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Marketplace Avenue",
+            "houseNumber": "7",
+            "city": "Vilnius",
+            "postalcode": "01100",
+            "country": "LT",
+            "latitude": 54.6872,
+            "longitude": 25.2797,
+            "timezone": "Europe/Vilnius"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [
+          {
+            "contractId": "CON-VINTED-001",
+            "contractName": "Vinted – Ecosystem Partnership Agreement",
+            "startDate": "2025-06-01",
+            "contractDetail": {
+              "contractType": "SERVICE",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "PLATFORM_RATE",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED"
+            },
+            "addresses": [],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-VINTED-CONTRACT-001",
+                "firstName": "Greta",
+                "lastName": "Petrauskė",
+                "jobTitle": "Contract Owner (Vinted)",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts@vinted.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-VINTED-001",
+              "billingAccountNumber": "BILL-VINTED-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "PORTAL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "SEB Bank",
+                "iban": "LT00BANK0000000000000004",
+                "bic": "CBVILT2X"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-VINTED-BILL-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Finance Street",
+                  "houseNumber": "4",
+                  "city": "Vilnius",
+                  "postalcode": "01103",
+                  "country": "LT",
+                  "latitude": 54.6879,
+                  "longitude": 25.2808,
+                  "timezone": "Europe/Vilnius"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-VINTED-AP-001",
+                  "firstName": "Ieva",
+                  "lastName": "Jankauskaitė",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@vinted.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "VINTED-ERP-BILL-1001",
+                  "issuedByAuthority": "VINTED_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "VINTED-LT-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_EU"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-SARAH-BOUTIQUE-PICKUP-001",
+        "parentAccountId": "ACC-VINTED-SOLDTO-001",
+        "mdmCustomerId": "CUST-RETAIL-SARAH-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_EU",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "MERCHANT_NODE",
+        "platformObject": {
+          "platformId": "PLT-VINTED-API-001",
+          "name": "VINTED_ECOSYSTEM",
+          "type": "API",
+          "provider": "Vinted"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-SARAH-BOUTIQUE-001",
+            "addressType": "PICKUP",
+            "isGeoManual": true,
+            "street": "Boutique Street",
+            "houseNumber": "19",
+            "city": "Barcelona",
+            "postalcode": "08007",
+            "country": "ES",
+            "latitude": 41.3902,
+            "longitude": 2.1540,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "PLATFORM_SHIPPER_ID",
+            "refValue": "VINTED-MERCHANT-BCN-00019",
+            "issuedByAuthority": "VINTED"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": [
+      {
+        "customerType": "RETAIL_CASH_CUSTOMERS",
+        "customerLevel": "RETAIL",
+        "mdmCustomerId": "CUST-RETAIL-SARAH-001",
+        "parentMdmCustomerId": null,
+        "officialName": "Sarah's Boutique",
+        "tradingName": "Sarah's Boutique",
+        "globalGroupCode": null,
+        "industrySector": "RETAIL_GENERAL",
+        "taxId": null,
+        "countryOfRegistration": "ES",
+        "addresses": [
+          {
+            "addressId": "ADDR-SARAH-REGISTERED-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": true,
+            "street": "Boutique Street",
+            "houseNumber": "19",
+            "city": "Barcelona",
+            "postalcode": "08007",
+            "country": "ES",
+            "latitude": 41.3902,
+            "longitude": 2.1540,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": []
+      }
+    ]
+  },
+  {
+    "scenarioName": "BioOrganic Supplements",
+    "customer": {
+      "customerType": "MULTICHANNEL_DIGITAL_CUSTOMERS",
+      "customerLevel": "SME",
+      "mdmCustomerId": "CUST-BIOORGANIC-ES-001",
+      "parentMdmCustomerId": null,
+      "officialName": "BioOrganic Supplements S.L.",
+      "tradingName": "BioOrganic",
+      "globalGroupCode": null,
+      "industrySector": "PHARMA_HEALTH",
+      "taxId": "ES-B11223344",
+      "countryOfRegistration": "ES",
+      "addresses": [
+        {
+          "addressId": "ADDR-BIOORGANIC-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Carrer del Comerç",
+          "houseNumber": "3",
+          "city": "Castelldefels",
+          "postalcode": "08860",
+          "country": "ES",
+          "latitude": 41.2776,
+          "longitude": 1.9700,
+          "timezone": "Europe/Madrid"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-BIOORGANIC-001",
+          "firstName": "Marta",
+          "lastName": "Ribas",
+          "jobTitle": "E-commerce Operations",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "ops@bioorganic.example"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-BIOORGANIC-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-BIOORGANIC-ES-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER",
+          "SHIPPER",
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_7",
+        "creditLimit": 25000,
+        "salesChannel": "MULTICHANNEL",
+        "salesManager": "DIGITAL_SALES_BOT",
+        "segmentGroup": "DIGITAL",
+        "segmentGroup2": "SHOPIFY_MERCHANT",
+        "platformObject": {
+          "platformId": "PLT-SHOPIFY-PLUGIN-001",
+          "name": "Shopify_Plugin",
+          "type": "PLUGIN",
+          "provider": "Shopify"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-BIOORGANIC-WH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Carrer del Comerç",
+            "houseNumber": "3",
+            "city": "Castelldefels",
+            "postalcode": "08860",
+            "country": "ES",
+            "latitude": 41.2776,
+            "longitude": 1.9700,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-BIOORGANIC-SUPPORT-001",
+            "firstName": "Digital",
+            "lastName": "Support",
+            "jobTitle": "Customer Support",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "support@bioorganic.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-BIOORGANIC-001",
+            "contractName": "BioOrganic – Standard Digital Contract",
+            "startDate": "2025-09-15",
+            "contractDetail": {
+              "contractType": "COUNTRY",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "INVOICE",
+              "onboarding": "SELF_SERVICE_WEB"
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-BIOORGANIC-001",
+              "billingAccountNumber": "BILL-BIO-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "CaixaBank",
+                "iban": "ES00BANK0000000000000005",
+                "bic": "CAIXESBB"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-BIO-BILL-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Carrer de la Factura",
+                  "houseNumber": "9",
+                  "city": "Barcelona",
+                  "postalcode": "08008",
+                  "country": "ES",
+                  "latitude": 41.3910,
+                  "longitude": 2.1649,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-BIO-AP-001",
+                  "firstName": "Laura",
+                  "lastName": "Soler",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@bioorganic.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "BIO-ERP-BILL-1001",
+                  "issuedByAuthority": "BIOORGANIC_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "DIGI-ONBOARD-BIO-ES-001",
+            "issuedByAuthority": "DHL_DIGITAL_PORTAL"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
+  },
+  {
+    "scenarioName": "DHL Supply Chain IT Services",
+    "customer": {
+      "customerType": "INTERNAL_CUSTOMERS",
+      "customerLevel": "INTERNAL",
+      "mdmCustomerId": "CUST-DHL-INTERNAL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "DHL Supply Chain IT Services",
+      "tradingName": "DHL Internal IT Services",
+      "globalGroupCode": "DHL",
+      "industrySector": "DHL_INTERNAL",
+      "taxId": null,
+      "countryOfRegistration": "DE",
+      "addresses": [
+        {
+          "addressId": "ADDR-DHL-IT-DE-REG-001",
+          "addressType": "BUSINESS",
+          "isGeoManual": false,
+          "street": "Charles-de-Gaulle-Straße",
+          "houseNumber": "20",
+          "city": "Bonn",
+          "postalcode": "53113",
+          "country": "DE",
+          "latitude": 50.7374,
+          "longitude": 7.0982,
+          "timezone": "Europe/Berlin"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-DHL-IT-001",
+          "firstName": "Daniel",
+          "lastName": "Schneider",
+          "jobTitle": "IT Asset Manager",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "it.asset@dhl.example"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-DHL-IT-COSTCENTER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-DHL-INTERNAL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "INTERNAL_TRANSFER",
+        "creditLimit": 0,
+        "salesChannel": "INTERNAL",
+        "salesManager": "INTERNAL_OPERATIONS_LEAD",
+        "segmentGroup": "INTERNAL",
+        "segmentGroup2": "COST_CENTER",
+        "platformObject": {
+          "platformId": "PLT-DHL-INTERNAL-ITSM-001",
+          "name": "INTERNAL_ITSM",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "DHL"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-DHL-IT-DE-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Charles-de-Gaulle-Straße",
+            "houseNumber": "20",
+            "city": "Bonn",
+            "postalcode": "53113",
+            "country": "DE",
+            "latitude": 50.7374,
+            "longitude": 7.0982,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [
+          {
+            "contractId": "CON-DHL-INTERNAL-001",
+            "contractName": "Intercompany Logistics – IT Services",
+            "startDate": "2024-01-01",
+            "contractDetail": {
+              "contractType": "SERVICE",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "INTERNAL_CHARGEBACK",
+              "shipmentPurpose": [
+                "LAPTOPS",
+                "UNIFORMS"
+              ]
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-DHL-INTERNAL-001",
+              "billingAccountNumber": "BILL-DHL-INT-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "PORTAL",
+              "paymentMethod": {
+                "type": "INTERNAL",
+                "bankName": "N/A",
+                "iban": "N/A",
+                "bic": "N/A"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "DHL_INTERNAL_ID",
+                  "refValue": "COSTCENTER-IT-001",
+                  "issuedByAuthority": "DHL_FINANCE"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "DHL_INTERNAL_ID",
+            "refValue": "DHL-SC-IT-001",
+            "issuedByAuthority": "DHL_INTERNAL_DIRECTORY"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
+  }
+]
