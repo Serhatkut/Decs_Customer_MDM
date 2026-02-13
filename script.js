@@ -1,6 +1,6 @@
 /**
- * DHL Master Data Blueprint Engine - v3.2.0
- * Features: Deep Object Mapping & Blueprint Coloring
+ * DHL Master Data Blueprint Engine - v3.3.0
+ * Features: Full Object Extraction & Interactive Viewport
  */
 
 let masterData = [];
@@ -23,7 +23,7 @@ fetch('customerData.json').then(res => res.json()).then(data => {
     });
 });
 
-// 3. The Object Mapping Engine
+// 3. The Deep Object Mapping Engine
 function mapHierarchy(obj, type) {
     let children = [];
 
@@ -31,14 +31,14 @@ function mapHierarchy(obj, type) {
     if (obj.accounts) children.push(...obj.accounts.map(acc => mapHierarchy(acc, acc.type || 'ACCOUNT')));
     if (obj.children) children.push(...obj.children.map(child => mapHierarchy(child, child.type || 'SUB_ACCOUNT')));
 
-    // Object Type Mapping (Individual Boxes)
+    // Object Type Mapping (Extracting arrays into distinct boxes)
     if (obj.contracts) obj.contracts.forEach(c => children.push({ name: c.contractName, type: 'CONTRACT', data: c }));
     if (obj.billingAgreements) obj.billingAgreements.forEach(b => children.push({ name: 'Billing Agreement', type: 'BILLING', data: b }));
     if (obj.bankAccounts) obj.bankAccounts.forEach(ba => children.push({ name: 'Bank Account', type: 'BANK', data: ba }));
     if (obj.referenceIds) obj.referenceIds.forEach(r => children.push({ name: `Ref: ${r.refValue}`, type: 'REFID', data: r }));
     if (obj.platformObject) children.push({ name: obj.platformObject.name, type: 'PLATFORM', data: obj.platformObject });
 
-    // Addresses & Contact Persons with nested Comm Channels
+    // Addresses & Contacts with nested Comm Channels
     if (obj.addresses) obj.addresses.forEach(a => children.push({ name: `${a.city}, ${a.country}`, type: 'ADDRESS', data: a }));
     if (obj.contactPersons) {
         obj.contactPersons.forEach(cp => {
@@ -56,7 +56,28 @@ function mapHierarchy(obj, type) {
     };
 }
 
-// 4. Blueprint Rendering Pipeline
+// 4. Interactive Listeners
+document.getElementById('scenarioSelector').addEventListener('change', e => {
+    const scenario = masterData[e.target.value];
+    if (scenario) {
+        document.getElementById('json-display').textContent = JSON.stringify(scenario, null, 2);
+        render(scenario);
+    }
+});
+
+document.getElementById('resetZoom').addEventListener('click', () => {
+    const container = document.getElementById('viz-container');
+    svg.transition().duration(750).call(
+        zoom.transform, d3.zoomIdentity.translate(container.clientWidth / 2 - nodeW / 2, 50).scale(0.6)
+    );
+});
+
+document.getElementById('nodeSearch').addEventListener('input', e => {
+    const term = e.target.value.toLowerCase();
+    d3.selectAll(".node").style("opacity", d => d.data.name.toLowerCase().includes(term) ? 1 : 0.1);
+});
+
+// 5. Blueprint Rendering Pipeline
 function render(scenario) {
     g.selectAll("*").remove();
     const rootData = mapHierarchy(scenario.customer, 'GLOBAL');
@@ -75,22 +96,15 @@ function render(scenario) {
     const node = g.selectAll(".node").data(root.descendants()).enter().append("g")
         .attr("class", "node").attr("transform", d => `translate(${d.x},${d.y})`);
 
-    // Card Body (Color logic per object type)
-    node.append("rect").attr("width", nodeW).attr("height", nodeH)
-        .style("fill", "#FFF5CC").style("stroke", "#D40511").attr("rx", 8);
+    // Card Body & Header logic
+    node.append("rect").attr("width", nodeW).attr("height", nodeH).style("fill", "#FFF5CC").style("stroke", "#D40511").attr("rx", 8);
+    node.append("rect").attr("width", nodeW).attr("height", 32).style("fill", d => d.data.type === 'GLOBAL' ? "#FFCC00" : "#D40511").style("stroke", "#D40511").attr("rx", 8);
 
-    // Card Header (Differentiates Global vs Other)
-    node.append("rect").attr("width", nodeW).attr("height", 32)
-        .style("fill", d => d.data.type === 'GLOBAL' ? "#FFCC00" : "#D40511")
-        .style("stroke", "#D40511").attr("rx", 8);
-
-    // Header Text
     node.append("text").attr("x", nodeW / 2).attr("y", 21).attr("text-anchor", "middle")
-        .style("fill", d => d.data.type === 'GLOBAL' ? "#000" : "#FFF")
-        .style("font-weight", "bold").style("font-size", "11px")
+        .style("fill", d => d.data.type === 'GLOBAL' ? "#000" : "#FFF").style("font-weight", "bold").style("font-size", "11px")
         .text(d => d.data.name.substring(0, 30));
 
-    // Metadata Mapping
+    // Metadata Blocks
     node.each(function (d) {
         const el = d3.select(this); const data = d.data.data; let yPos = 50;
         const addLine = (label, val) => {
@@ -100,23 +114,11 @@ function render(scenario) {
                 yPos += 14;
             }
         };
-
-        // Specific metadata blocks for each blueprint object
-        if (d.data.type === 'GLOBAL') {
-            addLine("[IDs]", data.mdmCustomerId); addLine("[Scope]", data.globalGroupCode);
-        } else if (d.data.type === 'COUNTRY_CUSTOMER') {
-            addLine("[IDs]", data.mdmCustomerId); addLine("[Legal]", data.taxId); addLine("[Core]", data.officialName);
-        } else if (d.data.type === 'SOLD_TO' || d.data.type === 'ACCOUNT') {
-            addLine("[IDs]", data.mdmAccountId); addLine("[Roles]", (data.businessRoles || []).join(', '));
-        } else if (d.data.type === 'BANK') {
-            addLine("[Data]", `IBAN: ${data.iban}`); addLine("[Data]", `Country: ${data.bankCountryCode}`);
-        } else if (d.data.type === 'ADDRESS') {
-            addLine("[Loc]", `${data.city}, ${data.country}`); addLine("[Geo]", data.timezone);
-        } else if (d.data.type === 'CONTACT') {
-            addLine("[IDs]", data.contactPersonId); addLine("[Role]", data.jobTitle);
-        } else if (d.data.type === 'COMM') {
-            addLine("[Data]", `${data.type}: ${data.value}`);
-        }
+        if (d.data.type === 'GLOBAL') { addLine("[IDs]", data.mdmCustomerId); addLine("[Scope]", data.globalGroupCode); }
+        else if (d.data.type === 'BANK') { addLine("[Data]", `IBAN: ${data.iban}`); }
+        else if (d.data.type === 'ADDRESS') { addLine("[Loc]", `${data.city}, ${data.country}`); }
+        else if (d.data.type === 'CONTACT') { addLine("[Role]", data.jobTitle); }
+        else if (d.data.type === 'COMM') { addLine("[Data]", `${data.type}: ${data.value}`); }
+        else { addLine("[IDs]", data.mdmAccountId || data.mdmCustomerId); }
     });
 }
-// ... [Reset Zoom & Search listeners] ...
