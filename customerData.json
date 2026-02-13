@@ -6,68 +6,31 @@
       "officialName": "Inditex S.A.",
       "globalGroupCode": "INDITEX",
       "mdmCustomerId": "CUST-IND-GLOBAL",
-      "industrySector": "FASHION_RETAIL",
       "accounts": [
         {
           "mdmAccountId": "ACC-IND-ES-COUNTRY",
           "tradingName": "Inditex Spain (Country Hub)",
           "type": "COUNTRY_CUSTOMER",
-          "taxId": "ESA12345678",
           "children": [
             {
               "mdmAccountId": "ZARA-ES-SOLDTO",
               "tradingName": "Zara Spain Commercial",
               "type": "SOLD_TO",
-              "businessRoles": [
-                "SOLD_TO",
-                "PAYER"
-              ],
-              "billingAgreements": [
-                {
-                  "paymentTerms": "NET_60",
-                  "currency": "EUR",
-                  "invoiceMedia": "EDI"
-                }
-              ],
               "bankAccounts": [
                 {
-                  "iban": "ES991234567890",
+                  "iban": "ES991234...",
                   "bankCountryCode": "ES"
                 }
               ],
-              "children": [
+              "contactPersons": [
                 {
-                  "mdmAccountId": "ZARA-MADRID-WH1",
-                  "tradingName": "Zara Madrid Central WH",
-                  "type": "PICKUP",
-                  "businessRoles": [
-                    "PICKUP",
-                    "SHIPPER"
-                  ],
-                  "addresses": [
+                  "firstName": "Lucia",
+                  "lastName": "Fernandez",
+                  "jobTitle": "Logistics Mgr",
+                  "commChannels": [
                     {
-                      "city": "Madrid",
-                      "country": "ES",
-                      "timezone": "CET",
-                      "addressType": "WAREHOUSE"
-                    }
-                  ],
-                  "contactPersons": [
-                    {
-                      "contactPersonId": "CP-ES-01",
-                      "firstName": "Lucia",
-                      "lastName": "Fernandez",
-                      "jobTitle": "Logistics Director",
-                      "commChannels": [
-                        {
-                          "type": "EMAIL",
-                          "value": "l.fernandez@zara.es"
-                        },
-                        {
-                          "type": "MOBILE",
-                          "value": "+34600112233"
-                        }
-                      ]
+                      "type": "EMAIL",
+                      "value": "l.f@zara.es"
                     }
                   ]
                 }
@@ -78,84 +41,7 @@
         {
           "mdmAccountId": "ACC-IND-PT-COUNTRY",
           "tradingName": "Inditex Portugal Hub",
-          "type": "COUNTRY_CUSTOMER",
-          "children": [
-            {
-              "mdmAccountId": "ZARA-PT-SOLDTO",
-              "tradingName": "Zara Portugal",
-              "type": "SOLD_TO",
-              "children": [
-                {
-                  "mdmAccountId": "ZARA-LISBON-PICKUP",
-                  "tradingName": "Lisbon Delivery Point",
-                  "type": "PICKUP",
-                  "addresses": [
-                    {
-                      "city": "Lisbon",
-                      "country": "PT"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  },
-  {
-    "scenarioName": "2. Relationship: Müller Auto (Full Functional Model)",
-    "customer": {
-      "customerType": "Relationship Customers",
-      "officialName": "Müller Auto Parts GmbH",
-      "mdmCustomerId": "CUST-MULLER-DE",
-      "accounts": [
-        {
-          "mdmAccountId": "MULLER-DE-SOLDTO",
-          "tradingName": "Müller HQ Sold-To",
-          "type": "SOLD_TO",
-          "businessRoles": [
-            "SOLD_TO",
-            "PAYER"
-          ],
-          "contracts": [
-            {
-              "contractId": "CON-M-2026",
-              "contractName": "DE Service Framework v4"
-            }
-          ],
-          "bankAccounts": [
-            {
-              "iban": "DE8812345678",
-              "bankCountryCode": "DE"
-            }
-          ],
-          "contactPersons": [
-            {
-              "contactPersonId": "CP-DE-01",
-              "lastName": "Müller",
-              "jobTitle": "CEO",
-              "commChannels": [
-                {
-                  "type": "PHONE",
-                  "value": "+491234567"
-                }
-              ]
-            }
-          ],
-          "children": [
-            {
-              "mdmAccountId": "MULLER-HAMBURG-WH",
-              "tradingName": "Hamburg Hub",
-              "type": "PICKUP",
-              "addresses": [
-                {
-                  "city": "Hamburg",
-                  "country": "DE"
-                }
-              ]
-            }
-          ]
+          "type": "COUNTRY_CUSTOMER"
         }
       ]
     }
