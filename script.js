@@ -66,25 +66,28 @@ document.getElementById('nodeSearch').addEventListener('input', e => {
  * Recursively maps the JSON into a D3-compliant tree.
  * Prioritizes Names in the title area as per image_85ec24.png
  */
+/** * UPDATED MAPPING LOGIC: 
+ * Ensures Trading Names are visible as box titles for multi-country views.
+ */
 function mapHierarchy(obj, type) {
     let children = [];
 
-    // Map Accounts/Sub-Accounts recursively (Multi-Country/Multi-Brand)
+    // Recursive Account Mapping (Country -> Brand -> Depot)
     if (obj.accounts) children.push(...obj.accounts.map(acc => mapHierarchy(acc, acc.type || 'ACCOUNT')));
     if (obj.children) children.push(...obj.children.map(child => mapHierarchy(child, child.type || 'SUB_ACCOUNT')));
 
-    // Attribute Mapping as Child Nodes
-    if (obj.contracts) obj.contracts.forEach(c => children.push({ name: c.contractName, type: 'CONTRACT', data: c }));
-    if (obj.billingAgreements) obj.billingAgreements.forEach(b => children.push({ name: 'Billing Agreement', type: 'BILLING', data: b }));
-    if (obj.bankAccounts) obj.bankAccounts.forEach(ba => children.push({ name: 'Bank Account', type: 'BANK', data: ba }));
+    // Attribute Mapping (Addressing, Contracts, etc.)
+    if (obj.billingAgreements) obj.billingAgreements.forEach(b => children.push({ name: 'Billing', type: 'BILLING', data: b }));
+    if (obj.addresses) obj.addresses.forEach(a => children.push({ name: `${a.city}, ${a.country}`, type: 'ADDRESS', data: a }));
 
-    if (obj.contactPersons) {
-        obj.contactPersons.forEach(cp => {
-            let contactNode = { name: `${cp.firstName || ''} ${cp.lastName}`, type: 'CONTACT', data: cp, children: [] };
-            if (cp.commChannels) cp.commChannels.forEach(cc => contactNode.children.push({ name: cc.type || 'Comm', type: 'COMM', data: cc }));
-            children.push(contactNode);
-        });
-    }
+    return {
+        // Official/Trading Name appears in the Title
+        name: obj.tradingName || obj.officialName || obj.mdmAccountId || "Master Object",
+        type: type,
+        data: obj,
+        children: children
+    };
+}
 
     if (obj.addresses) obj.addresses.forEach(a => children.push({ name: `${a.city}, ${a.country}`, type: 'ADDRESS', data: a }));
     if (obj.platformObject) children.push({ name: obj.platformObject.name, type: 'PLATFORM', data: obj.platformObject });
