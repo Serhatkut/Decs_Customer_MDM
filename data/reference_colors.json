@@ -1,0 +1,188 @@
+{
+    "version": "1.0.0",
+    "name": "DHL eCommerce Viewer Color System",
+    "source": "User-provided palette image",
+    "primary": {
+        "red": {
+            "token": "--clr-primary-red",
+            "hex": "#D40511"
+        },
+        "yellow": {
+            "token": "--clr-primary-yellow",
+            "hex": "#FFCC00"
+        },
+        "green": {
+            "token": "--clr-primary-green",
+            "hex": "#006B3F"
+        },
+        "black": {
+            "token": "--clr-primary-black",
+            "hex": "#000000"
+        }
+    },
+    "foreground": {
+        "dark": {
+            "token": "--clr-fg-dark",
+            "hex": "#1F1F1F"
+        },
+        "indigo": {
+            "token": "--clr-fg-indigo",
+            "hex": "#3E3A63"
+        },
+        "purple": {
+            "token": "--clr-fg-purple",
+            "hex": "#3B3696"
+        },
+        "blue": {
+            "token": "--clr-fg-blue",
+            "hex": "#245B8F"
+        },
+        "cyan": {
+            "token": "--clr-fg-cyan",
+            "hex": "#1793C6"
+        },
+        "teal": {
+            "token": "--clr-fg-teal",
+            "hex": "#3AA39A"
+        },
+        "olive": {
+            "token": "--clr-fg-olive",
+            "hex": "#6E9641"
+        },
+        "brick": {
+            "token": "--clr-fg-brick",
+            "hex": "#8E3E3A"
+        },
+        "orange": {
+            "token": "--clr-fg-orange",
+            "hex": "#E36A23"
+        },
+        "tan": {
+            "token": "--clr-fg-tan",
+            "hex": "#B79063"
+        }
+    },
+    "background": {
+        "gray": {
+            "token": "--clr-bg-gray",
+            "hex": "#A7AEB4"
+        },
+        "steel": {
+            "token": "--clr-bg-steel",
+            "hex": "#9FAAB2"
+        },
+        "lavender": {
+            "token": "--clr-bg-lavender",
+            "hex": "#A7ADBD"
+        },
+        "sky": {
+            "token": "--clr-bg-sky",
+            "hex": "#8FC5D6"
+        },
+        "lightblue": {
+            "token": "--clr-bg-lightblue",
+            "hex": "#BFD7E3"
+        },
+        "mint": {
+            "token": "--clr-bg-mint",
+            "hex": "#9FC9C1"
+        },
+        "lightgreen": {
+            "token": "--clr-bg-lightgreen",
+            "hex": "#B7C78D"
+        },
+        "palegreen": {
+            "token": "--clr-bg-palegreen",
+            "hex": "#BFD0A9"
+        },
+        "warmgray": {
+            "token": "--clr-bg-warmgray",
+            "hex": "#B7B5A8"
+        },
+        "beige": {
+            "token": "--clr-bg-beige",
+            "hex": "#C9C0B8"
+        }
+    },
+    "neutralScale": {
+        "neutral900": {
+            "token": "--clr-neutral-900",
+            "hex": "#000000"
+        },
+        "neutral800": {
+            "token": "--clr-neutral-800",
+            "hex": "#2B2B2B"
+        },
+        "neutral700": {
+            "token": "--clr-neutral-700",
+            "hex": "#555555"
+        },
+        "neutral600": {
+            "token": "--clr-neutral-600",
+            "hex": "#777777"
+        },
+        "neutral500": {
+            "token": "--clr-neutral-500",
+            "hex": "#999999"
+        },
+        "neutral400": {
+            "token": "--clr-neutral-400",
+            "hex": "#BBBBBB"
+        },
+        "neutral300": {
+            "token": "--clr-neutral-300",
+            "hex": "#DDDDDD"
+        },
+        "neutral200": {
+            "token": "--clr-neutral-200",
+            "hex": "#EEEEEE"
+        }
+    },
+    "semanticMapping": {
+        "GLOBAL_CUSTOMER": {
+            "header": "--clr-primary-black",
+            "body": "--clr-neutral-200",
+            "accent": "--clr-primary-yellow"
+        },
+        "COUNTRY_CUSTOMER": {
+            "header": "--clr-fg-indigo",
+            "body": "--clr-neutral-200",
+            "accent": "--clr-primary-yellow"
+        },
+        "ACCOUNT": {
+            "header": "--clr-primary-red",
+            "body": "--clr-primary-yellow",
+            "accent": "--clr-primary-black"
+        },
+        "CONTRACT": {
+            "header": "--clr-fg-brick",
+            "body": "--clr-bg-beige",
+            "accent": "--clr-primary-yellow"
+        },
+        "BILLING_PROFILE": {
+            "header": "--clr-fg-purple",
+            "body": "--clr-bg-lavender",
+            "accent": "--clr-primary-yellow"
+        },
+        "CONTACT": {
+            "header": "--clr-fg-dark",
+            "body": "--clr-neutral-200",
+            "accent": "--clr-primary-yellow"
+        },
+        "ADDRESS": {
+            "header": "--clr-fg-teal",
+            "body": "--clr-bg-lightblue",
+            "accent": "--clr-primary-yellow"
+        },
+        "PLATFORM": {
+            "header": "--clr-fg-cyan",
+            "body": "--clr-bg-sky",
+            "accent": "--clr-primary-yellow"
+        },
+        "REFERENCE_ID": {
+            "header": "--clr-fg-orange",
+            "body": "--clr-fg-tan",
+            "accent": "--clr-primary-yellow"
+        }
+    }
+}

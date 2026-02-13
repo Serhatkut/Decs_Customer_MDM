@@ -14,24 +14,30 @@
     <!-- Top bar -->
     <header class="topbar">
         <div class="topbar-left">
-            <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" class="dhl-logo"
-                alt="DHL" />
-            <div class="topbar-title">
-                <div class="title">Customer Master Data Viewer</div>
-                <div class="subtitle">DHL eCommerce · MDM Scenarios & Relationships</div>
+            <div class="brand">
+                <div class="brand-mark">DHL</div>
+                <div class="brand-text">
+                    <div class="brand-title">Customer Master Data Viewer</div>
+                    <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
+                </div>
             </div>
         </div>
 
         <div class="topbar-right">
-            <button id="resetZoom" class="btn btn-secondary" title="Reset zoom & position">Reset</button>
+            <div class="dq-badge" id="dqBadge" title="Data Quality (computed from reference enums)">
+                <span class="dq-dot" id="dqDot"></span>
+                <span class="dq-text" id="dqText">DQ: N/A</span>
+            </div>
+
+            <button id="resetZoom" class="btn btn-secondary" title="Zoom-to-fit / reset view">Reset View</button>
         </div>
     </header>
 
-    <!-- Main layout -->
     <div class="layout">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="panel">
+            <!-- Scenario -->
+            <section class="panel">
                 <div class="panel-title">Scenario</div>
 
                 <label class="field-label" for="scenarioSelector">Select scenario</label>
@@ -41,51 +47,127 @@
 
                 <label class="field-label" for="nodeSearch">Search (ID / Name)</label>
                 <input id="nodeSearch" class="input" type="text"
-                    placeholder="e.g., CUST-..., ACC-..., Inditex, Vinted..." />
+                    placeholder="e.g., CUST-..., ACC-..., CON-..., Inditex, Vinted, Shopify..." />
 
                 <div class="hint">
-                    Tip: click a node to show its full JSON on the right.
+                    Click any node to see its full JSON. Use filters to highlight/dim without breaking hierarchy.
                 </div>
-            </div>
+            </section>
 
-            <div class="panel">
-                <div class="panel-title">Legend</div>
+            <!-- Filters -->
+            <section class="panel">
+                <div class="panel-title">Filters</div>
 
-                <div class="legend">
-                    <div class="legend-item">
-                        <span class="legend-swatch sw-global"></span>
-                        Global / Customer
+                <div class="filter-grid">
+                    <div class="filter-block">
+                        <div class="field-label">Customer Type</div>
+                        <select id="filterCustomerType" class="select" multiple size="6"></select>
+                        <div class="field-note">Populated from reference_master_data.json</div>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-swatch sw-account"></span>
-                        Account
+
+                    <div class="filter-block">
+                        <div class="field-label">Industry</div>
+                        <select id="filterIndustry" class="select" multiple size="6"></select>
+                        <div class="field-note">Populated from reference_master_data.json</div>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-swatch sw-contract"></span>
-                        Contract / Billing
+
+                    <div class="filter-block">
+                        <div class="field-label">Sales Channel</div>
+                        <select id="filterSalesChannel" class="select" multiple size="6"></select>
+                        <div class="field-note">Populated from reference_master_data.json</div>
                     </div>
-                    <div class="legend-item">
-                        <span class="legend-swatch sw-contact"></span>
-                        Contact / Channel
-                    </div>
-                    <div class="legend-item">
-                        <span class="legend-swatch sw-address"></span>
-                        Address
+
+                    <div class="filter-block">
+                        <div class="field-label">Platform</div>
+                        <select id="filterPlatform" class="select" multiple size="6"></select>
+                        <div class="field-note">Derived from dataset + platform reference</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="panel json-panel">
+                <div class="filter-actions">
+                    <button id="clearFilters" class="btn btn-outline" title="Clear all filters">Clear Filters</button>
+                    <button id="applyFilters" class="btn btn-primary" title="Apply filters">Apply</button>
+                </div>
+            </section>
+
+            <!-- View options -->
+            <section class="panel">
+                <div class="panel-title">View Options</div>
+
+                <div class="toggle-row">
+                    <label class="toggle">
+                        <input type="checkbox" id="toggleCompact" checked />
+                        <span>Compact Mode</span>
+                    </label>
+                    <div class="toggle-hint">Denser orthogonal layout.</div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="toggle-grid">
+                    <label class="toggle">
+                        <input type="checkbox" id="showAddresses" checked />
+                        <span>Addresses</span>
+                    </label>
+
+                    <label class="toggle">
+                        <input type="checkbox" id="showContacts" checked />
+                        <span>Contacts</span>
+                    </label>
+
+                    <label class="toggle">
+                        <input type="checkbox" id="showReferenceIds" checked />
+                        <span>Reference IDs</span>
+                    </label>
+
+                    <label class="toggle">
+                        <input type="checkbox" id="showPlatforms" checked />
+                        <span>Platforms</span>
+                    </label>
+                </div>
+
+                <div class="filter-actions">
+                    <button id="collapseAll" class="btn btn-outline" title="Collapse all subtrees">Collapse All</button>
+                    <button id="expandAll" class="btn btn-outline" title="Expand all subtrees">Expand All</button>
+                </div>
+            </section>
+
+            <!-- Reference master data (enums) -->
+            <section class="panel">
+                <div class="panel-title">Reference Master Data</div>
+
+                <details id="refEnumsPanel" open>
+                    <summary class="details-summary">Enums (customerType / industry / channel / roles…)</summary>
+                    <div class="details-body">
+                        <pre id="refEnumsPreview" class="json-mini">{}</pre>
+                    </div>
+                </details>
+
+                <details id="refColorsPanel">
+                    <summary class="details-summary">Color Palette (reference_colors.json)</summary>
+                    <div class="details-body">
+                        <div id="colorSwatches" class="swatch-grid"></div>
+                        <pre id="refColorsPreview" class="json-mini">{}</pre>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Selected JSON -->
+            <section class="panel json-panel">
                 <div class="panel-title">Selected Object</div>
                 <pre id="json-display" class="json-display">{}</pre>
-            </div>
+            </section>
         </aside>
 
         <!-- Canvas -->
         <main class="canvas">
             <div id="viz-container" class="viz-container"></div>
+
             <div class="footer-note">
-                Data source: <code>/data/customerData.json</code>
+                Data sources:
+                <code>/data/customerData.json</code>,
+                <code>/data/reference_master_data.json</code>,
+                <code>/data/reference_colors.json</code>
             </div>
         </main>
     </div>
