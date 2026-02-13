@@ -4,14 +4,8 @@
     --dhl-yellow: #FFCC00;
     --blueprint-bg: #ffffff;
     --card-body: #FFF5CC;
-    /* Cream color for data objects */
-    --global-black: #111111;
-    --text-dark: #333333;
+    /* Cream body for cards */
     --grid-line: #e0e0e0;
-}
-
-* {
-    box-sizing: border-box;
 }
 
 body {
@@ -21,168 +15,53 @@ body {
     height: 100vh;
     font-family: 'Delivery', Arial, sans-serif;
     background-color: var(--blueprint-bg);
-    overflow: hidden;
-    /* Critical to prevent browser scrollbars interfering with D3 zoom */
 }
 
-/* --- SIDEBAR NAVIGATION --- */
+/* --- SIDEBAR & VIEWPORT --- */
 #sidebar {
     width: 380px;
-    background-color: #f4f4f4;
+    background: #f4f4f4;
     border-right: 5px solid var(--dhl-yellow);
+    padding: 25px;
     display: flex;
     flex-direction: column;
-    padding: 25px;
-    box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
     z-index: 2000;
-    /* Sidebar always stays on top of the diagram */
-}
-
-.logo {
-    width: 140px;
-    margin-bottom: 25px;
-}
-
-h2 {
-    color: var(--dhl-red);
-    font-size: 1.1rem;
-    margin: 0;
-    text-transform: uppercase;
-    font-weight: 900;
-}
-
-.subtitle {
-    font-size: 0.8rem;
-    color: #777;
-    margin-bottom: 25px;
-}
-
-/* Controls (Inputs, Select, Buttons) */
-#nodeSearch,
-#scenarioSelector,
-#resetZoom {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    font-size: 14px;
-    outline: none;
-}
-
-#scenarioSelector,
-#resetZoom {
-    background: #fff;
-    border: 2px solid var(--global-black);
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-#resetZoom:hover {
-    background: var(--global-black);
-    color: #fff;
-}
-
-/* JSON Terminal View */
-#json-viewer {
-    margin-top: auto;
-    background: #1a1a1a;
-    border-radius: 4px;
-    padding: 15px;
-    height: 250px;
-    overflow: auto;
-    border: 1px solid #333;
-}
-
-#json-viewer h3 {
-    color: var(--dhl-yellow);
-    font-size: 10px;
-    margin-top: 0;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-#json-display {
-    color: #00FF41;
-    /* Classic Terminal Green */
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    margin: 0;
-    white-space: pre-wrap;
-}
-
-/* --- VISUALIZATION VIEWPORT --- */
-#viewport {
-    flex-grow: 1;
-    position: relative;
-    overflow: hidden;
 }
 
 #viz-container {
-    width: 100%;
-    height: 100%;
+    flex-grow: 1;
     cursor: grab;
     background-color: #ffffff;
-    /* Architect Grid Background matching image_7a0498.png */
-    background-image:
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 20px 20px;
+    /* Architect grid */
 }
 
-#viz-container:active {
-    cursor: grabbing;
+/* --- D3 SVG ELEMENTS --- */
+.link {
+    fill: none;
+    stroke: var(--dhl-red);
+    /* Blueprint red arrows */
+    stroke-width: 2px;
 }
 
-/* --- FIXED LEGEND OVERLAY --- */
+.node rect {
+    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
+}
+
+.node text {
+    pointer-events: none;
+}
+
+/* Legend Styling */
 .legend {
     position: absolute;
     top: 20px;
     right: 20px;
     background: rgba(255, 255, 255, 0.95);
-    padding: 18px;
-    border: 2px solid var(--global-black);
+    padding: 15px;
+    border: 2px solid #000;
     box-shadow: 4px 4px 0px var(--dhl-yellow);
     z-index: 1500;
-    /* High z-index to stay above SVG diagram */
     pointer-events: none;
-    /* Allows mouse clicks/drags to pass THROUGH to the diagram */
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.dot {
-    width: 14px;
-    height: 14px;
-    margin-right: 10px;
-    border: 1px solid #333;
-}
-
-/* --- D3 SVG ELEMENT STYLING --- */
-
-/* Node (Card) Styles */
-.node rect {
-    stroke-width: 2px;
-    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
-}
-
-/* Text Labels Inside Boxes */
-.node text {
-    pointer-events: none;
-    font-family: Arial, sans-serif;
-}
-
-/* Connection Lines (Links) */
-.link {
-    fill: none;
-    stroke: var(--dhl-red);
-    /* Solid red arrows to match the blueprint design */
-    stroke-width: 2px;
-    transition: opacity 0.3s ease;
 }

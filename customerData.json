@@ -6,43 +6,68 @@
       "officialName": "Inditex S.A.",
       "globalGroupCode": "INDITEX",
       "mdmCustomerId": "CUST-IND-GLOBAL",
+      "industrySector": "FASHION_RETAIL",
       "accounts": [
         {
           "mdmAccountId": "ACC-IND-ES-COUNTRY",
           "tradingName": "Inditex Spain (Country Hub)",
           "type": "COUNTRY_CUSTOMER",
+          "taxId": "ESA12345678",
           "children": [
             {
               "mdmAccountId": "ZARA-ES-SOLDTO",
               "tradingName": "Zara Spain Commercial",
               "type": "SOLD_TO",
+              "businessRoles": [
+                "SOLD_TO",
+                "PAYER"
+              ],
+              "billingAgreements": [
+                {
+                  "paymentTerms": "NET_60",
+                  "currency": "EUR",
+                  "invoiceMedia": "EDI"
+                }
+              ],
+              "bankAccounts": [
+                {
+                  "iban": "ES991234567890",
+                  "bankCountryCode": "ES"
+                }
+              ],
               "children": [
                 {
                   "mdmAccountId": "ZARA-MADRID-WH1",
                   "tradingName": "Zara Madrid Central WH",
                   "type": "PICKUP",
+                  "businessRoles": [
+                    "PICKUP",
+                    "SHIPPER"
+                  ],
                   "addresses": [
                     {
                       "city": "Madrid",
-                      "country": "ES"
+                      "country": "ES",
+                      "timezone": "CET",
+                      "addressType": "WAREHOUSE"
                     }
-                  ]
-                }
-              ]
-            },
-            {
-              "mdmAccountId": "MD-ES-SOLDTO",
-              "tradingName": "Massimo Dutti Spain",
-              "type": "SOLD_TO",
-              "children": [
-                {
-                  "mdmAccountId": "MD-BARC-WH2",
-                  "tradingName": "MD Barcelona Depot",
-                  "type": "PICKUP",
-                  "addresses": [
+                  ],
+                  "contactPersons": [
                     {
-                      "city": "Barcelona",
-                      "country": "ES"
+                      "contactPersonId": "CP-ES-01",
+                      "firstName": "Lucia",
+                      "lastName": "Fernandez",
+                      "jobTitle": "Logistics Director",
+                      "commChannels": [
+                        {
+                          "type": "EMAIL",
+                          "value": "l.fernandez@zara.es"
+                        },
+                        {
+                          "type": "MOBILE",
+                          "value": "+34600112233"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -70,6 +95,63 @@
                       "country": "PT"
                     }
                   ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "2. Relationship: Müller Auto (Full Functional Model)",
+    "customer": {
+      "customerType": "Relationship Customers",
+      "officialName": "Müller Auto Parts GmbH",
+      "mdmCustomerId": "CUST-MULLER-DE",
+      "accounts": [
+        {
+          "mdmAccountId": "MULLER-DE-SOLDTO",
+          "tradingName": "Müller HQ Sold-To",
+          "type": "SOLD_TO",
+          "businessRoles": [
+            "SOLD_TO",
+            "PAYER"
+          ],
+          "contracts": [
+            {
+              "contractId": "CON-M-2026",
+              "contractName": "DE Service Framework v4"
+            }
+          ],
+          "bankAccounts": [
+            {
+              "iban": "DE8812345678",
+              "bankCountryCode": "DE"
+            }
+          ],
+          "contactPersons": [
+            {
+              "contactPersonId": "CP-DE-01",
+              "lastName": "Müller",
+              "jobTitle": "CEO",
+              "commChannels": [
+                {
+                  "type": "PHONE",
+                  "value": "+491234567"
+                }
+              ]
+            }
+          ],
+          "children": [
+            {
+              "mdmAccountId": "MULLER-HAMBURG-WH",
+              "tradingName": "Hamburg Hub",
+              "type": "PICKUP",
+              "addresses": [
+                {
+                  "city": "Hamburg",
+                  "country": "DE"
                 }
               ]
             }
