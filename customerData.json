@@ -1,7 +1,8 @@
 [
   {
-    "scenarioName": "1. Strategic: Inditex Global (Full Blueprint)",
+    "scenarioName": "1. Strategic: Inditex Global (Enterprise Blueprint)",
     "customer": {
+      "customerType": "Strategic Customers",
       "officialName": "Inditex S.A.",
       "globalGroupCode": "INDITEX",
       "mdmCustomerId": "CUST-IND-GLOBAL",
@@ -23,7 +24,8 @@
               ],
               "billingAgreements": [
                 {
-                  "paymentTerms": "NET_60"
+                  "paymentTerms": "NET_60",
+                  "currency": "EUR"
                 }
               ],
               "contactPersons": [
@@ -50,6 +52,51 @@
                       "country": "ES"
                     }
                   ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "mdmAccountId": "ACC-IND-PT-COUNTRY",
+          "tradingName": "Inditex Portugal Hub",
+          "type": "COUNTRY_CUSTOMER"
+        }
+      ]
+    }
+  },
+  {
+    "scenarioName": "2. Relationship: Müller Auto (Functional Local)",
+    "customer": {
+      "customerType": "Relationship Customers",
+      "officialName": "Müller Auto Parts GmbH",
+      "mdmCustomerId": "CUST-MULLER-DE",
+      "accounts": [
+        {
+          "mdmAccountId": "MULLER-DE-SOLDTO",
+          "tradingName": "Müller HQ Sold-To",
+          "type": "SOLD_TO",
+          "contracts": [
+            {
+              "contractId": "CON-2026",
+              "contractName": "DE Framework Agreement"
+            }
+          ],
+          "contactPersons": [
+            {
+              "lastName": "Müller",
+              "jobTitle": "CEO"
+            }
+          ],
+          "children": [
+            {
+              "mdmAccountId": "MULLER-HAMBURG-WH",
+              "tradingName": "Hamburg Depot",
+              "type": "PICKUP",
+              "addresses": [
+                {
+                  "city": "Hamburg",
+                  "country": "DE"
                 }
               ]
             }

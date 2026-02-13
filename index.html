@@ -3,63 +3,35 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DHL Master Data Architect | Blueprint Visualizer</title>
-
+    <title>DHL Master Data Architect</title>
     <link rel="stylesheet" href="style.css">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 
 <body>
-
     <aside id="sidebar">
-        <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" alt="DHL Logo" class="logo">
-
+        <img src="https://www.dhl.com/etc/clientlibs/dhl/clientlibs/core/images/logo.svg" class="logo">
         <h2>Data Architect Portal</h2>
-        <p class="subtitle">MDM Hierarchy Explorer</p>
-
-        <div class="search-box">
-            <input type="text" id="nodeSearch" placeholder="🔍 Search IDs, Cities, or Names...">
-        </div>
-
+        <input type="text" id="nodeSearch" placeholder="🔍 Search IDs or Names...">
         <select id="scenarioSelector">
-            <option value="">-- Choose Business Scenario --</option>
+            <option value="">-- Choose Scenario --</option>
         </select>
-
-        <button id="resetZoom">🔄 Reset Diagram Position</button>
-
-        <div id="details">
-        </div>
-
+        <button id="resetZoom">🔄 Reset View</button>
         <div id="json-viewer">
-            <h3>MDM RAW OBJECT</h3>
-            <pre id="json-display">// Select a scenario to view JSON schema</pre>
+            <h3>RAW OBJECT</h3>
+            <pre id="json-display"></pre>
         </div>
     </aside>
-
     <main id="viewport">
-
         <div class="legend">
-            <div class="legend-item">
-                <span class="dot" style="background:var(--dhl-yellow)"></span> GLOBAL CUSTOMER
-            </div>
-            <div class="legend-item">
-                <span class="dot" style="background:var(--dhl-red)"></span> COMMERCIAL OBJECT
-            </div>
-            <div class="legend-item">
-                <span class="dot" style="background:var(--card-body)"></span> DATA ATTRIBUTE
-            </div>
-            <hr style="border: 0; border-top: 1px solid #ddd; margin: 10px 0;">
-            <p style="font-size: 10px; color: #666; font-weight: normal; margin: 0;">
-                🖱️ <b>Scroll</b> to Zoom In/Out<br>
-                🖱️ <b>Click & Drag</b> to Pan Canvas
-            </p>
+            <div class="legend-item"><span class="dot" style="background:var(--dhl-yellow)"></span> GLOBAL</div>
+            <div class="legend-item"><span class="dot" style="background:var(--dhl-red)"></span> COMMERCIAL</div>
+            <div class="legend-item"><span class="dot" style="background:#003399"></span> FINANCIAL</div>
+            <div class="legend-item"><span class="dot" style="background:#007D8A"></span> PERSONNEL</div>
+            <div class="legend-item"><span class="dot" style="background:var(--location)"></span> LOCATION</div>
         </div>
-
         <div id="viz-container"></div>
     </main>
-
     <script src="script.js"></script>
 </body>
 
