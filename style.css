@@ -1,10 +1,7 @@
-/* --- DHL Master Data Blueprint Identity --- */
 :root {
     --dhl-red: #D40511;
     --dhl-yellow: #FFCC00;
-    --blueprint-bg: #ffffff;
     --card-body: #FFF5CC;
-    /* Cream body for cards */
     --grid-line: #e0e0e0;
 }
 
@@ -14,10 +11,9 @@ body {
     display: flex;
     height: 100vh;
     font-family: 'Delivery', Arial, sans-serif;
-    background-color: var(--blueprint-bg);
+    background-color: #fff;
 }
 
-/* --- SIDEBAR & VIEWPORT --- */
 #sidebar {
     width: 380px;
     background: #f4f4f4;
@@ -31,17 +27,13 @@ body {
 #viz-container {
     flex-grow: 1;
     cursor: grab;
-    background-color: #ffffff;
     background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 20px 20px;
-    /* Architect grid */
 }
 
-/* --- D3 SVG ELEMENTS --- */
 .link {
     fill: none;
     stroke: var(--dhl-red);
-    /* Blueprint red arrows */
     stroke-width: 2px;
 }
 
@@ -49,11 +41,6 @@ body {
     filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.15));
 }
 
-.node text {
-    pointer-events: none;
-}
-
-/* Legend Styling */
 .legend {
     position: absolute;
     top: 20px;

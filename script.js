@@ -1,6 +1,6 @@
 /**
  * DHL Master Data Blueprint Engine - v3.4.0
- * Features: Multi-Color Object Logic & Full Attribute Mapping
+ * Logic: Functional Object Coloring & Deep Mapping
  */
 
 let masterData = [];
@@ -14,7 +14,6 @@ const colors = {
     FINANCIAL: "#003399",   // DHL Blue (Bank, Billing)
     PERSONNEL: "#007D8A",   // Teal (Contact, Comm)
     LOCATION: "#666666",    // Gray (Address)
-    DEFAULT: "#111111"
 };
 
 // 1. Initialize SVG & Zoom
@@ -37,15 +36,14 @@ fetch('customerData.json').then(res => res.json()).then(data => {
 function mapHierarchy(obj, type) {
     let children = [];
 
-    // Map Nested Accounts (Recursive)
+    // Map Nested Accounts (Recursive Multi-Country)
     if (obj.accounts) children.push(...obj.accounts.map(acc => mapHierarchy(acc, acc.type || 'ACCOUNT')));
     if (obj.children) children.push(...obj.children.map(child => mapHierarchy(child, child.type || 'SUB_ACCOUNT')));
 
-    // Financial Objects
+    // Extract Arrays into Parallel Nodes
     if (obj.bankAccounts) obj.bankAccounts.forEach(ba => children.push({ name: 'Bank Account', type: 'BANK', data: ba }));
     if (obj.billingAgreements) obj.billingAgreements.forEach(b => children.push({ name: 'Billing Agreement', type: 'BILLING', data: b }));
 
-    // Personnel & Communication
     if (obj.contactPersons) {
         obj.contactPersons.forEach(cp => {
             let contactNode = { name: `${cp.firstName || ''} ${cp.lastName}`, type: 'CONTACT', data: cp, children: [] };
@@ -54,7 +52,6 @@ function mapHierarchy(obj, type) {
         });
     }
 
-    // Location Objects
     if (obj.addresses) obj.addresses.forEach(a => children.push({ name: `${a.city}, ${a.country}`, type: 'ADDRESS', data: a }));
 
     return {
@@ -65,43 +62,36 @@ function mapHierarchy(obj, type) {
     };
 }
 
-// 4. Rendering Pipeline with Coloring Logic
+// 4. Rendering Pipeline
 function render(scenario) {
     g.selectAll("*").remove();
     const rootData = mapHierarchy(scenario.customer, 'GLOBAL');
     const root = d3.hierarchy(rootData);
-
-    // Increased horizontal spacing to prevent sibling overlap
-    const tree = d3.tree().nodeSize([300, 260]);
+    const tree = d3.tree().nodeSize([300, 260]); // Spacing for sibling visibility
     tree(root);
 
     const container = document.getElementById('viz-container');
     svg.call(zoom.transform, d3.zoomIdentity.translate(container.clientWidth / 2 - nodeW / 2, 50).scale(0.6));
 
-    // Links
+    // Links (Solid Red as per blueprint)
     g.selectAll(".link").data(root.links()).enter().append("path").attr("class", "link")
         .attr("d", d3.linkVertical().x(d => d.x + nodeW / 2).y(d => d.y + nodeH / 2));
 
     const node = g.selectAll(".node").data(root.descendants()).enter().append("g")
         .attr("class", "node").attr("transform", d => `translate(${d.x},${d.y})`);
 
-    // Helper to get header color based on type
+    // Helper to get functional color
     const getHeaderColor = (type) => {
-        if (['GLOBAL'].includes(type)) return colors.GLOBAL;
-        if (['COUNTRY_CUSTOMER', 'SOLD_TO', 'PICKUP', 'ACCOUNT'].includes(type)) return colors.COMMERCIAL;
+        if (type === 'GLOBAL') return colors.GLOBAL;
+        if (['SOLD_TO', 'PICKUP', 'COUNTRY_CUSTOMER'].includes(type)) return colors.COMMERCIAL;
         if (['BANK', 'BILLING'].includes(type)) return colors.FINANCIAL;
         if (['CONTACT', 'COMM'].includes(type)) return colors.PERSONNEL;
-        if (['ADDRESS'].includes(type)) return colors.LOCATION;
-        return colors.DEFAULT;
+        return colors.LOCATION;
     };
 
-    // Card Body
+    // Blueprint Card Body & Header
     node.append("rect").attr("width", nodeW).attr("height", nodeH).style("fill", "#FFF5CC").style("stroke", "#D40511").attr("rx", 8);
-
-    // Card Header with Dynamic Coloring
-    node.append("rect").attr("width", nodeW).attr("height", 32)
-        .style("fill", d => getHeaderColor(d.data.type))
-        .style("stroke", d => d.data.type === 'GLOBAL' ? '#CC9900' : '#D40511').attr("rx", 8);
+    node.append("rect").attr("width", nodeW).attr("height", 32).style("fill", d => getHeaderColor(d.data.type)).style("stroke", "#D40511").attr("rx", 8);
 
     node.append("text").attr("x", nodeW / 2).attr("y", 21).attr("text-anchor", "middle")
         .style("fill", d => d.data.type === 'GLOBAL' ? "#000" : "#FFF").style("font-weight", "bold").style("font-size", "11px")
@@ -121,8 +111,7 @@ function render(scenario) {
         else if (d.data.type === 'BANK') { addLine("[Data]", `IBAN: ${data.iban}`); }
         else if (d.data.type === 'ADDRESS') { addLine("[Loc]", `${data.city}, ${data.country}`); }
         else if (d.data.type === 'CONTACT') { addLine("[Role]", data.jobTitle); }
-        else if (d.data.type === 'COMM') { addLine("[Data]", `${data.type}: ${data.value}`); }
-        else { addLine("[IDs]", data.mdmAccountId || data.mdmCustomerId); addLine("[Core]", data.officialName); }
+        else { addLine("[IDs]", data.mdmAccountId || data.mdmCustomerId); }
     });
 }
 
