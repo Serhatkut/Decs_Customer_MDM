@@ -1,105 +1,75 @@
 [
   {
-    "scenarioName": "1. Strategic: Inditex (Multi-Country Blueprint)",
+    "scenarioName": "1. Strategic: Inditex Global (Multi-Country & Multi-Brand)",
     "customer": {
       "customerType": "Strategic Customers",
       "officialName": "Inditex S.A.",
       "globalGroupCode": "INDITEX",
+      "mdmCustomerId": "CUST-IND-GLOBAL",
       "accounts": [
         {
-          "mdmAccountId": "INDITEX-ES-COUNTRY",
-          "tradingName": "Inditex Spain (Country Level)",
+          "mdmAccountId": "ACC-IND-ES-COUNTRY",
+          "tradingName": "Inditex Spain (Country Hub)",
           "type": "COUNTRY_CUSTOMER",
           "children": [
             {
               "mdmAccountId": "ZARA-ES-SOLDTO",
-              "tradingName": "Zara Spain Sold-To",
+              "tradingName": "Zara Spain Commercial",
               "type": "SOLD_TO",
-              "billingAgreements": [
-                {
-                  "paymentTerms": "NET_60",
-                  "currency": "EUR"
-                }
-              ],
-              "bankAccounts": [
-                {
-                  "iban": "ES1234...",
-                  "bankCountryCode": "ES"
-                }
-              ],
               "children": [
                 {
                   "mdmAccountId": "ZARA-MADRID-WH1",
-                  "tradingName": "Madrid WH1",
+                  "tradingName": "Zara Madrid Central WH",
                   "type": "PICKUP",
                   "addresses": [
                     {
                       "city": "Madrid",
                       "country": "ES"
                     }
-                  ],
-                  "contactPersons": [
+                  ]
+                }
+              ]
+            },
+            {
+              "mdmAccountId": "MD-ES-SOLDTO",
+              "tradingName": "Massimo Dutti Spain",
+              "type": "SOLD_TO",
+              "children": [
+                {
+                  "mdmAccountId": "MD-BARC-WH2",
+                  "tradingName": "MD Barcelona Depot",
+                  "type": "PICKUP",
+                  "addresses": [
                     {
-                      "lastName": "Fernandez",
-                      "jobTitle": "WH Mgr",
-                      "commChannels": [
-                        {
-                          "type": "EMAIL",
-                          "value": "l.fer@inditex.com"
-                        }
-                      ]
+                      "city": "Barcelona",
+                      "country": "ES"
                     }
                   ]
                 }
               ]
             }
           ]
-        }
-      ]
-    }
-  },
-  {
-    "scenarioName": "2. Relationship: Müller Auto (Full Functional Model)",
-    "customer": {
-      "customerType": "Relationship Customers",
-      "officialName": "Müller Auto Parts GmbH",
-      "accounts": [
+        },
         {
-          "mdmAccountId": "MULLER-DE-SOLDTO",
-          "tradingName": "Müller HQ Sold-To",
-          "type": "SOLD_TO",
-          "contracts": [
-            {
-              "contractId": "M-2026",
-              "contractName": "Service Framework"
-            }
-          ],
-          "bankAccounts": [
-            {
-              "iban": "DE9988...",
-              "bankCountryCode": "DE"
-            }
-          ],
-          "contactPersons": [
-            {
-              "lastName": "Müller",
-              "jobTitle": "CEO",
-              "commChannels": [
-                {
-                  "type": "MOBILE",
-                  "value": "+49123456"
-                }
-              ]
-            }
-          ],
+          "mdmAccountId": "ACC-IND-PT-COUNTRY",
+          "tradingName": "Inditex Portugal Hub",
+          "type": "COUNTRY_CUSTOMER",
           "children": [
             {
-              "mdmAccountId": "MULLER-HAMBURG-WH",
-              "type": "PICKUP",
-              "addresses": [
+              "mdmAccountId": "ZARA-PT-SOLDTO",
+              "tradingName": "Zara Portugal",
+              "type": "SOLD_TO",
+              "children": [
                 {
-                  "city": "Hamburg",
-                  "country": "DE"
+                  "mdmAccountId": "ZARA-LISBON-PICKUP",
+                  "tradingName": "Lisbon Delivery Point",
+                  "type": "PICKUP",
+                  "addresses": [
+                    {
+                      "city": "Lisbon",
+                      "country": "PT"
+                    }
+                  ]
                 }
               ]
             }
