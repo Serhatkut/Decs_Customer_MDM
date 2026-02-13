@@ -68,6 +68,43 @@ function buildIndexByCustomerId(scenario) {
     return idx;
 }
 
+/**
+ * Normalizes incoming JSON so the renderer supports BOTH shapes:
+ * A) Preferred: scenario is the CUSTOMER root object (7-scenario array)
+ * B) Legacy:    { scenarioName, customer: { ...customerRoot } }
+ *
+ * Returns a CUSTOMER-root object with top-level fields expected by the UI.
+ */
+function normalizeScenario(s) {
+    if (!s) return null;
+
+    // If it already looks like a customer-root scenario (has mdmCustomerId + accounts or customerType)
+    const looksLikeRoot = (typeof s === "object") && (
+        "mdmCustomerId" in s || "accounts" in s || "customerType" in s || "customerLevel" in s
+    );
+    if (looksLikeRoot && !s.customer) return s;
+
+    // Legacy shape: { scenarioName, customer: {...} }
+    if (s.customer && typeof s.customer === "object") {
+        const c = s.customer;
+        return {
+            // Keep scenario name at root for selector display
+            scenarioName: s.scenarioName || c.scenarioName || c.tradingName || c.officialName,
+            // Promote customer fields
+            ...c,
+            // Ensure mandatory fields exist on root (some legacy data only had these inside customer)
+            customerType: c.customerType,
+            customerLevel: c.customerLevel,
+            mdmCustomerId: c.mdmCustomerId,
+            accounts: Array.isArray(c.accounts) ? c.accounts : [],
+            children: Array.isArray(c.children) ? c.children : []
+        };
+    }
+
+    // Unexpected shape: best-effort return
+    return s;
+}
+
 function toNode(name, type, data, children = []) {
     return { name, type, data, children };
 }
@@ -81,6 +118,8 @@ function toNode(name, type, data, children = []) {
  *   otherwise show a placeholder linked legal entity node (mdmCustomerId only).
  */
 function mapScenarioToHierarchy(scenario) {
+    scenario = normalizeScenario(scenario);
+    if (!scenario) return toNode("Invalid Scenario", "CUSTOMER", {}, []);
     const customerIndex = buildIndexByCustomerId(scenario);
 
     const rootChildren = [];
@@ -168,6 +207,7 @@ function fitToCanvas() {
 }
 
 function renderScenario(scenario) {
+    scenario = normalizeScenario(scenario);
     currentScenario = scenario;
     g.selectAll("*").remove();
 
@@ -356,10 +396,13 @@ function showDetails(d) {
 function populateScenarioSelector(data) {
     const sel = document.getElementById("scenarioSelector");
     sel.innerHTML = `<option value="">-- Choose Scenario --</option>`;
-    data.forEach((s, i) => {
+    data.forEach((raw, i) => {
+        const s = normalizeScenario(raw) || raw;
         const opt = document.createElement("option");
         opt.value = i;
-        opt.textContent = `${s.scenarioName}  •  ${s.customerType}`;
+        const name = s.scenarioName || s.tradingName || s.officialName || s.mdmCustomerId || `Scenario ${i + 1}`;
+        const type = s.customerType || (raw && raw.customer && raw.customer.customerType) || "";
+        opt.textContent = `${name}  •  ${type}`;
         sel.appendChild(opt);
     });
 }
@@ -413,8 +456,20 @@ function applySearch(query) {
 fetch("customerData.json")
     .then(res => res.json())
     .then(data => {
-        scenarios = data;
-        populateScenarioSelector(data);
+        // Accept either an array, or an object with a 'scenarios' array, or a map-of-scenarios.
+        let arr = data;
+        if (data && Array.isArray(data.scenarios)) arr = data.scenarios;
+        if (arr && !Array.isArray(arr) && typeof arr === "object") arr = Object.values(arr);
+        scenarios = Array.isArray(arr) ? arr : [];
+
+        populateScenarioSelector(scenarios);
+
+        // Give an explicit hint if dataset is incomplete (common cause of “only 2 scenarios in dropdown”).
+        if (scenarios.length && scenarios.length !== 7) {
+            document.getElementById("json-display").textContent =
+                `WARNING: Loaded ${scenarios.length} scenario(s) from customerData.json. Expected 7.\n\n` +
+                JSON.stringify(data, null, 2);
+        }
     })
     .catch(err => {
         console.error("Failed to load customerData.json", err);
