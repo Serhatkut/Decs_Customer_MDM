@@ -1,8 +1,7 @@
 [
   {
-    "scenarioName": "1. Strategic: Inditex Global (Enterprise Model)",
+    "scenarioName": "1. Strategic: Inditex Global (Full Blueprint)",
     "customer": {
-      "customerType": "Strategic Customers",
       "officialName": "Inditex S.A.",
       "globalGroupCode": "INDITEX",
       "mdmCustomerId": "CUST-IND-GLOBAL",
@@ -22,6 +21,11 @@
                   "bankCountryCode": "ES"
                 }
               ],
+              "billingAgreements": [
+                {
+                  "paymentTerms": "NET_60"
+                }
+              ],
               "contactPersons": [
                 {
                   "firstName": "Lucia",
@@ -34,14 +38,22 @@
                     }
                   ]
                 }
+              ],
+              "children": [
+                {
+                  "mdmAccountId": "ZARA-MADRID-WH1",
+                  "tradingName": "Zara Madrid Central WH",
+                  "type": "PICKUP",
+                  "addresses": [
+                    {
+                      "city": "Madrid",
+                      "country": "ES"
+                    }
+                  ]
+                }
               ]
             }
           ]
-        },
-        {
-          "mdmAccountId": "ACC-IND-PT-COUNTRY",
-          "tradingName": "Inditex Portugal Hub",
-          "type": "COUNTRY_CUSTOMER"
         }
       ]
     }
