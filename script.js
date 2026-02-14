@@ -1,24 +1,26 @@
 /* =========================================================
-   DHL eCommerce · Customer Master Data Viewer (FULL)
-   FIX: Filters not showing when reference_master_data.json paths differ
-   - Adds robust enum discovery + dataset fallback
-========================================================= */
+   DHL eCommerce · Customer Master Data Viewer (D3)
+   - Loads data from /data folder
+   - Filters work before scenario selection (filter-first UX)
+   - Reference IDs are NOT rendered as separate nodes
+   - Contact comm channels are rendered as attributes (not nodes)
+   ========================================================= */
 
+"use strict";
+
+/* ---------------- Paths ---------------- */
 const PATHS = {
-    customers: "./data/customerData.json",
-    reference: "./data/reference_master_data.json",
-    colors: "./data/reference_colors.json"
+    customers: "data/customerData.json",
+    reference: "data/reference_master_data.json",
+    colors: "data/reference_colors.json"
 };
 
-/* ---------------- UI ---------------- */
+/* ---------------- UI hooks ---------------- */
 const UI = {
     selector: document.getElementById("scenarioSelector"),
     search: document.getElementById("nodeSearch"),
-    json: document.getElementById("json-display"),
     reset: document.getElementById("resetZoom"),
-    viz: document.getElementById("viz-container"),
 
-    // Filters
     fCustomerType: document.getElementById("filterCustomerType"),
     fIndustry: document.getElementById("filterIndustry"),
     fSalesChannel: document.getElementById("filterSalesChannel"),
@@ -26,193 +28,85 @@ const UI = {
     btnClearFilters: document.getElementById("clearFilters"),
     btnApplyFilters: document.getElementById("applyFilters"),
 
-    // Toggles
     tCompact: document.getElementById("toggleCompact"),
     tAddresses: document.getElementById("showAddresses"),
     tContacts: document.getElementById("showContacts"),
     tReferenceIds: document.getElementById("showReferenceIds"),
     tPlatforms: document.getElementById("showPlatforms"),
+
     btnCollapseAll: document.getElementById("collapseAll"),
     btnExpandAll: document.getElementById("expandAll"),
 
-    // Reference preview
+    json: document.getElementById("json-display"),
+
     refEnumsPreview: document.getElementById("refEnumsPreview"),
     refColorsPreview: document.getElementById("refColorsPreview"),
     swatches: document.getElementById("colorSwatches"),
 
-    // Data quality badge
     dqBadge: document.getElementById("dqBadge"),
     dqDot: document.getElementById("dqDot"),
-    dqText: document.getElementById("dqText")
+    dqText: document.getElementById("dqText"),
+
+    viz: document.getElementById("viz-container")
 };
 
-/* ---------------- D3 Globals ---------------- */
-let svg, g, zoom;
+/* ---------------- State ---------------- */
 let scenarios = [];
-let refEnums = null;
-let refColors = null;
+let refEnums = {};
+let refColors = {};
 
-let activeScenarioIndex = 0;
+let activeScenarioIndex = -1;
 let activeScenario = null;
 
-let lastRootHierarchy = null; // d3.hierarchy
-let currentRenderConfig = null;
+let svg, g, zoom;
+let lastRootHierarchy = null;
 
-/* ---------------- Layout config ---------------- */
+/* ---------------- Layout ---------------- */
 const LAYOUT = {
-    normal: { nodeW: 290, nodeH: 140, headerH: 28, gapX: 70, gapY: 35 }
+    normal: { nodeW: 300, nodeH: 150, gapX: 60, gapY: 22 }
 };
+let currentRenderConfig = LAYOUT.normal;
 
 /* ---------------- Helpers ---------------- */
-function asArray(x) { return Array.isArray(x) ? x : []; }
-function safeString(x) { return x === null || x === undefined ? "" : String(x); }
-function uniq(arr) { return [...new Set(arr.filter(v => v !== null && v !== undefined && String(v).trim() !== ""))]; }
-
-async function fetchJson(url) {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`Fetch failed: ${url} (HTTP ${res.status})`);
-    return res.json();
+function asArray(v) {
+    if (!v) return [];
+    return Array.isArray(v) ? v : [v];
 }
 
-/* ---------------- Reference enums: robust discovery ---------------- */
-function tryGet(ref, path) {
-    return path.split(".").reduce((o, k) => (o && o[k] !== undefined ? o[k] : undefined), ref);
+function safeString(v) {
+    if (v === null || v === undefined) return "";
+    return String(v);
 }
 
-/**
- * Attempt 1: direct paths (fast path)
- */
-function getEnumListByPaths(ref, candidates) {
-    for (const p of candidates) {
-        const val = tryGet(ref, p);
-        if (Array.isArray(val) && val.every(x => typeof x === "string")) return val;
+function uniq(arr) {
+    return Array.from(new Set((arr || []).filter(Boolean)));
+}
+
+function el(id) {
+    return document.getElementById(id);
+}
+
+function safeOn(elem, evt, fn) {
+    if (elem && typeof elem.addEventListener === "function") {
+        elem.addEventListener(evt, fn);
     }
-    return [];
 }
 
-/**
- * Attempt 2: deep scan for arrays of strings under keys that include keywords
- * Example: any object path containing "customerType" or "salesChannel"
- */
-function deepFindStringArraysByKeyword(obj, keywordLower) {
-    const found = [];
-    const walk = (node, path) => {
-        if (!node || typeof node !== "object") return;
-
-        if (Array.isArray(node)) {
-            if (node.length > 0 && node.every(x => typeof x === "string")) {
-                const p = path.join(".").toLowerCase();
-                if (p.includes(keywordLower)) found.push(node);
-            }
-            return;
-        }
-
-        for (const [k, v] of Object.entries(node)) {
-            walk(v, [...path, k]);
-        }
-    };
-    walk(obj, []);
-    // choose the "best" candidate: longest array
-    found.sort((a, b) => b.length - a.length);
-    return found[0] || [];
+async function fetchJson(path) {
+    const res = await fetch(path, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Fetch failed: ${path} (${res.status})`);
+    return await res.json();
 }
 
-/**
- * Attempt 3: dataset fallback (always works)
- */
-function deriveEnumsFromDataset(dataset) {
-    const customerTypes = [];
-    const industries = [];
-    const channels = [];
-    const platforms = [];
-
-    asArray(dataset).forEach(sc => {
-        const s = normalizeScenario(sc);
-
-        // customer / related customers
-        if (s.customer?.customerType) customerTypes.push(s.customer.customerType);
-        if (s.customer?.industrySector) industries.push(s.customer.industrySector);
-
-        asArray(s.relatedCustomers).forEach(rc => {
-            if (rc?.customerType) customerTypes.push(rc.customerType);
-            if (rc?.industrySector) industries.push(rc.industrySector);
-        });
-
-        // accounts
-        asArray(s.accounts).forEach(acc => {
-            if (acc?.salesChannel) channels.push(acc.salesChannel);
-
-            const po = acc?.platformObject;
-            if (po?.platformId) platforms.push(po.platformId);
-            else if (po?.name) platforms.push(po.name);
-        });
-    });
-
-    return {
-        customerTypes: uniq(customerTypes).sort(),
-        industries: uniq(industries).sort(),
-        salesChannels: uniq(channels).sort(),
-        platforms: uniq(platforms).sort()
-    };
-}
-
-/**
- * Unified enum getter: reference-first, then dataset fallback
- */
-function getEnumsForFilters(ref, dataset) {
-    // Customer Type
-    let customerTypes = getEnumListByPaths(ref, [
-        "domains.customerType",
-        "domains.customerTypes",
-        "enums.customerType",
-        "enums.customerTypes",
-        "reference.domains.customerType",
-        "reference.enums.customerType"
-    ]);
-    if (!customerTypes.length) customerTypes = deepFindStringArraysByKeyword(ref, "customertype");
-
-    // Industry
-    let industries = getEnumListByPaths(ref, [
-        "domains.industrySector",
-        "domains.industrySectors",
-        "enums.industrySector",
-        "enums.industrySectors",
-        "reference.domains.industrySector",
-        "reference.enums.industrySector"
-    ]);
-    if (!industries.length) industries = deepFindStringArraysByKeyword(ref, "industry");
-
-    // Sales Channel
-    let salesChannels = getEnumListByPaths(ref, [
-        "domains.salesChannel",
-        "domains.salesChannels",
-        "enums.salesChannel",
-        "enums.salesChannels",
-        "reference.domains.salesChannel",
-        "reference.enums.salesChannel"
-    ]);
-    if (!salesChannels.length) salesChannels = deepFindStringArraysByKeyword(ref, "channel");
-
-    const derived = deriveEnumsFromDataset(dataset);
-
-    return {
-        customerTypes: uniq((customerTypes.length ? customerTypes : derived.customerTypes)).sort(),
-        industries: uniq((industries.length ? industries : derived.industries)).sort(),
-        salesChannels: uniq((salesChannels.length ? salesChannels : derived.salesChannels)).sort(),
-        platforms: derived.platforms // platform always dataset-derived (most accurate)
-    };
-}
-
-/* ---------------- Multi-select helpers ---------------- */
 function getSelectedValues(selectEl) {
     if (!selectEl) return [];
-    return Array.from(selectEl.selectedOptions).map(o => o.value).filter(Boolean);
+    return Array.from(selectEl.selectedOptions || []).map(o => o.value);
 }
+
 function fillMultiSelect(selectEl, values) {
     if (!selectEl) return;
     selectEl.innerHTML = "";
-    const vals = uniq(values).sort((a, b) => a.localeCompare(b));
-    vals.forEach(v => {
+    (values || []).forEach(v => {
         const opt = document.createElement("option");
         opt.value = v;
         opt.textContent = v;
@@ -220,199 +114,96 @@ function fillMultiSelect(selectEl, values) {
     });
 }
 
-/* ---------------- Reference Colors ---------------- */
-function buildTokenHexMap(colorsJson) {
+/* ---------------- Reference colors ---------------- */
+function buildTokenHexMap(colorsObj) {
     const map = new Map();
-    if (!colorsJson) return map;
 
-    const scanObj = (obj) => {
+    const walk = (obj) => {
         if (!obj || typeof obj !== "object") return;
-        for (const v of Object.values(obj)) {
-            if (v && typeof v === "object" && typeof v.token === "string" && typeof v.hex === "string") {
-                map.set(v.token.trim(), v.hex.trim());
-            } else if (v && typeof v === "object") {
-                scanObj(v);
-            }
-        }
+        Object.values(obj).forEach(v => {
+            if (!v || typeof v !== "object") return;
+            if (v.token && v.hex) map.set(v.token, v.hex);
+            walk(v);
+        });
     };
 
-    scanObj(colorsJson.primary);
-    scanObj(colorsJson.foreground);
-    scanObj(colorsJson.background);
-    scanObj(colorsJson.neutralScale);
+    walk(colorsObj);
     return map;
 }
 
-function resolveColor(tokenOrHex, tokenToHexMap) {
-    if (!tokenOrHex) return "#000";
-    const t = safeString(tokenOrHex).trim();
-    if (t.startsWith("#")) return t;
-
-    if (t.startsWith("--")) {
-        const cssVal = getComputedStyle(document.documentElement).getPropertyValue(t).trim();
-        if (cssVal) return cssVal;
-        const fallback = tokenToHexMap.get(t);
-        if (fallback) return fallback;
-    }
-    return t;
+function resolveColor(tokenOrHex, tokenMap) {
+    const s = safeString(tokenOrHex).trim();
+    if (!s) return null;
+    if (s.startsWith("#")) return s;
+    if (tokenMap && tokenMap.has(s)) return tokenMap.get(s);
+    return null;
 }
 
+/* ---------------- Semantic styling ---------------- */
 function semanticKeyForNodeType(nodeType) {
-    if (nodeType === "GLOBAL_CUSTOMER") return "GLOBAL_CUSTOMER";
-    if (nodeType === "COUNTRY_CUSTOMER") return "COUNTRY_CUSTOMER";
-    if (nodeType === "ACCOUNT_SOLDTO" || nodeType === "ACCOUNT_SUB") return "ACCOUNT";
-    if (nodeType === "CONTRACT") return "CONTRACT";
-    if (nodeType === "BILLING_PROFILE") return "BILLING_PROFILE";
-    if (nodeType === "CONTACT") return "CONTACT";
-    if (nodeType.startsWith("ADDRESS")) return "ADDRESS";
-    if (nodeType === "PLATFORM") return "PLATFORM";
-    return "GLOBAL_CUSTOMER";
+    // align with reference_colors.json semanticMapping keys
+    switch (nodeType) {
+        case "GLOBAL_CUSTOMER": return "GLOBAL_CUSTOMER";
+        case "COUNTRY_CUSTOMER": return "COUNTRY_CUSTOMER";
+        case "ACCOUNT_SOLDTO":
+        case "ACCOUNT_SUB": return "ACCOUNT";
+        case "CONTRACT": return "CONTRACT";
+        case "BILLING_PROFILE": return "BILLING_PROFILE";
+        case "CONTACT": return "CONTACT";
+        case "ADDRESS": return "ADDRESS";
+        case "PLATFORM": return "PLATFORM";
+        default: return "ACCOUNT";
+    }
 }
 
-/* ---------------- Node metadata ---------------- */
-function iconFor(type, data) {
-    if (type === "GLOBAL_CUSTOMER") return "🌐";
-    if (type === "COUNTRY_CUSTOMER") return "🏢";
-    if (type === "ACCOUNT_SOLDTO") return "🧾";
-    if (type === "ACCOUNT_SUB") {
-        const roles = asArray(data?.businessRoles);
-        if (roles.includes("PICKUP")) return "🏬";
-        if (roles.includes("SHIPPER")) return "📦";
-        return "📦";
+function iconFor(nodeType, obj) {
+    // simple emoji icons (no extra libs)
+    const t = nodeType;
+    if (t === "GLOBAL_CUSTOMER") return "🌐";
+    if (t === "COUNTRY_CUSTOMER") return "🏳️";
+    if (t === "ACCOUNT_SOLDTO") return "🏢";
+    if (t === "ACCOUNT_SUB") return (asArray(obj?.businessRoles).includes("PICKUP") ? "📦" : "🏬");
+    if (t === "CONTRACT") return "📄";
+    if (t === "BILLING_PROFILE") return "💳";
+    if (t === "CONTACT") return "👤";
+    if (t === "ADDRESS") {
+        const at = obj?.addressType;
+        if (at === "PICKUP") return "📦";
+        if (at === "BILLING") return "💰";
+        if (at === "REGISTERED_OFFICE") return "🏛️";
+        return "📍";
     }
-    if (type === "CONTRACT") return "📝";
-    if (type === "BILLING_PROFILE") return "💳";
-    if (type === "PLATFORM") return "🧩";
-    if (type === "CONTACT") return "👤";
-    if (type.startsWith("ADDRESS")) {
-        const at = safeString(data?.addressType).toUpperCase();
-        if (at.includes("PICKUP")) return "📍";
-        if (at.includes("BILLING")) return "💼";
-        if (at.includes("RESIDENTIAL")) return "🏠";
-        if (at.includes("REGISTERED")) return "🏛️";
-        return "🏷️";
-    }
-    return "•";
+    if (t === "PLATFORM") return "🧩";
+    return "⬚";
 }
 
-function displayNameFor(type, obj) {
-    if (!obj) return "(unknown)";
-    if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") {
-        return obj.tradingName || obj.officialName || obj.mdmCustomerId;
+function displayNameFor(nodeType, obj) {
+    if (!obj) return nodeType;
+    switch (nodeType) {
+        case "GLOBAL_CUSTOMER":
+        case "COUNTRY_CUSTOMER":
+            return obj.tradingName || obj.officialName || obj.mdmCustomerId || "Customer";
+        case "ACCOUNT_SOLDTO":
+        case "ACCOUNT_SUB":
+            return obj.tradingName || obj.officialName || obj.mdmAccountId || "Account";
+        case "CONTRACT":
+            return obj.contractName || obj.contractId || "Contract";
+        case "BILLING_PROFILE":
+            return obj.billingProfileId || obj.billingAccountNumber || "Billing Profile";
+        case "CONTACT":
+            return `${obj.firstName || ""} ${obj.lastName || ""}`.trim() || obj.contactPersonId || "Contact";
+        case "ADDRESS":
+            return `${obj.addressType || "ADDRESS"} · ${obj.city || ""}`.trim() || obj.addressId || "Address";
+        case "PLATFORM":
+            return obj.name || obj.platformId || "Platform";
+        default:
+            return nodeType;
     }
-    if (type === "ACCOUNT_SOLDTO" || type === "ACCOUNT_SUB") return obj.mdmAccountId || "(account)";
-    if (type === "CONTRACT") return obj.contractName || obj.contractId;
-    if (type === "BILLING_PROFILE") return obj.billingProfileId || "Billing Profile";
-    if (type.startsWith("ADDRESS")) return `${obj.city || ""}${obj.country ? ", " + obj.country : ""}`.trim() || obj.addressId;
-    if (type === "CONTACT") return `${obj.firstName || ""} ${obj.lastName || ""}`.trim() || obj.contactPersonId;
-    if (type === "PLATFORM") return obj.platformId || obj.name || "Platform";
-    return obj.mdmCustomerId || obj.mdmAccountId || "(node)";
 }
 
-function pickKeyLines(type, data) {
-    const lines = [];
-    const push = (k, v) => {
-        const val = safeString(v).trim();
-        if (!val) return;
-        lines.push([k, val]);
-    };
-    if (!data) return lines;
-
-    if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") {
-        push("mdmCustomerId", data.mdmCustomerId);
-        push("customerType", data.customerType);
-        push("customerLevel", data.customerLevel);
-        push("globalGroupCode", data.globalGroupCode);
-        push("industrySector", data.industrySector);
-    }
-
-    if (type === "ACCOUNT_SOLDTO" || type === "ACCOUNT_SUB") {
-        push("mdmAccountId", data.mdmAccountId);
-        push("roles", asArray(data.businessRoles).join(", "));
-        push("salesChannel", data.salesChannel);
-        const pid = data?.platformObject?.platformId || data?.platformObject?.name;
-        if (pid) push("platform", pid);
-        push("paymentTerms", data.paymentTerms);
-        // Inline reference IDs (no separate nodes)
-        const refs = asArray(data.referenceIds)
-            .map(r => `${safeString(r.refType)}=${safeString(r.refValue)}`.trim())
-            .filter(Boolean);
-        if (refs.length) push("referenceIds", refs.slice(0, 2).join(" | ") + (refs.length > 2 ? " …" : ""));
-    }
-
-    if (type === "CONTRACT") {
-        push("contractId", data.contractId);
-        push("startDate", data.startDate);
-        const cd = data.contractDetail || {};
-        push("contractType", cd.contractType);
-        if (Array.isArray(cd.services)) push("services", cd.services.join(", "));
-    }
-
-    if (type === "BILLING_PROFILE") {
-        push("billingProfileId", data.billingProfileId);
-        push("billingAccountNumber", data.billingAccountNumber);
-        if (data.paymentMethod?.type) push("payMethod", data.paymentMethod.type);
-        // Inline reference IDs (no separate nodes)
-        const refs = asArray(data.referenceIds)
-            .map(r => `${safeString(r.refType)}=${safeString(r.refValue)}`.trim())
-            .filter(Boolean);
-        if (refs.length) push("referenceIds", refs.slice(0, 2).join(" | ") + (refs.length > 2 ? " …" : ""));
-    }
-
-    if (type === "PLATFORM") {
-        push("platformId", data.platformId || data.name);
-        push("type", data.type);
-    }
-
-    if (type === "CONTACT") {
-        push("contactPersonId", data.contactPersonId);
-        push("jobTitle", data.jobTitle);
-        const comm = asArray(data.communicationChannels);
-        const email = comm.find(c => safeString(c.type).toUpperCase() === "EMAIL")?.value;
-        const phone = comm.find(c => safeString(c.type).toUpperCase() === "PHONE")?.value;
-        if (email) push("email", email);
-        if (phone) push("phone", phone);
-    }
-
-    if (type.startsWith("ADDRESS")) {
-        push("addressType", data.addressType);
-        push("city", data.city);
-        push("postalcode", data.postalcode);
-    }
-
-    return lines.slice(0, 5);
-}
-
-/* ---------------- Scenario normalization ---------------- */
-function normalizeScenario(s) {
-    if (s && s.customer && Array.isArray(s.accounts)) return s;
-    const legacyCustomer = {
-        customerType: s.customerType,
-        customerLevel: s.customerLevel,
-        mdmCustomerId: s.mdmCustomerId,
-        parentMdmCustomerId: s.parentMdmCustomerId ?? null,
-        officialName: s.officialName,
-        tradingName: s.tradingName,
-        globalGroupCode: s.globalGroupCode ?? null,
-        industrySector: s.industrySector ?? null,
-        taxId: s.taxId ?? null,
-        countryOfRegistration: s.countryOfRegistration ?? null,
-        addresses: asArray(s.addresses),
-        contactPersons: asArray(s.contactPersons)
-    };
-    return {
-        scenarioName: s.scenarioName || "Scenario",
-        customer: legacyCustomer,
-        accounts: asArray(s.accounts),
-        relatedCustomers: asArray(s.relatedCustomers || s.children)
-    };
-}
-
-/* ---------------- Visibility toggles ---------------- */
+/* ---------------- View toggles ---------------- */
 function getVis() {
     return {
-        // Compact mode removed (kept for backward-compatible HTML, but ignored)
-        compact: false,
         showAddresses: !!UI.tAddresses?.checked,
         showContacts: !!UI.tContacts?.checked,
         showReferenceIds: !!UI.tReferenceIds?.checked,
@@ -420,36 +211,154 @@ function getVis() {
     };
 }
 
-/* ---------------- Build hierarchy ---------------- */
+/* ---------------- Key-lines (attributes on node card) ---------------- */
+function refSummary(referenceIds) {
+    const refs = asArray(referenceIds);
+    if (!refs.length) return null;
+    // keep short: first 2 refs
+    const top = refs.slice(0, 2).map(r => `${r.refType}:${r.refValue}`).filter(Boolean);
+    const more = refs.length > 2 ? ` (+${refs.length - 2})` : "";
+    return top.length ? top.join(" | ") + more : null;
+}
+
+function commSummary(channels) {
+    const arr = asArray(channels);
+    if (!arr.length) return null;
+    const email = arr.find(x => (x?.type || "").toUpperCase() === "EMAIL")?.value;
+    const phone = arr.find(x => (x?.type || "").toUpperCase() === "PHONE")?.value;
+    const parts = [];
+    if (email) parts.push(`Email: ${email}`);
+    if (phone) parts.push(`Phone: ${phone}`);
+    if (!parts.length) {
+        const top = arr.slice(0, 2).map(x => `${x.type}:${x.value}`).filter(Boolean);
+        return top.join(" | ");
+    }
+    return parts.join(" · ");
+}
+
+function pickKeyLines(nodeType, obj) {
+    const vis = getVis();
+    const lines = [];
+
+    if (!obj) return lines;
+
+    if (nodeType === "GLOBAL_CUSTOMER" || nodeType === "COUNTRY_CUSTOMER") {
+        if (obj.mdmCustomerId) lines.push(`mdmCustomerId: ${obj.mdmCustomerId}`);
+        if (obj.customerType) lines.push(`customerType: ${obj.customerType}`);
+        if (obj.industrySector) lines.push(`industrySector: ${obj.industrySector}`);
+        if (obj.globalGroupCode) lines.push(`group: ${obj.globalGroupCode}`);
+    }
+
+    if (nodeType === "ACCOUNT_SOLDTO" || nodeType === "ACCOUNT_SUB") {
+        if (obj.mdmAccountId) lines.push(`mdmAccountId: ${obj.mdmAccountId}`);
+        if (obj.businessRoles?.length) lines.push(`roles: ${asArray(obj.businessRoles).join(", ")}`);
+        if (obj.salesChannel) lines.push(`salesChannel: ${obj.salesChannel}`);
+        if (obj.currency) lines.push(`currency: ${obj.currency}`);
+        if (vis.showPlatforms && obj.platformObject?.platformId) lines.push(`platformId: ${obj.platformObject.platformId}`);
+        if (vis.showReferenceIds) {
+            const rs = refSummary(obj.referenceIds);
+            if (rs) lines.push(`refs: ${rs}`);
+        }
+    }
+
+    if (nodeType === "CONTRACT") {
+        if (obj.contractId) lines.push(`contractId: ${obj.contractId}`);
+        if (obj.startDate) lines.push(`startDate: ${obj.startDate}`);
+        if (vis.showReferenceIds) {
+            const rs = refSummary(obj.referenceIds);
+            if (rs) lines.push(`refs: ${rs}`);
+        }
+    }
+
+    if (nodeType === "BILLING_PROFILE") {
+        if (obj.billingProfileId) lines.push(`billingProfileId: ${obj.billingProfileId}`);
+        if (obj.billingCurrency) lines.push(`billingCurrency: ${obj.billingCurrency}`);
+        if (obj.invoiceDelivery) lines.push(`invoiceDelivery: ${obj.invoiceDelivery}`);
+        if (vis.showReferenceIds) {
+            const rs = refSummary(obj.referenceIds);
+            if (rs) lines.push(`refs: ${rs}`);
+        }
+    }
+
+    if (nodeType === "CONTACT") {
+        if (obj.jobTitle) lines.push(`jobTitle: ${obj.jobTitle}`);
+        const cs = commSummary(obj.communicationChannels);
+        if (cs) lines.push(cs);
+    }
+
+    if (nodeType === "ADDRESS") {
+        if (obj.addressType) lines.push(`addressType: ${obj.addressType}`);
+        const loc = [obj.street, obj.houseNumber].filter(Boolean).join(" ");
+        if (loc) lines.push(loc);
+        const city = [obj.postalcode, obj.city].filter(Boolean).join(" ");
+        if (city) lines.push(city);
+        if (obj.country) lines.push(obj.country);
+    }
+
+    if (nodeType === "PLATFORM") {
+        if (obj.platformId) lines.push(`platformId: ${obj.platformId}`);
+        if (obj.type) lines.push(`type: ${obj.type}`);
+        if (obj.provider) lines.push(`provider: ${obj.provider}`);
+    }
+
+    return lines.slice(0, 6);
+}
+
+/* ---------------- Build tree ---------------- */
+function normalizeScenario(sc) {
+    // tolerate older formats
+    return {
+        scenarioName: sc?.scenarioName,
+        customer: sc?.customer || sc?.rootCustomer || sc?.globalCustomer || {},
+        relatedCustomers: sc?.relatedCustomers || sc?.countryCustomers || [],
+        accounts: sc?.accounts || []
+    };
+}
+
+// Enrich node with Address/Contact/Platform children according to toggles
 function enrichCommonChildren(node, obj, vis) {
-    const children = asArray(node.children);
+    const children = [];
 
-    if (vis.showPlatforms && obj?.platformObject) {
-        children.push({ type: "PLATFORM", data: obj.platformObject, children: [] });
-    }
-
-    // vis.showReferenceIds is now rendered inline in Account/Contract/BillingProfile cards (no child nodes)
-
-    if (vis.showContacts) {
-        // Contact channels remain attributes (no COMM child nodes)
-        asArray(obj?.contactPersons).forEach(cp => {
-            children.push({ type: "CONTACT", data: cp, children: [] });
-        });
-    }
-
+    // addresses
     if (vis.showAddresses) {
         asArray(obj?.addresses).forEach(a => {
-            const at = safeString(a.addressType).toUpperCase();
-            let t = "ADDRESS_BUSINESS";
-            if (at.includes("PICKUP")) t = "ADDRESS_PICKUP";
-            else if (at.includes("BILLING")) t = "ADDRESS_BILLING";
-            else if (at.includes("RESIDENTIAL")) t = "ADDRESS_RESIDENTIAL";
-            else if (at.includes("REGISTERED")) t = "ADDRESS_REGISTERED";
-            children.push({ type: t, data: a, children: [] });
+            children.push({
+                type: "ADDRESS",
+                data: a,
+                children: []
+            });
         });
     }
 
-    node.children = children;
+    // contacts
+    if (vis.showContacts) {
+        asArray(obj?.contactPersons).forEach(cp => {
+            children.push({
+                type: "CONTACT",
+                data: cp,
+                children: []
+            });
+        });
+    }
+
+    // platform (as child node, but refIds stay as attributes)
+    if (vis.showPlatforms && obj?.platformObject) {
+        const p = obj.platformObject;
+        // normalize platformId name
+        const platformNode = {
+            type: "PLATFORM",
+            data: {
+                platformId: p.platformId || p.id || p.name,
+                name: p.name || p.platformId || p.id,
+                type: p.type,
+                provider: p.provider
+            },
+            children: []
+        };
+        children.push(platformNode);
+    }
+
+    node.children = asArray(node.children).concat(children);
     return node;
 }
 
@@ -457,7 +366,7 @@ function buildAccountTree(accounts, vis) {
     const byId = new Map();
     const roots = [];
 
-    accounts.forEach(acc => {
+    asArray(accounts).forEach(acc => {
         byId.set(acc.mdmAccountId, {
             type: asArray(acc.businessRoles).includes("SOLDTO") ? "ACCOUNT_SOLDTO" : "ACCOUNT_SUB",
             data: acc,
@@ -465,23 +374,30 @@ function buildAccountTree(accounts, vis) {
         });
     });
 
+    // parent-child accounts
     byId.forEach(node => {
         const pid = node.data.parentAccountId;
         if (pid && byId.has(pid)) byId.get(pid).children.push(node);
         else roots.push(node);
     });
 
+    // contracts attach to SOLD-TO (or any account that has them)
     byId.forEach(node => {
         asArray(node.data.contracts).forEach(c => {
-            let contractNode = enrichCommonChildren({ type: "CONTRACT", data: c, children: [] }, c, vis);
+            let contractNode = { type: "CONTRACT", data: c, children: [] };
 
+            // billing profile under contract
             if (c.billingProfile) {
-                let billingNode = enrichCommonChildren({ type: "BILLING_PROFILE", data: c.billingProfile, children: [] }, c.billingProfile, vis);
-                contractNode.children.push(billingNode);
+                const bp = { type: "BILLING_PROFILE", data: c.billingProfile, children: [] };
+                enrichCommonChildren(bp, c.billingProfile, vis);
+                contractNode.children.push(bp);
             }
+
+            enrichCommonChildren(contractNode, c, vis);
             node.children.push(contractNode);
         });
 
+        // finally, add addresses/contacts/platform under the account itself
         enrichCommonChildren(node, node.data, vis);
     });
 
@@ -491,26 +407,33 @@ function buildAccountTree(accounts, vis) {
 function buildHierarchyForScenario(scenario, vis) {
     const s = normalizeScenario(scenario);
 
-    let root = enrichCommonChildren({ type: "GLOBAL_CUSTOMER", data: s.customer, children: [] }, s.customer, vis);
+    let root = { type: "GLOBAL_CUSTOMER", data: s.customer, children: [] };
+    enrichCommonChildren(root, s.customer, vis);
 
-    const countryNodes = asArray(s.relatedCustomers).map(cc =>
-        enrichCommonChildren({ type: "COUNTRY_CUSTOMER", data: cc, children: [] }, cc, vis)
-    );
+    // country customers (legal entities under group)
+    const countryNodes = asArray(s.relatedCustomers).map(cc => {
+        const n = { type: "COUNTRY_CUSTOMER", data: cc, children: [] };
+        enrichCommonChildren(n, cc, vis);
+        return n;
+    });
+
     countryNodes.forEach(n => root.children.push(n));
 
-    const accountRoots = buildAccountTree(asArray(s.accounts), vis);
+    const accountRoots = buildAccountTree(s.accounts, vis);
 
+    // attach accounts under matching country mdmCustomerId; otherwise under root
     if (countryNodes.length > 0) {
         const map = new Map(countryNodes.map(n => [n.data.mdmCustomerId, n]));
         accountRoots.forEach(ar => {
             const custId = ar.data.mdmCustomerId;
-            if (map.has(custId)) map.get(custId).children.push(ar);
+            if (custId && map.has(custId)) map.get(custId).children.push(ar);
             else root.children.push(ar);
         });
     } else {
         accountRoots.forEach(ar => root.children.push(ar));
     }
 
+    // decorate for rendering
     function decorate(node) {
         node.name = displayNameFor(node.type, node.data);
         node.icon = iconFor(node.type, node.data);
@@ -523,7 +446,7 @@ function buildHierarchyForScenario(scenario, vis) {
     return decorate(root);
 }
 
-/* ---------------- D3 init/render ---------------- */
+/* ---------------- Viz init ---------------- */
 function initViz() {
     UI.viz.innerHTML = "";
     svg = d3.select("#viz-container").append("svg").attr("width", "100%").attr("height", "100%");
@@ -537,6 +460,7 @@ function initViz() {
 }
 
 function elbowLink(d, cfg) {
+    // horizontal tree (y is depth)
     const sx = d.source.x + cfg.nodeH / 2;
     const sy = d.source.y + cfg.nodeW;
     const tx = d.target.x + cfg.nodeH / 2;
@@ -562,6 +486,23 @@ function zoomToFit(padding = 40) {
     svg.transition().duration(450).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(s));
 }
 
+/* ---------------- Rendering ---------------- */
+function getSemanticColors(semanticKey) {
+    // default DHL-ish fallback
+    const fallback = { header: "#D40511", body: "#FFF7D1", accent: "#000000" };
+    const sm = refColors?.semanticMapping || null;
+    if (!sm || !sm[semanticKey]) return fallback;
+
+    const tokenMap = buildTokenHexMap(refColors);
+    const m = sm[semanticKey];
+
+    return {
+        header: resolveColor(m.header, tokenMap) || fallback.header,
+        body: resolveColor(m.body, tokenMap) || fallback.body,
+        accent: resolveColor(m.accent, tokenMap) || fallback.accent
+    };
+}
+
 function renderActiveScenario() {
     if (!activeScenario) return;
 
@@ -575,7 +516,7 @@ function renderActiveScenario() {
     const root = d3.hierarchy(data);
     lastRootHierarchy = root;
 
-    // Apply collapse state stored in node.data.__collapsed
+    // apply collapse state stored on data objects
     (function applyCollapseState(node) {
         if (node.data && node.data.__collapsed && node.children) {
             node._children = node.children;
@@ -590,19 +531,7 @@ function renderActiveScenario() {
 
     tree(root);
 
-    const tokenToHex = buildTokenHexMap(refColors);
-    const semMap = refColors?.semanticMapping || {};
-
-    function colorsFor(nodeType) {
-        const key = semanticKeyForNodeType(nodeType);
-        const entry = semMap[key] || semMap["GLOBAL_CUSTOMER"] || {};
-        return {
-            header: resolveColor(entry.header || "#000", tokenToHex),
-            body: resolveColor(entry.body || "#eee", tokenToHex)
-        };
-    }
-
-    // Links
+    // links
     g.selectAll(".link")
         .data(root.links())
         .enter()
@@ -610,82 +539,95 @@ function renderActiveScenario() {
         .attr("class", "link")
         .attr("d", d => elbowLink(d, cfg));
 
-    // Nodes
+    // nodes
     const nodes = g.selectAll(".node")
         .data(root.descendants())
         .enter()
         .append("g")
-        .attr("class", d => `node node-${d.data.type}`)
-        .attr("transform", d => `translate(${d.y},${d.x})`)
-        .on("click", (event, d) => {
-            event.stopPropagation();
-            UI.json.textContent = JSON.stringify(d.data.data, null, 2);
-            g.selectAll(".node").classed("selected", false);
-            d3.select(event.currentTarget).classed("selected", true);
-        });
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.y},${d.x})`);
 
+    // card
     nodes.append("rect")
         .attr("class", "card")
         .attr("width", cfg.nodeW)
         .attr("height", cfg.nodeH)
-        .attr("rx", 14)
-        .attr("fill", d => colorsFor(d.data.type).body);
+        .attr("rx", 12)
+        .attr("ry", 12);
 
+    // header band
     nodes.append("rect")
-        .attr("class", "header")
+        .attr("class", "card-header")
         .attr("width", cfg.nodeW)
-        .attr("height", cfg.headerH)
-        .attr("rx", 14)
-        .attr("fill", d => colorsFor(d.data.type).header);
+        .attr("height", 34)
+        .attr("rx", 12)
+        .attr("ry", 12);
 
+    // header text
     nodes.append("text")
-        .attr("class", "icon")
-        .attr("x", 12)
-        .attr("y", cfg.headerH / 2 + 2)
-        .text(d => d.data.icon);
+        .attr("class", "card-title")
+        .attr("x", 14)
+        .attr("y", 22)
+        .text(d => `${d.data.icon} ${safeString(d.data.name).slice(0, 34)}`);
 
-    nodes.append("text")
-        .attr("class", "title")
-        .attr("x", 42)
-        .attr("y", cfg.headerH / 2 + 2)
-        .text(d => safeString(d.data.name).slice(0, 36));
-
-    // Header hotspot: collapse/expand
-    nodes.append("rect")
-        .attr("class", "header-hit")
-        .attr("width", cfg.nodeW)
-        .attr("height", cfg.headerH)
-        .attr("rx", 14)
-        .attr("fill", "transparent")
-        .style("cursor", "pointer")
-        .on("click", (event, d) => {
-            event.stopPropagation();
-
-            if (d.children) {
-                d.data.__collapsed = true;
-                d._children = d.children;
-                d.children = null;
-            } else if (d._children) {
-                d.data.__collapsed = false;
-                d.children = d._children;
-                d._children = null;
-            }
-
-            renderActiveScenario();
-            applySearch(UI.search.value);
-            applyFiltersToGraph();
-        });
-
+    // attributes
     nodes.each(function (d) {
-        const el = d3.select(this);
         const lines = asArray(d.data.keyLines);
-        let y = cfg.headerH + 22;
+        const group = d3.select(this);
+        let y = 54;
 
-        lines.forEach(([k, v]) => {
-            el.append("text").attr("class", "kv k").attr("x", 14).attr("y", y).text(`${k}:`);
-            el.append("text").attr("class", "kv v").attr("x", 112).attr("y", y).text(safeString(v).slice(0, 38));
-            y += 17;
+        lines.forEach(line => {
+            group.append("text")
+                .attr("class", "card-line")
+                .attr("x", 14)
+                .attr("y", y)
+                .text(safeString(line).slice(0, 54));
+            y += 14;
         });
+
+        // collapse indicator if has children
+        const hasKids = (d.children && d.children.length) || (d._children && d._children.length);
+        if (hasKids) {
+            group.append("text")
+                .attr("class", "collapse-hint")
+                .attr("x", cfg.nodeW - 18)
+                .attr("y", 22)
+                .text(d.children ? "−" : "+");
+        }
+    });
+
+    // apply semantic colors
+    nodes.each(function (d) {
+        const sem = getSemanticColors(d.data.semanticKey);
+        const node = d3.select(this);
+        node.select("rect.card").attr("fill", sem.body).attr("stroke", sem.accent);
+        node.select("rect.card-header").attr("fill", sem.header).attr("stroke", sem.accent);
+        node.select("text.card-title").attr("fill", "#ffffff");
+        // GLOBAL_CUSTOMER header can be dark; ensure contrast
+        if (d.data.semanticKey === "GLOBAL_CUSTOMER") node.select("text.card-title").attr("fill", "#ffffff");
+    });
+
+    // interactions
+    nodes.on("click", (event, d) => {
+        event.stopPropagation();
+
+        // toggle collapse on click (optional, but requested as possibility)
+        if (d.children) {
+            d.data.__collapsed = true;
+        } else if (d._children) {
+            d.data.__collapsed = false;
+        }
+
+        // selected highlight
+        g.selectAll(".node").classed("selected", false);
+        d3.select(event.currentTarget).classed("selected", true);
+
+        UI.json.textContent = JSON.stringify(d.data.data, null, 2);
+
+        // re-render for collapse/expand
+        renderActiveScenario();
+        applySearch(UI.search.value);
+        applyFiltersToGraph();
     });
 
     svg.on("click", () => {
@@ -709,7 +651,8 @@ function nodeTextIndex(d) {
         data.mdmCustomerId, data.mdmAccountId, data.contractId,
         data.billingProfileId, data.platformId, data.addressId, data.contactPersonId,
         data.officialName, data.tradingName, data.contractName,
-        data.refType, data.refValue
+        data.refType, data.refValue,
+        data.platformObject?.platformId, data.platformObject?.name
     ].map(safeString).filter(Boolean);
     return fields.join(" ").toLowerCase();
 }
@@ -735,6 +678,56 @@ function selectedFilters() {
         salesChannels: getSelectedValues(UI.fSalesChannel),
         platforms: getSelectedValues(UI.fPlatform)
     };
+}
+
+function scenarioSignature(sc) {
+    const s = normalizeScenario(sc);
+    const customerTypes = [];
+    const industries = [];
+    const salesChannels = [];
+    const platforms = [];
+
+    if (s.customer?.customerType) customerTypes.push(s.customer.customerType);
+    if (s.customer?.industrySector) industries.push(s.customer.industrySector);
+
+    asArray(s.relatedCustomers).forEach(rc => {
+        if (rc?.customerType) customerTypes.push(rc.customerType);
+        if (rc?.industrySector) industries.push(rc.industrySector);
+    });
+
+    asArray(s.accounts).forEach(acc => {
+        if (acc?.salesChannel) salesChannels.push(acc.salesChannel);
+        const pid = acc?.platformObject?.platformId || acc?.platformObject?.name;
+        if (pid) platforms.push(pid);
+    });
+
+    return {
+        customerTypes: uniq(customerTypes),
+        industries: uniq(industries),
+        salesChannels: uniq(salesChannels),
+        platforms: uniq(platforms)
+    };
+}
+
+function scenarioMatchesFilters(sig, filters) {
+    const okCT = !filters.customerTypes.length || filters.customerTypes.some(v => sig.customerTypes.includes(v));
+    const okInd = !filters.industries.length || filters.industries.some(v => sig.industries.includes(v));
+    const okCh = !filters.salesChannels.length || filters.salesChannels.some(v => sig.salesChannels.includes(v));
+    const okPl = !filters.platforms.length || filters.platforms.some(v => sig.platforms.includes(v));
+    return okCT && okInd && okCh && okPl;
+}
+
+function getFilteredScenarioIndices() {
+    const filters = selectedFilters();
+    const anyActive = filters.customerTypes.length || filters.industries.length || filters.salesChannels.length || filters.platforms.length;
+    if (!anyActive) return scenarios.map((_, i) => i);
+
+    const idxs = [];
+    scenarios.forEach((sc, i) => {
+        const sig = scenarioSignature(sc);
+        if (scenarioMatchesFilters(sig, filters)) idxs.push(i);
+    });
+    return idxs;
 }
 
 function nodeFilterSignature(node) {
@@ -804,28 +797,90 @@ function applyFiltersToGraph() {
     });
 }
 
-/* ---------------- Collapse/Expand all ---------------- */
-function setCollapsedAll(collapsed) {
-    if (!lastRootHierarchy) return;
-    lastRootHierarchy.descendants().forEach(d => {
-        if (!d.data) return;
-        if (d.depth === 0) return;
-        d.data.__collapsed = collapsed;
+/* ---------------- Populate dropdowns & previews ---------------- */
+function getEnumsForFilters(ref, scs) {
+    const dom = ref?.domains || {};
+    const ct = asArray(dom.customerType);
+    const ind = asArray(dom.industrySector);
+    const ch = asArray(dom.salesChannel);
+
+    // platforms derived from dataset (and optional reference later)
+    const platforms = uniq(scs.flatMap(sc => scenarioSignature(sc).platforms));
+
+    // if ref is missing, fall back to data-derived lists
+    const derived = {
+        customerTypes: uniq(scs.flatMap(sc => scenarioSignature(sc).customerTypes)),
+        industries: uniq(scs.flatMap(sc => scenarioSignature(sc).industries)),
+        salesChannels: uniq(scs.flatMap(sc => scenarioSignature(sc).salesChannels)),
+        platforms
+    };
+
+    return {
+        customerTypes: ct.length ? ct : derived.customerTypes,
+        industries: ind.length ? ind : derived.industries,
+        salesChannels: ch.length ? ch : derived.salesChannels,
+        platforms
+    };
+}
+
+function populateFilterDropdowns() {
+    const enumsForFilters = getEnumsForFilters(refEnums || {}, scenarios);
+    fillMultiSelect(UI.fCustomerType, enumsForFilters.customerTypes);
+    fillMultiSelect(UI.fIndustry, enumsForFilters.industries);
+    fillMultiSelect(UI.fSalesChannel, enumsForFilters.salesChannels);
+    fillMultiSelect(UI.fPlatform, enumsForFilters.platforms);
+    renderReferencePreviews(enumsForFilters);
+}
+
+function populateScenarioDropdown() {
+    const filteredIdxs = getFilteredScenarioIndices();
+
+    UI.selector.innerHTML = `<option value="">-- Choose Scenario --</option>`;
+    filteredIdxs.forEach((idx) => {
+        const s = scenarios[idx];
+        const opt = document.createElement("option");
+        opt.value = String(idx);
+        opt.textContent = s.scenarioName || `Scenario ${idx + 1}`;
+        UI.selector.appendChild(opt);
     });
-    renderActiveScenario();
+
+    // If current selection is not available under filters, pick the first filtered scenario (or clear)
+    const stillAvailable = filteredIdxs.includes(activeScenarioIndex);
+    if (!stillAvailable) {
+        if (filteredIdxs.length > 0) {
+            activeScenarioIndex = filteredIdxs[0];
+            activeScenario = scenarios[activeScenarioIndex];
+            UI.selector.value = String(activeScenarioIndex);
+            UI.json.textContent = JSON.stringify(activeScenario, null, 2);
+            renderDQBadge();
+            renderActiveScenario();
+        } else {
+            activeScenario = null;
+            activeScenarioIndex = -1;
+            UI.selector.value = "";
+            g.selectAll("*").remove();
+            UI.json.textContent = "No scenarios match the selected filters.";
+        }
+    }
 }
 
 /* ---------------- Reference previews ---------------- */
 function renderReferencePreviews(enumsForFilters) {
-    UI.refEnumsPreview.textContent = JSON.stringify({
-        customerType: enumsForFilters.customerTypes,
-        industrySector: enumsForFilters.industries,
-        salesChannel: enumsForFilters.salesChannels
-    }, null, 2);
+    if (UI.refEnumsPreview) {
+        UI.refEnumsPreview.textContent = JSON.stringify({
+            customerType: enumsForFilters.customerTypes,
+            industrySector: enumsForFilters.industries,
+            salesChannel: enumsForFilters.salesChannels,
+            platform: enumsForFilters.platforms
+        }, null, 2);
+    }
 
-    UI.refColorsPreview.textContent = JSON.stringify(refColors, null, 2);
+    if (UI.refColorsPreview) {
+        UI.refColorsPreview.textContent = JSON.stringify(refColors || {}, null, 2);
+    }
 
     // swatches
+    if (!UI.swatches) return;
     UI.swatches.innerHTML = "";
     if (!refColors) return;
 
@@ -877,110 +932,28 @@ function renderReferencePreviews(enumsForFilters) {
 
 /* ---------------- Data Quality (basic) ---------------- */
 function renderDQBadge() {
-    // simple: if reference not giving enums, still show "OK" (N/A removed)
+    if (!UI.dqText || !UI.dqDot || !UI.dqBadge) return;
     UI.dqText.textContent = "DQ: OK";
     UI.dqDot.classList.remove("dq-ok", "dq-warn", "dq-err");
     UI.dqDot.classList.add("dq-ok");
     UI.dqBadge.title = "Data Quality: basic checks (enum validation optional)";
 }
 
-/* ---------------- Populate dropdowns ---------------- */
-// --- Scenario dropdown filter helpers ---
-function scenarioSignature(scenario) {
-    const s = normalizeScenario(scenario);
-    const customerTypes = [];
-    const industries = [];
-    const salesChannels = [];
-    const platforms = [];
-
-    if (s.customer?.customerType) customerTypes.push(s.customer.customerType);
-    if (s.customer?.industrySector) industries.push(s.customer.industrySector);
-
-    asArray(s.relatedCustomers).forEach(rc => {
-        if (rc?.customerType) customerTypes.push(rc.customerType);
-        if (rc?.industrySector) industries.push(rc.industrySector);
+/* ---------------- Collapse/Expand all ---------------- */
+function setCollapsedAll(collapsed) {
+    if (!lastRootHierarchy) return;
+    lastRootHierarchy.descendants().forEach(d => {
+        if (!d.data) return;
+        if (d.depth === 0) return;
+        d.data.__collapsed = collapsed;
     });
-
-    asArray(s.accounts).forEach(acc => {
-        if (acc?.salesChannel) salesChannels.push(acc.salesChannel);
-        const pid = acc?.platformObject?.platformId || acc?.platformObject?.name;
-        if (pid) platforms.push(pid);
-    });
-
-    return {
-        customerTypes: uniq(customerTypes),
-        industries: uniq(industries),
-        salesChannels: uniq(salesChannels),
-        platforms: uniq(platforms)
-    };
+    renderActiveScenario();
 }
 
-function scenarioMatchesFilters(sig, filters) {
-    const okCT = !filters.customerTypes.length || filters.customerTypes.some(v => sig.customerTypes.includes(v));
-    const okInd = !filters.industries.length || filters.industries.some(v => sig.industries.includes(v));
-    const okCh = !filters.salesChannels.length || filters.salesChannels.some(v => sig.salesChannels.includes(v));
-    const okPl = !filters.platforms.length || filters.platforms.some(v => sig.platforms.includes(v));
-    return okCT && okInd && okCh && okPl;
-}
-
-function getFilteredScenarioIndices() {
-    const filters = selectedFilters();
-    const anyActive = filters.customerTypes.length || filters.industries.length || filters.salesChannels.length || filters.platforms.length;
-    if (!anyActive) return scenarios.map((_, i) => i);
-
-    const idxs = [];
-    scenarios.forEach((sc, i) => {
-        const sig = scenarioSignature(sc);
-        if (scenarioMatchesFilters(sig, filters)) idxs.push(i);
-    });
-    return idxs;
-}
-
-function populateScenarioDropdown() {
-    const filteredIdxs = getFilteredScenarioIndices();
-
-    UI.selector.innerHTML = `<option value="">-- Choose Scenario --</option>`;
-    filteredIdxs.forEach((idx) => {
-        const s = scenarios[idx];
-        const opt = document.createElement("option");
-        opt.value = String(idx);
-        opt.textContent = s.scenarioName || `Scenario ${idx + 1}`;
-        UI.selector.appendChild(opt);
-    });
-
-    // If current selection is not available under filters, pick the first filtered scenario (or clear)
-    const stillAvailable = filteredIdxs.includes(activeScenarioIndex);
-    if (!stillAvailable) {
-        if (filteredIdxs.length > 0) {
-            activeScenarioIndex = filteredIdxs[0];
-            activeScenario = scenarios[activeScenarioIndex];
-            UI.selector.value = String(activeScenarioIndex);
-            UI.json.textContent = JSON.stringify(activeScenario, null, 2);
-            renderDQBadge();
-            renderActiveScenario();
-        } else {
-            activeScenario = null;
-            UI.selector.value = "";
-            g.selectAll("*").remove();
-            UI.json.textContent = "No scenarios match the selected filters.";
-        }
-    }
-}
-
-function populateFilterDropdowns() {
-    const enumsForFilters = getEnumsForFilters(refEnums || {}, scenarios);
-
-    fillMultiSelect(UI.fCustomerType, enumsForFilters.customerTypes);
-    fillMultiSelect(UI.fIndustry, enumsForFilters.industries);
-    fillMultiSelect(UI.fSalesChannel, enumsForFilters.salesChannels);
-    fillMultiSelect(UI.fPlatform, enumsForFilters.platforms);
-
-    renderReferencePreviews(enumsForFilters);
-}
-
-/* ---------------- Wire UI events ---------------- */
+/* ---------------- Wire UI ---------------- */
 function wireUI() {
-    UI.selector.addEventListener("change", (e) => {
+    // Scenario selection
+    safeOn(UI.selector, "change", (e) => {
         const idx = e.target.value;
         if (idx === "") return;
 
@@ -992,46 +965,55 @@ function wireUI() {
         renderActiveScenario();
     });
 
-    UI.search.addEventListener("input", (e) => applySearch(e.target.value));
+    // Search
+    safeOn(UI.search, "input", (e) => applySearch(e.target.value));
 
-    UI.reset.addEventListener("click", () => zoomToFit(40));
+    // Reset view
+    safeOn(UI.reset, "click", () => zoomToFit(40));
 
-    UI.btnClearFilters.addEventListener("click", () => {
+    // Clear filters
+    safeOn(UI.btnClearFilters, "click", () => {
         [UI.fCustomerType, UI.fIndustry, UI.fSalesChannel, UI.fPlatform].forEach(sel => {
+            if (!sel) return;
             Array.from(sel.options).forEach(o => (o.selected = false));
         });
-        applyFiltersToGraph();
         populateScenarioDropdown();
+        applyFiltersToGraph();
     });
 
-    UI.btnApplyFilters.addEventListener("click", () => {
+    // Apply filters (optional button)
+    safeOn(UI.btnApplyFilters, "click", () => {
         populateScenarioDropdown();
         applyFiltersToGraph();
     });
 
     // Live filtering (filter-first UX)
     [UI.fCustomerType, UI.fIndustry, UI.fSalesChannel, UI.fPlatform].forEach(sel => {
-        if (!sel) return;
-        sel.addEventListener("change", () => {
+        safeOn(sel, "change", () => {
             populateScenarioDropdown();
             applyFiltersToGraph();
         });
     });
 
+    // View options toggles
     const rerender = () => {
         renderActiveScenario();
         renderDQBadge();
     };
 
-    // Compact mode removed; ignore toggle if present
-    if (UI.tCompact) UI.tCompact.disabled = true;
-    UI.tAddresses.addEventListener("change", rerender);
-    UI.tContacts.addEventListener("change", rerender);
-    UI.tReferenceIds.addEventListener("change", rerender);
-    UI.tPlatforms.addEventListener("change", rerender);
+    // Compact mode is not used; disable if present
+    if (UI.tCompact) {
+        UI.tCompact.checked = false;
+        UI.tCompact.disabled = true;
+    }
 
-    UI.btnCollapseAll.addEventListener("click", () => setCollapsedAll(true));
-    UI.btnExpandAll.addEventListener("click", () => setCollapsedAll(false));
+    safeOn(UI.tAddresses, "change", rerender);
+    safeOn(UI.tContacts, "change", rerender);
+    safeOn(UI.tReferenceIds, "change", rerender);
+    safeOn(UI.tPlatforms, "change", rerender);
+
+    safeOn(UI.btnCollapseAll, "click", () => setCollapsedAll(true));
+    safeOn(UI.btnExpandAll, "click", () => setCollapsedAll(false));
 }
 
 /* ---------------- Boot ---------------- */
@@ -1050,19 +1032,24 @@ function wireUI() {
         refEnums = ref || {};
         refColors = colors || {};
 
-        populateScenarioDropdown();
         populateFilterDropdowns();
+        populateScenarioDropdown();
 
         if (scenarios.length > 0) {
-            activeScenarioIndex = 0;
-            activeScenario = scenarios[0];
-            UI.selector.value = "0";
+            // pick first available under current filters
+            const idxs = getFilteredScenarioIndices();
+            const idx = idxs.length ? idxs[0] : 0;
+
+            activeScenarioIndex = idx;
+            activeScenario = scenarios[idx];
+
+            UI.selector.value = String(idx);
             UI.json.textContent = JSON.stringify(activeScenario, null, 2);
 
             renderDQBadge();
             renderActiveScenario();
         } else {
-            UI.json.textContent = "No scenarios found in /data/customerData.json";
+            UI.json.textContent = `No scenarios found in ${PATHS.customers}`;
         }
 
     } catch (err) {
