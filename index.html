@@ -15,7 +15,7 @@
     <header class="topbar">
         <div class="topbar-left">
             <div class="brand">
-                <div class="brand-mark">DHL</div>
+                <div class="brand-mark" aria-label="DHL">DHL</div>
                 <div class="brand-text">
                     <div class="brand-title">Customer Master Data Viewer</div>
                     <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
@@ -38,7 +38,10 @@
         <aside class="sidebar">
             <!-- Scenario -->
             <section class="panel">
-                <div class="panel-title">Scenario</div>
+                <div class="panel-head">
+                    <div class="panel-title">Scenario</div>
+                    <div class="panel-badge" id="scenarioCount" title="Scenarios shown by filters">—</div>
+                </div>
 
                 <label class="field-label" for="scenarioSelector">Select scenario</label>
                 <select id="scenarioSelector" class="select">
@@ -50,48 +53,58 @@
                     placeholder="e.g., CUST-..., ACC-..., CON-..., Inditex, Vinted, Shopify..." />
 
                 <div class="hint">
-                    Click any node to see its full JSON. Use filters to highlight/dim without breaking hierarchy.
+                    Click a node to view its full JSON. Filters narrow the scenario list and highlight matches on the
+                    graph.
                 </div>
             </section>
 
             <!-- Filters -->
             <section class="panel">
-                <div class="panel-title">Filters</div>
+                <div class="panel-head">
+                    <div class="panel-title">Filters</div>
+                    <div class="panel-note">Live filtering</div>
+                </div>
 
                 <div class="filter-grid">
                     <div class="filter-block">
                         <div class="field-label">Customer Type</div>
                         <select id="filterCustomerType" class="select" multiple size="6"></select>
-                        <div class="field-note">Populated from reference_master_data.json</div>
+                        <div class="field-note">From reference_master_data.json</div>
                     </div>
 
                     <div class="filter-block">
                         <div class="field-label">Industry</div>
                         <select id="filterIndustry" class="select" multiple size="6"></select>
-                        <div class="field-note">Populated from reference_master_data.json</div>
+                        <div class="field-note">From reference_master_data.json</div>
                     </div>
 
                     <div class="filter-block">
                         <div class="field-label">Sales Channel</div>
                         <select id="filterSalesChannel" class="select" multiple size="6"></select>
-                        <div class="field-note">Populated from reference_master_data.json</div>
+                        <div class="field-note">From reference_master_data.json</div>
                     </div>
 
                     <div class="filter-block">
                         <div class="field-label">Platform</div>
                         <select id="filterPlatform" class="select" multiple size="6"></select>
-                        <div class="field-note">Derived from dataset + platform reference</div>
+                        <div class="field-note">Derived from dataset</div>
                     </div>
                 </div>
 
                 <div class="filter-actions">
                     <button id="clearFilters" class="btn btn-outline" title="Clear all filters">Clear Filters</button>
                 </div>
+
+                <!-- Backward-compatible element; script still tolerates it if present -->
+                <button id="applyFilters" style="display:none"></button>
             </section>
 
             <!-- View options -->
             <section class="panel">
-                <div class="panel-title">View Options</div>
+                <div class="panel-head">
+                    <div class="panel-title">View</div>
+                    <div class="panel-note">What to show on cards</div>
+                </div>
 
                 <div class="toggle-grid">
                     <label class="toggle">
@@ -119,6 +132,9 @@
                     <button id="collapseAll" class="btn btn-outline" title="Collapse all subtrees">Collapse All</button>
                     <button id="expandAll" class="btn btn-outline" title="Expand all subtrees">Expand All</button>
                 </div>
+
+                <!-- Compact mode removed. Keep hidden input for backward compatibility. -->
+                <input type="checkbox" id="toggleCompact" style="display:none" />
             </section>
 
             <!-- Reference master data (enums) -->
@@ -150,7 +166,7 @@
 
         <!-- Canvas -->
         <main class="canvas">
-            <div id="viz-container" class="viz-container"></div>
+            <div class="viz-container" id="viz-container"></div>
 
             <div class="footer-note">
                 Data sources:
@@ -162,6 +178,24 @@
     </div>
 
     <script src="script.js"></script>
+
+    <!-- UI-only helper: scenario count badge -->
+    <script>
+        (function () {
+            const sel = document.getElementById('scenarioSelector');
+            const badge = document.getElementById('scenarioCount');
+            if (!sel || !badge) return;
+
+            const update = () => {
+                const count = Math.max(0, sel.options.length - 1); // exclude placeholder
+                badge.textContent = String(count);
+            };
+
+            const mo = new MutationObserver(update);
+            mo.observe(sel, { childList: true });
+            update();
+        })();
+    </script>
 </body>
 
 </html>
