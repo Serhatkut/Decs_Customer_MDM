@@ -60,8 +60,7 @@ let currentRenderConfig = null;
 
 /* ---------------- Layout config ---------------- */
 const LAYOUT = {
-    normal: { nodeW: 290, nodeH: 140, headerH: 28, gapX: 70, gapY: 35 },
-    compact: { nodeW: 250, nodeH: 120, headerH: 26, gapX: 55, gapY: 26 }
+    normal: { nodeW: 290, nodeH: 140, headerH: 28, gapX: 70, gapY: 35 }
 };
 
 /* ---------------- Helpers ---------------- */
@@ -264,10 +263,9 @@ function semanticKeyForNodeType(nodeType) {
     if (nodeType === "ACCOUNT_SOLDTO" || nodeType === "ACCOUNT_SUB") return "ACCOUNT";
     if (nodeType === "CONTRACT") return "CONTRACT";
     if (nodeType === "BILLING_PROFILE") return "BILLING_PROFILE";
-    if (nodeType === "CONTACT" || nodeType === "COMM") return "CONTACT";
+    if (nodeType === "CONTACT") return "CONTACT";
     if (nodeType.startsWith("ADDRESS")) return "ADDRESS";
     if (nodeType === "PLATFORM") return "PLATFORM";
-    if (nodeType === "REFERENCE_ID") return "REFERENCE_ID";
     return "GLOBAL_CUSTOMER";
 }
 
@@ -285,13 +283,7 @@ function iconFor(type, data) {
     if (type === "CONTRACT") return "📝";
     if (type === "BILLING_PROFILE") return "💳";
     if (type === "PLATFORM") return "🧩";
-    if (type === "REFERENCE_ID") return "🔗";
     if (type === "CONTACT") return "👤";
-    if (type === "COMM") {
-        if (data?.type === "EMAIL") return "✉️";
-        if (data?.type === "PHONE") return "📞";
-        return "📡";
-    }
     if (type.startsWith("ADDRESS")) {
         const at = safeString(data?.addressType).toUpperCase();
         if (at.includes("PICKUP")) return "📍";
@@ -313,8 +305,6 @@ function displayNameFor(type, obj) {
     if (type === "BILLING_PROFILE") return obj.billingProfileId || "Billing Profile";
     if (type.startsWith("ADDRESS")) return `${obj.city || ""}${obj.country ? ", " + obj.country : ""}`.trim() || obj.addressId;
     if (type === "CONTACT") return `${obj.firstName || ""} ${obj.lastName || ""}`.trim() || obj.contactPersonId;
-    if (type === "COMM") return obj.value || "(channel)";
-    if (type === "REFERENCE_ID") return obj.refType || "Reference";
     if (type === "PLATFORM") return obj.platformId || obj.name || "Platform";
     return obj.mdmCustomerId || obj.mdmAccountId || "(node)";
 }
@@ -343,6 +333,11 @@ function pickKeyLines(type, data) {
         const pid = data?.platformObject?.platformId || data?.platformObject?.name;
         if (pid) push("platform", pid);
         push("paymentTerms", data.paymentTerms);
+        // Inline reference IDs (no separate nodes)
+        const refs = asArray(data.referenceIds)
+            .map(r => `${safeString(r.refType)}=${safeString(r.refValue)}`.trim())
+            .filter(Boolean);
+        if (refs.length) push("referenceIds", refs.slice(0, 2).join(" | ") + (refs.length > 2 ? " …" : ""));
     }
 
     if (type === "CONTRACT") {
@@ -357,6 +352,11 @@ function pickKeyLines(type, data) {
         push("billingProfileId", data.billingProfileId);
         push("billingAccountNumber", data.billingAccountNumber);
         if (data.paymentMethod?.type) push("payMethod", data.paymentMethod.type);
+        // Inline reference IDs (no separate nodes)
+        const refs = asArray(data.referenceIds)
+            .map(r => `${safeString(r.refType)}=${safeString(r.refValue)}`.trim())
+            .filter(Boolean);
+        if (refs.length) push("referenceIds", refs.slice(0, 2).join(" | ") + (refs.length > 2 ? " …" : ""));
     }
 
     if (type === "PLATFORM") {
@@ -364,14 +364,14 @@ function pickKeyLines(type, data) {
         push("type", data.type);
     }
 
-    if (type === "REFERENCE_ID") {
-        push("refType", data.refType);
-        push("refValue", data.refValue);
-    }
-
     if (type === "CONTACT") {
         push("contactPersonId", data.contactPersonId);
         push("jobTitle", data.jobTitle);
+        const comm = asArray(data.communicationChannels);
+        const email = comm.find(c => safeString(c.type).toUpperCase() === "EMAIL")?.value;
+        const phone = comm.find(c => safeString(c.type).toUpperCase() === "PHONE")?.value;
+        if (email) push("email", email);
+        if (phone) push("phone", phone);
     }
 
     if (type.startsWith("ADDRESS")) {
@@ -411,7 +411,8 @@ function normalizeScenario(s) {
 /* ---------------- Visibility toggles ---------------- */
 function getVis() {
     return {
-        compact: !!UI.tCompact?.checked,
+        // Compact mode removed (kept for backward-compatible HTML, but ignored)
+        compact: false,
         showAddresses: !!UI.tAddresses?.checked,
         showContacts: !!UI.tContacts?.checked,
         showReferenceIds: !!UI.tReferenceIds?.checked,
@@ -427,14 +428,12 @@ function enrichCommonChildren(node, obj, vis) {
         children.push({ type: "PLATFORM", data: obj.platformObject, children: [] });
     }
 
-    if (vis.showReferenceIds) {
-        asArray(obj?.referenceIds).forEach(r => children.push({ type: "REFERENCE_ID", data: r, children: [] }));
-    }
+    // vis.showReferenceIds is now rendered inline in Account/Contract/BillingProfile cards (no child nodes)
 
     if (vis.showContacts) {
+        // Contact channels remain attributes (no COMM child nodes)
         asArray(obj?.contactPersons).forEach(cp => {
-            const commKids = asArray(cp.communicationChannels).map(cc => ({ type: "COMM", data: cc, children: [] }));
-            children.push({ type: "CONTACT", data: cp, children: commKids });
+            children.push({ type: "CONTACT", data: cp, children: [] });
         });
     }
 
@@ -567,7 +566,7 @@ function renderActiveScenario() {
     if (!activeScenario) return;
 
     const vis = getVis();
-    const cfg = vis.compact ? LAYOUT.compact : LAYOUT.normal;
+    const cfg = LAYOUT.normal;
     currentRenderConfig = cfg;
 
     g.selectAll("*").remove();
@@ -886,14 +885,86 @@ function renderDQBadge() {
 }
 
 /* ---------------- Populate dropdowns ---------------- */
+// --- Scenario dropdown filter helpers ---
+function scenarioSignature(scenario) {
+    const s = normalizeScenario(scenario);
+    const customerTypes = [];
+    const industries = [];
+    const salesChannels = [];
+    const platforms = [];
+
+    if (s.customer?.customerType) customerTypes.push(s.customer.customerType);
+    if (s.customer?.industrySector) industries.push(s.customer.industrySector);
+
+    asArray(s.relatedCustomers).forEach(rc => {
+        if (rc?.customerType) customerTypes.push(rc.customerType);
+        if (rc?.industrySector) industries.push(rc.industrySector);
+    });
+
+    asArray(s.accounts).forEach(acc => {
+        if (acc?.salesChannel) salesChannels.push(acc.salesChannel);
+        const pid = acc?.platformObject?.platformId || acc?.platformObject?.name;
+        if (pid) platforms.push(pid);
+    });
+
+    return {
+        customerTypes: uniq(customerTypes),
+        industries: uniq(industries),
+        salesChannels: uniq(salesChannels),
+        platforms: uniq(platforms)
+    };
+}
+
+function scenarioMatchesFilters(sig, filters) {
+    const okCT = !filters.customerTypes.length || filters.customerTypes.some(v => sig.customerTypes.includes(v));
+    const okInd = !filters.industries.length || filters.industries.some(v => sig.industries.includes(v));
+    const okCh = !filters.salesChannels.length || filters.salesChannels.some(v => sig.salesChannels.includes(v));
+    const okPl = !filters.platforms.length || filters.platforms.some(v => sig.platforms.includes(v));
+    return okCT && okInd && okCh && okPl;
+}
+
+function getFilteredScenarioIndices() {
+    const filters = selectedFilters();
+    const anyActive = filters.customerTypes.length || filters.industries.length || filters.salesChannels.length || filters.platforms.length;
+    if (!anyActive) return scenarios.map((_, i) => i);
+
+    const idxs = [];
+    scenarios.forEach((sc, i) => {
+        const sig = scenarioSignature(sc);
+        if (scenarioMatchesFilters(sig, filters)) idxs.push(i);
+    });
+    return idxs;
+}
+
 function populateScenarioDropdown() {
+    const filteredIdxs = getFilteredScenarioIndices();
+
     UI.selector.innerHTML = `<option value="">-- Choose Scenario --</option>`;
-    scenarios.forEach((s, idx) => {
+    filteredIdxs.forEach((idx) => {
+        const s = scenarios[idx];
         const opt = document.createElement("option");
         opt.value = String(idx);
         opt.textContent = s.scenarioName || `Scenario ${idx + 1}`;
         UI.selector.appendChild(opt);
     });
+
+    // If current selection is not available under filters, pick the first filtered scenario (or clear)
+    const stillAvailable = filteredIdxs.includes(activeScenarioIndex);
+    if (!stillAvailable) {
+        if (filteredIdxs.length > 0) {
+            activeScenarioIndex = filteredIdxs[0];
+            activeScenario = scenarios[activeScenarioIndex];
+            UI.selector.value = String(activeScenarioIndex);
+            UI.json.textContent = JSON.stringify(activeScenario, null, 2);
+            renderDQBadge();
+            renderActiveScenario();
+        } else {
+            activeScenario = null;
+            UI.selector.value = "";
+            g.selectAll("*").remove();
+            UI.json.textContent = "No scenarios match the selected filters.";
+        }
+    }
 }
 
 function populateFilterDropdowns() {
@@ -930,16 +1001,30 @@ function wireUI() {
             Array.from(sel.options).forEach(o => (o.selected = false));
         });
         applyFiltersToGraph();
+        populateScenarioDropdown();
     });
 
-    UI.btnApplyFilters.addEventListener("click", () => applyFiltersToGraph());
+    UI.btnApplyFilters.addEventListener("click", () => {
+        populateScenarioDropdown();
+        applyFiltersToGraph();
+    });
+
+    // Live filtering (filter-first UX)
+    [UI.fCustomerType, UI.fIndustry, UI.fSalesChannel, UI.fPlatform].forEach(sel => {
+        if (!sel) return;
+        sel.addEventListener("change", () => {
+            populateScenarioDropdown();
+            applyFiltersToGraph();
+        });
+    });
 
     const rerender = () => {
         renderActiveScenario();
         renderDQBadge();
     };
 
-    UI.tCompact.addEventListener("change", rerender);
+    // Compact mode removed; ignore toggle if present
+    if (UI.tCompact) UI.tCompact.disabled = true;
     UI.tAddresses.addEventListener("change", rerender);
     UI.tContacts.addEventListener("change", rerender);
     UI.tReferenceIds.addEventListener("change", rerender);
