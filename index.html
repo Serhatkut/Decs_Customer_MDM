@@ -53,41 +53,35 @@
                     placeholder="e.g., CUST-..., ACC-..., CON-..., Inditex, Vinted, Shopify..." />
 
                 <div class="hint">
-                    Click a node to view its full JSON. Filters narrow the scenario list and highlight matches on the
-                    graph.
+                    Click a node to view its full JSON. Hover shows a quick JSON preview. Filters narrow scenarios and
+                    highlight matches.
                 </div>
             </section>
 
-            <!-- Filters -->
+            <!-- Filters (stacked cards) -->
             <section class="panel">
                 <div class="panel-head">
                     <div class="panel-title">Filters</div>
                     <div class="panel-note">Live filtering</div>
                 </div>
 
-                <div class="filter-grid">
-                    <div class="filter-block">
-                        <div class="field-label">Customer Type</div>
+                <div class="filter-stack">
+                    <div class="filter-box">
+                        <div class="filter-box-title">Customer Type</div>
                         <select id="filterCustomerType" class="select" multiple size="6"></select>
                         <div class="field-note">From reference_master_data.json</div>
                     </div>
 
-                    <div class="filter-block">
-                        <div class="field-label">Industry</div>
+                    <div class="filter-box">
+                        <div class="filter-box-title">Industry</div>
                         <select id="filterIndustry" class="select" multiple size="6"></select>
                         <div class="field-note">From reference_master_data.json</div>
                     </div>
 
-                    <div class="filter-block">
-                        <div class="field-label">Sales Channel</div>
+                    <div class="filter-box">
+                        <div class="filter-box-title">Sales Channel</div>
                         <select id="filterSalesChannel" class="select" multiple size="6"></select>
                         <div class="field-note">From reference_master_data.json</div>
-                    </div>
-
-                    <div class="filter-block">
-                        <div class="field-label">Platform</div>
-                        <select id="filterPlatform" class="select" multiple size="6"></select>
-                        <div class="field-note">Derived from dataset</div>
                     </div>
                 </div>
 
@@ -95,7 +89,7 @@
                     <button id="clearFilters" class="btn btn-outline" title="Clear all filters">Clear Filters</button>
                 </div>
 
-                <!-- Backward-compatible element; script still tolerates it if present -->
+                <!-- backward compatibility (hidden) -->
                 <button id="applyFilters" style="display:none"></button>
             </section>
 
@@ -103,7 +97,7 @@
             <section class="panel">
                 <div class="panel-head">
                     <div class="panel-title">View</div>
-                    <div class="panel-note">What to show on cards</div>
+                    <div class="panel-note">On-card content</div>
                 </div>
 
                 <div class="toggle-grid">
@@ -133,7 +127,7 @@
                     <button id="expandAll" class="btn btn-outline" title="Expand all subtrees">Expand All</button>
                 </div>
 
-                <!-- Compact mode removed. Keep hidden input for backward compatibility. -->
+                <!-- Compact mode removed; keep hidden input for backward compatibility -->
                 <input type="checkbox" id="toggleCompact" style="display:none" />
             </section>
 
@@ -166,6 +160,9 @@
 
         <!-- Canvas -->
         <main class="canvas">
+            <!-- Legend overlay (top-right) -->
+            <div id="legend" class="legend"></div>
+
             <div class="viz-container" id="viz-container"></div>
 
             <div class="footer-note">
@@ -177,6 +174,9 @@
         </main>
     </div>
 
+    <!-- Hover JSON tooltip -->
+    <div id="hoverJson" class="hover-json" aria-hidden="true"></div>
+
     <script src="script.js"></script>
 
     <!-- UI-only helper: scenario count badge -->
@@ -187,7 +187,7 @@
             if (!sel || !badge) return;
 
             const update = () => {
-                const count = Math.max(0, sel.options.length - 1); // exclude placeholder
+                const count = Math.max(0, sel.options.length - 1);
                 badge.textContent = String(count);
             };
 
