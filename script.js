@@ -782,27 +782,36 @@ function applyFiltersToGraph() {
     const filters = selectedFilters();
     const anyActive = filters.customerTypes.length || filters.industries.length || filters.salesChannels.length;
 
+    // No filters -> clear dim/match
     if (!anyActive) {
         g.selectAll(".node").classed("filter-dim", false).classed("filter-match", false);
         return;
     }
 
+    // 1) Find direct matches
     const matched = new Set();
     lastRootHierarchy.descendants().forEach(d => {
         const sig = nodeFilterSignature(d);
         if (matchesFilters(sig, filters)) matched.add(d);
     });
 
-    const context = new Set();
-    function addAncestors(n) { let p = n; while (p) { context.add(p); p = p.parent; } }
-    function addDesc(n) { n.descendants().forEach(x => context.add(x)); }
+    // 2) Build visibility context = matched + ancestors + descendants
+    const visible = new Set();
+    const addAncestors = (n) => { let p = n; while (p) { visible.add(p); p = p.parent; } };
+    const addDescendants = (n) => { n.descendants().forEach(x => visible.add(x)); };
 
-    matched.forEach(n => { addAncestors(n); addDesc(n); });
+    matched.forEach(n => {
+        addAncestors(n);
+        addDescendants(n);
+    });
 
+    // 3) Apply classes: dim only nodes not in context
     g.selectAll(".node").each(function (d) {
         const isMatch = matched.has(d);
-        const inContext = context.has(d);
-        d3.select(this).classed("filter-match", isMatch).classed("filter-dim", !inContext);
+        const inContext = visible.has(d);
+        d3.select(this)
+            .classed("filter-match", isMatch)
+            .classed("filter-dim", !inContext);
     });
 }
 
