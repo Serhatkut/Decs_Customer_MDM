@@ -100,6 +100,99 @@
               }
             ]
           }
+          ,
+          {
+            "mdmAccountId": "ACC-INDITEX-TR-SOLDTO-001",
+            "parentAccountId": null,
+            "mdmCustomerId": "CUST-INDITEX-TR-001",
+            "businessRoles": [
+              "SOLDTO",
+              "PAYER"
+            ],
+            "accountStatus": "ACTIVE",
+            "isNaturalPerson": false,
+            "currency": "TRY",
+            "paymentTerms": "NET_30",
+            "creditLimit": 9000000,
+            "salesChannel": "KEY_ACCOUNT",
+            "salesManager": "GLOBAL_KAM_TEAM",
+            "segmentGroup": "KEY_ACCOUNT",
+            "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+            "platformObject": null,
+            "addresses": [],
+            "contactPersons": [],
+            "contracts": [],
+            "referenceIds": []
+          },
+          {
+            "mdmAccountId": "ACC-ZARA-TR-001",
+            "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001",
+            "mdmCustomerId": "CUST-INDITEX-TR-001",
+            "businessRoles": [
+              "SOLDTO",
+              "SHIPPER"
+            ],
+            "accountStatus": "ACTIVE",
+            "isNaturalPerson": false,
+            "currency": "TRY",
+            "paymentTerms": "NET_30",
+            "creditLimit": 0,
+            "salesChannel": "KEY_ACCOUNT",
+            "salesManager": "GLOBAL_KAM_TEAM",
+            "segmentGroup": "BRAND",
+            "segmentGroup2": "ZARA",
+            "platformObject": null,
+            "addresses": [],
+            "contactPersons": [],
+            "contracts": [],
+            "referenceIds": []
+          },
+          {
+            "mdmAccountId": "ACC-ZARA-TR-IST-DC-001",
+            "parentAccountId": "ACC-ZARA-TR-001",
+            "mdmCustomerId": "CUST-INDITEX-TR-001",
+            "businessRoles": [
+              "PICKUP",
+              "SHIPPER"
+            ],
+            "accountStatus": "ACTIVE",
+            "isNaturalPerson": false,
+            "currency": "TRY",
+            "paymentTerms": "NET_30",
+            "creditLimit": 0,
+            "salesChannel": "KEY_ACCOUNT",
+            "salesManager": "GLOBAL_KAM_TEAM",
+            "segmentGroup": "WAREHOUSE",
+            "segmentGroup2": "ISTANBUL_DC",
+            "platformObject": null,
+            "addresses": [],
+            "contactPersons": [],
+            "contracts": [],
+            "referenceIds": []
+          },
+          {
+            "mdmAccountId": "ACC-INDITEX-NL-SOLDTO-001",
+            "parentAccountId": null,
+            "mdmCustomerId": "CUST-INDITEX-NL-001",
+            "businessRoles": [
+              "SOLDTO",
+              "PAYER"
+            ],
+            "accountStatus": "ACTIVE",
+            "isNaturalPerson": false,
+            "currency": "EUR",
+            "paymentTerms": "NET_30",
+            "creditLimit": 4000000,
+            "salesChannel": "KEY_ACCOUNT",
+            "salesManager": "GLOBAL_KAM_TEAM",
+            "segmentGroup": "KEY_ACCOUNT",
+            "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+            "platformObject": null,
+            "addresses": [],
+            "contactPersons": [],
+            "contracts": [],
+            "referenceIds": []
+          }
         ],
         "contracts": [
           {
@@ -348,6 +441,35 @@
         "industrySector": "RETAIL_FASHION",
         "taxId": "ES-B87654321",
         "countryOfRegistration": "ES",
+        "addresses": [],
+        "contactPersons": []
+      }
+      ,
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "STRATEGIC",
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "officialName": "Inditex Turkey A.Ş.",
+        "tradingName": "Inditex Türkiye",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "TR0000000001",
+        "countryOfRegistration": "TR",
+        "addresses": [],
+        "contactPersons": []
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "STRATEGIC",
+        "mdmCustomerId": "CUST-INDITEX-NL-001",
+        "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "officialName": "Inditex Netherlands B.V.",
+        "tradingName": "Inditex Netherlands",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "NL0000000001",
+        "countryOfRegistration": "NL",
         "addresses": [],
         "contactPersons": []
       }
