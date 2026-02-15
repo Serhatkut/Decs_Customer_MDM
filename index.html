@@ -11,14 +11,46 @@
 </head>
 
 <body>
+    <!-- Top bar (brand + controls) -->
     <header class="topbar">
-        <div class="topbar-left">
-            <div class="brand">
-                <div class="brand-mark">DHL</div>
-                <div class="brand-text">
-                    <div class="brand-title">Customer Master Data Viewer</div>
-                    <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
-                </div>
+        <div class="brand">
+            <div class="brand-mark">DHL</div>
+            <div class="brand-text">
+                <div class="brand-title">Customer Master Data Viewer</div>
+                <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
+            </div>
+        </div>
+
+        <!-- Controls (formerly in left sidebar) -->
+        <div class="toolbar" aria-label="Scenario and filter controls">
+            <div class="toolbar-group">
+                <div class="toolbar-label">Scenario</div>
+                <select id="scenarioSelector" class="toolbar-select" title="Select scenario">
+                    <option value="">-- Choose Scenario --</option>
+                </select>
+            </div>
+
+            <div class="toolbar-group">
+                <div class="toolbar-label">Customer Type</div>
+                <select id="filterCustomerType" class="toolbar-select"
+                    title="Filter scenarios by customer type"></select>
+            </div>
+
+            <div class="toolbar-group">
+                <div class="toolbar-label">Industry</div>
+                <select id="filterIndustry" class="toolbar-select" title="Filter scenarios by industry"></select>
+            </div>
+
+            <div class="toolbar-group">
+                <div class="toolbar-label">Sales Channel</div>
+                <select id="filterSalesChannel" class="toolbar-select"
+                    title="Filter scenarios by sales channel"></select>
+            </div>
+
+            <div class="toolbar-group toolbar-grow">
+                <div class="toolbar-label">Search (ID / Name)</div>
+                <input id="nodeSearch" class="toolbar-input" type="text"
+                    placeholder="e.g., CUST-…, ACC-…, CON-…, Inditex, Vinted, Shopify…" />
             </div>
         </div>
 
@@ -28,107 +60,59 @@
                 <span class="dq-text" id="dqText">DQ: N/A</span>
             </div>
 
+            <button id="toggleSidebar" class="btn btn-secondary" title="Collapse / expand inspector">Inspector</button>
             <button id="resetZoom" class="btn btn-secondary" title="Zoom-to-fit / reset view">Reset View</button>
         </div>
     </header>
 
     <div class="layout">
-        <aside class="sidebar">
+        <!-- Left inspector (collapsible) -->
+        <aside class="sidebar" aria-label="Inspector">
+            <section class="panel">
+                <div class="panel-title">Selected object</div>
+
+                <div id="inspectorMeta" class="inspector-meta">
+                    <div class="kv">
+                        <div class="k">Hover/Click</div>
+                        <div class="v">Select a node to see details</div>
+                    </div>
+                </div>
+
+                <div id="inspectorContext" class="inspector-context" style="margin-top:10px;"></div>
+            </section>
 
             <section class="panel">
-                <div class="panel-title">Scenario</div>
-
-                <label class="field-label" for="scenarioSelector">Select scenario</label>
-                <select id="scenarioSelector" class="select">
-                    <option value="">-- Choose Scenario --</option>
-                </select>
-
-                <label class="field-label" for="nodeSearch">Search (ID / Name)</label>
-                <input id="nodeSearch" class="input" type="text"
-                    placeholder="e.g., CUST-..., ACC-..., CON-..., Inditex, Vinted, Shopify..." />
-
+                <div class="panel-title">Business meaning</div>
                 <div class="hint">
-                    Hover a node to preview JSON. Click a node to collapse/expand.
+                    This panel explains the selected node in plain language using your master data definitions
+                    (customer type + sales channel mapping).
                 </div>
+                <div id="inspectorDefs" class="inspector-defs"></div>
             </section>
 
             <section class="panel">
-                <div class="panel-title">Filters</div>
-
-                <div class="stacked-filters">
-                    <div class="stack-item">
-                        <div class="stack-label">Customer Type</div>
-                        <select id="filterCustomerType" class="select">
-                            <option value="">All</option>
-                        </select>
-                    </div>
-
-                    <div class="stack-item">
-                        <div class="stack-label">Industry</div>
-                        <select id="filterIndustry" class="select">
-                            <option value="">All</option>
-                        </select>
-                    </div>
-
-                    <div class="stack-item">
-                        <div class="stack-label">Sales Channel</div>
-                        <select id="filterSalesChannel" class="select">
-                            <option value="">All</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="filter-actions">
-                    <button id="clearFilters" class="btn btn-outline" title="Clear all filters">Clear Filters</button>
-                </div>
-            </section>
-
-            <section class="panel">
-                <div class="panel-title">View</div>
-
-                <div class="view-grid">
-                    <label class="toggle">
-                        <input type="checkbox" id="toggleAddresses" checked />
-                        <span>Addresses</span>
-                    </label>
-
-                    <label class="toggle">
-                        <input type="checkbox" id="toggleContacts" checked />
-                        <span>Contacts</span>
-                    </label>
-
-                    <label class="toggle">
-                        <input type="checkbox" id="toggleContracts" checked />
-                        <span>Contracts</span>
-                    </label>
-                </div>
-
-                <div class="filter-actions">
-                    <button id="collapseAll" class="btn btn-outline" title="Collapse all subtrees">Collapse All</button>
-                    <button id="expandAll" class="btn btn-outline" title="Expand all subtrees">Expand All</button>
-                </div>
-            </section>
-
-            <section class="panel json-panel">
-                <div class="panel-title">Selected / Hover JSON</div>
-                <pre id="json-display" class="json-display">{}</pre>
+                <div class="panel-title">Readable JSON</div>
+                <div class="hint">A friendly view of the object so non-technical readers can still understand it.</div>
+                <div id="prettyJson" class="pretty-json"></div>
             </section>
         </aside>
 
+        <!-- Canvas -->
         <main class="canvas">
             <div id="viz-container" class="viz-container"></div>
-
-            <!-- Legend overlay -->
-            <div id="legendBar" class="legend-bar" aria-label="Object legend"></div>
-
-            <div class="footer-note">
-                Data sources:
-                <code>/data/customerData.json</code>,
-                <code>/data/reference_master_data.json</code>,
-                <code>/data/reference_colors.json</code>
-            </div>
         </main>
     </div>
+
+    <!-- Footer (legend + sources) -->
+    <footer class="footer">
+        <div id="footerLegend" class="legend-footer" aria-label="Legend"></div>
+        <div class="footer-right">
+            <span class="footer-label">Data:</span>
+            <code>/data/customerData.json</code>
+            <code>/data/reference_master_data.json</code>
+            <code>/data/reference_colors.json</code>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
