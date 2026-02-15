@@ -15,7 +15,7 @@
     <header class="topbar">
         <div class="topbar-left">
             <div class="brand">
-                <div class="brand-mark" aria-label="DHL">DHL</div>
+                <div class="brand-mark">DHL</div>
                 <div class="brand-text">
                     <div class="brand-title">Customer Master Data Viewer</div>
                     <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
@@ -36,12 +36,10 @@
     <div class="layout">
         <!-- Sidebar -->
         <aside class="sidebar">
+
             <!-- Scenario -->
             <section class="panel">
-                <div class="panel-head">
-                    <div class="panel-title">Scenario</div>
-                    <div class="panel-badge" id="scenarioCount" title="Scenarios shown by filters">—</div>
-                </div>
+                <div class="panel-title">Scenario</div>
 
                 <label class="field-label" for="scenarioSelector">Select scenario</label>
                 <select id="scenarioSelector" class="select">
@@ -53,72 +51,63 @@
                     placeholder="e.g., CUST-..., ACC-..., CON-..., Inditex, Vinted, Shopify..." />
 
                 <div class="hint">
-                    Click a node to view its full JSON. Hover shows a quick JSON preview. Filters narrow scenarios and
-                    highlight matches.
+                    Hover a node to preview JSON. Click a node to collapse/expand.
                 </div>
             </section>
 
-            <!-- Filters (stacked cards) -->
+            <!-- Filters (single-select dropdown) -->
             <section class="panel">
-                <div class="panel-head">
-                    <div class="panel-title">Filters</div>
-                    <div class="panel-note">Live filtering</div>
-                </div>
+                <div class="panel-title">Filters</div>
 
-                <div class="filter-stack">
-                    <div class="filter-box">
-                        <div class="filter-box-title">Customer Type</div>
-                        <select id="filterCustomerType" class="select" multiple size="6"></select>
-                        <div class="field-note">From reference_master_data.json</div>
+                <div class="stacked-filters">
+                    <div class="stack-item">
+                        <div class="stack-label">Customer Type</div>
+                        <select id="filterCustomerType" class="select">
+                            <option value="">All</option>
+                        </select>
+                        <div class="field-note">From reference_master_data.json (+ dataset fallback)</div>
                     </div>
 
-                    <div class="filter-box">
-                        <div class="filter-box-title">Industry</div>
-                        <select id="filterIndustry" class="select" multiple size="6"></select>
-                        <div class="field-note">From reference_master_data.json</div>
+                    <div class="stack-item">
+                        <div class="stack-label">Industry</div>
+                        <select id="filterIndustry" class="select">
+                            <option value="">All</option>
+                        </select>
+                        <div class="field-note">From reference_master_data.json (+ dataset fallback)</div>
                     </div>
 
-                    <div class="filter-box">
-                        <div class="filter-box-title">Sales Channel</div>
-                        <select id="filterSalesChannel" class="select" multiple size="6"></select>
-                        <div class="field-note">From reference_master_data.json</div>
+                    <div class="stack-item">
+                        <div class="stack-label">Sales Channel</div>
+                        <select id="filterSalesChannel" class="select">
+                            <option value="">All</option>
+                        </select>
+                        <div class="field-note">From reference_master_data.json (+ dataset fallback)</div>
                     </div>
                 </div>
 
                 <div class="filter-actions">
                     <button id="clearFilters" class="btn btn-outline" title="Clear all filters">Clear Filters</button>
                 </div>
-
-                <!-- backward compatibility (hidden) -->
-                <button id="applyFilters" style="display:none"></button>
             </section>
 
-            <!-- View options -->
+            <!-- View options (toggle: addresses/contacts/contracts) -->
             <section class="panel">
-                <div class="panel-head">
-                    <div class="panel-title">View</div>
-                    <div class="panel-note">On-card content</div>
-                </div>
+                <div class="panel-title">View</div>
 
-                <div class="toggle-grid">
+                <div class="view-grid">
                     <label class="toggle">
-                        <input type="checkbox" id="showAddresses" checked />
+                        <input type="checkbox" id="toggleAddresses" checked />
                         <span>Addresses</span>
                     </label>
 
                     <label class="toggle">
-                        <input type="checkbox" id="showContacts" checked />
+                        <input type="checkbox" id="toggleContacts" checked />
                         <span>Contacts</span>
                     </label>
 
                     <label class="toggle">
-                        <input type="checkbox" id="showReferenceIds" checked />
-                        <span>Identifiers (Reference IDs)</span>
-                    </label>
-
-                    <label class="toggle">
-                        <input type="checkbox" id="showPlatforms" checked />
-                        <span>Platforms</span>
+                        <input type="checkbox" id="toggleContracts" checked />
+                        <span>Contracts</span>
                     </label>
                 </div>
 
@@ -126,23 +115,20 @@
                     <button id="collapseAll" class="btn btn-outline" title="Collapse all subtrees">Collapse All</button>
                     <button id="expandAll" class="btn btn-outline" title="Expand all subtrees">Expand All</button>
                 </div>
-
-                <!-- Compact mode removed; keep hidden input for backward compatibility -->
-                <input type="checkbox" id="toggleCompact" style="display:none" />
             </section>
 
-            <!-- Reference master data (enums) -->
+            <!-- Reference Master Data (keep palette only) -->
             <section class="panel">
                 <div class="panel-title">Reference Master Data</div>
 
-                <details id="refEnumsPanel" open>
+                <details id="refEnumsPanel">
                     <summary class="details-summary">Enums (customerType / industry / channel / roles…)</summary>
                     <div class="details-body">
                         <pre id="refEnumsPreview" class="json-mini">{}</pre>
                     </div>
                 </details>
 
-                <details id="refColorsPanel">
+                <details id="refColorsPanel" open>
                     <summary class="details-summary">Color Palette (reference_colors.json)</summary>
                     <div class="details-body">
                         <div id="colorSwatches" class="swatch-grid"></div>
@@ -153,17 +139,14 @@
 
             <!-- Selected JSON -->
             <section class="panel json-panel">
-                <div class="panel-title">Selected Object</div>
+                <div class="panel-title">Selected / Hover JSON</div>
                 <pre id="json-display" class="json-display">{}</pre>
             </section>
         </aside>
 
         <!-- Canvas -->
         <main class="canvas">
-            <!-- Legend overlay (top-right) -->
-            <div id="legend" class="legend"></div>
-
-            <div class="viz-container" id="viz-container"></div>
+            <div id="viz-container" class="viz-container"></div>
 
             <div class="footer-note">
                 Data sources:
@@ -174,28 +157,7 @@
         </main>
     </div>
 
-    <!-- Hover JSON tooltip -->
-    <div id="hoverJson" class="hover-json" aria-hidden="true"></div>
-
     <script src="script.js"></script>
-
-    <!-- UI-only helper: scenario count badge -->
-    <script>
-        (function () {
-            const sel = document.getElementById('scenarioSelector');
-            const badge = document.getElementById('scenarioCount');
-            if (!sel || !badge) return;
-
-            const update = () => {
-                const count = Math.max(0, sel.options.length - 1);
-                badge.textContent = String(count);
-            };
-
-            const mo = new MutationObserver(update);
-            mo.observe(sel, { childList: true });
-            update();
-        })();
-    </script>
 </body>
 
 </html>
