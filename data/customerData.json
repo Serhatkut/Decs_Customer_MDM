@@ -3018,5 +3018,727 @@
         ]
       }
     ]
+  },
+  {
+    "scenarioName": "Generic Strategic Customer (Template) — Global Strategic Group",
+    "customer": {
+      "customerType": "STRATEGIC_CUSTOMERS",
+      "customerLevel": "STRATEGIC",
+      "mdmCustomerId": "CUST-STRAT-GLOBAL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Global Strategic Group Holdings (Template)",
+      "tradingName": "Global Strategic Group",
+      "globalGroupCode": "GSG",
+      "industrySector": "RETAIL_FASHION",
+      "taxId": "GB-GSG-0000001",
+      "countryOfRegistration": "GB",
+      "addresses": [
+        {
+          "addressId": "ADDR-GSG-GLOBAL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Global HQ Avenue",
+          "houseNumber": "1",
+          "city": "London",
+          "postalcode": "EC1A 1AA",
+          "country": "GB",
+          "latitude": 51.5074,
+          "longitude": -0.1278,
+          "timezone": "Europe/London"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-GSG-GLOBAL-001",
+          "firstName": "Global",
+          "lastName": "Governance Lead",
+          "jobTitle": "Global Logistics Governance Lead",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "global.governance@gsg.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+44-20-0000-0001"
+            }
+          ]
+        }
+      ]
+    },
+    "relatedCustomers": [
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "KEY_ACCT",
+        "mdmCustomerId": "CUST-GSG-ES-001",
+        "parentMdmCustomerId": "CUST-STRAT-GLOBAL-001",
+        "officialName": "Global Strategic Group Spain, S.L. (Template)",
+        "tradingName": "GSG Spain",
+        "globalGroupCode": "GSG",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "ES-GSG-0000001",
+        "countryOfRegistration": "ES",
+        "addresses": [
+          {
+            "addressId": "ADDR-GSG-ES-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Avenida del Negocio",
+            "houseNumber": "10",
+            "city": "Madrid",
+            "postalcode": "28001",
+            "country": "ES",
+            "latitude": 40.4168,
+            "longitude": -3.7038,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-GSG-ES-LEGAL-001",
+            "firstName": "Spain",
+            "lastName": "Legal Rep",
+            "jobTitle": "Legal Entity Representative (Spain)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.es@gsg.example"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "KEY_ACCT",
+        "mdmCustomerId": "CUST-GSG-TR-001",
+        "parentMdmCustomerId": "CUST-STRAT-GLOBAL-001",
+        "officialName": "Global Strategic Group Turkey A.Ş. (Template)",
+        "tradingName": "GSG Turkey",
+        "globalGroupCode": "GSG",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "TR-GSG-0000001",
+        "countryOfRegistration": "TR",
+        "addresses": [
+          {
+            "addressId": "ADDR-GSG-TR-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "İş Merkezi Caddesi",
+            "houseNumber": "20",
+            "city": "İstanbul",
+            "postalcode": "34394",
+            "country": "TR",
+            "latitude": 41.0673,
+            "longitude": 29.0063,
+            "timezone": "Europe/Istanbul"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-GSG-TR-LEGAL-001",
+            "firstName": "Turkey",
+            "lastName": "Legal Rep",
+            "jobTitle": "Legal Entity Representative (Turkey)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.tr@gsg.example"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "KEY_ACCT",
+        "mdmCustomerId": "CUST-GSG-NL-001",
+        "parentMdmCustomerId": "CUST-STRAT-GLOBAL-001",
+        "officialName": "Global Strategic Group Netherlands B.V. (Template)",
+        "tradingName": "GSG Netherlands",
+        "globalGroupCode": "GSG",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "NL-GSG-0000001",
+        "countryOfRegistration": "NL",
+        "addresses": [
+          {
+            "addressId": "ADDR-GSG-NL-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Businesslaan",
+            "houseNumber": "5",
+            "city": "Rotterdam",
+            "postalcode": "3013AL",
+            "country": "NL",
+            "latitude": 51.923,
+            "longitude": 4.469,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-GSG-NL-LEGAL-001",
+            "firstName": "Netherlands",
+            "lastName": "Legal Rep",
+            "jobTitle": "Legal Entity Representative (Netherlands)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.nl@gsg.example"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-GSG-ES-SOLDTO-PAYER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-GSG-ES-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 8000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "ENTERPRISE",
+        "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+        "platformObject": {
+          "platformId": "PLT-GSG-EDI-ES-001",
+          "name": "Enterprise_EDI_ES",
+          "type": "EDI",
+          "provider": "GSG"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-GSG-ES-SOLDTO-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Sold-To Street (Spain)",
+            "houseNumber": "100",
+            "city": "Madrid",
+            "postalcode": "28010",
+            "country": "ES",
+            "latitude": 40.4381,
+            "longitude": -3.6919,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-GSG-ES-SOLDTO-001",
+            "firstName": "Spain",
+            "lastName": "Logistics Owner",
+            "jobTitle": "Sold-To Logistics Owner (Spain)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "soldto.es@gsg.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-900-100-001"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-GSG-ES-MASTER-001",
+            "contractName": "DHL eCommerce Spain – Master Logistics Contract (Template)",
+            "startDate": "2025-01-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
+            },
+            "addresses": [
+              {
+                "addressId": "ADDR-CON-GSG-ES-NOTICE-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Contract Notice Street (Spain)",
+                "houseNumber": "1",
+                "city": "Madrid",
+                "postalcode": "28001",
+                "country": "ES",
+                "latitude": 40.4168,
+                "longitude": -3.7038,
+                "timezone": "Europe/Madrid"
+              }
+            ],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-CON-GSG-ES-001",
+                "firstName": "Spain",
+                "lastName": "Contract Owner",
+                "jobTitle": "Contract Owner (Spain)",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts.es@gsg.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-GSG-ES-001",
+              "billingAccountNumber": "BILL-GSG-ES-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EDI",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Banco Santander",
+                "iban": "ES00BANK0000000000001101",
+                "bic": "BSCHESMM"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-BPROF-GSG-ES-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Billing Street (Spain)",
+                  "houseNumber": "50",
+                  "city": "Madrid",
+                  "postalcode": "28046",
+                  "country": "ES",
+                  "latitude": 40.4515,
+                  "longitude": -3.692,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-BPROF-GSG-ES-AP-001",
+                  "firstName": "Spain",
+                  "lastName": "Accounts Payable",
+                  "jobTitle": "Accounts Payable (Spain)",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap.es@gsg.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "ERP-GSG-ES-BILL-1001",
+                  "issuedByAuthority": "GSG_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "GSG-ES-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_ES"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-GSG-ES-PICKUP-DC-MAD-001",
+        "parentAccountId": "ACC-GSG-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-GSG-ES-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "WAREHOUSE",
+        "segmentGroup2": "PICKUP_LOCATION",
+        "platformObject": {
+          "platformId": "PLT-GSG-WMS-ES-001",
+          "name": "Warehouse_API_ES",
+          "type": "API",
+          "provider": "GSG"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-GSG-ES-PICKUP-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Pickup Location Street (Madrid DC)",
+            "houseNumber": "25",
+            "city": "Madrid",
+            "postalcode": "28850",
+            "country": "ES",
+            "latitude": 40.4321,
+            "longitude": -3.561,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-GSG-ES-PICKUP-001",
+            "firstName": "Madrid",
+            "lastName": "DC Supervisor",
+            "jobTitle": "Pickup Location Supervisor (Madrid DC)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "pickup.mad@gsg.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "GSG-ES-DC-MAD-001",
+            "issuedByAuthority": "GSG_WMS"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-GSG-TR-SOLDTO-PAYER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-GSG-TR-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 9000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "ENTERPRISE",
+        "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+        "platformObject": {
+          "platformId": "PLT-GSG-EDI-TR-001",
+          "name": "Enterprise_EDI_TR",
+          "type": "EDI",
+          "provider": "GSG"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-GSG-TR-SOLDTO-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Sold-To Street (Turkey)",
+            "houseNumber": "10",
+            "city": "İstanbul",
+            "postalcode": "34394",
+            "country": "TR",
+            "latitude": 41.0673,
+            "longitude": 29.0063,
+            "timezone": "Europe/Istanbul"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-GSG-TR-SOLDTO-001",
+            "firstName": "Turkey",
+            "lastName": "Logistics Owner",
+            "jobTitle": "Sold-To Logistics Owner (Turkey)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "soldto.tr@gsg.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-GSG-TR-MASTER-001",
+            "contractName": "DHL eCommerce Turkey – Master Logistics Contract (Template)",
+            "startDate": "2025-02-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-GSG-TR-001",
+              "billingAccountNumber": "BILL-GSG-TR-2001",
+              "billingCurrency": "TRY",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Garanti BBVA",
+                "iban": "TR00BANK0000000000002201",
+                "bic": "TGBATRIS"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "ERP-GSG-TR-BILL-2001",
+                  "issuedByAuthority": "GSG_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "GSG-TR-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_TR"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-GSG-TR-PICKUP-DC-IST-001",
+        "parentAccountId": "ACC-GSG-TR-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-GSG-TR-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "WAREHOUSE",
+        "segmentGroup2": "PICKUP_LOCATION",
+        "platformObject": {
+          "platformId": "PLT-GSG-WMS-TR-001",
+          "name": "Warehouse_API_TR",
+          "type": "API",
+          "provider": "GSG"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-GSG-TR-PICKUP-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Pickup Location Street (Istanbul DC)",
+            "houseNumber": "45",
+            "city": "İstanbul",
+            "postalcode": "34555",
+            "country": "TR",
+            "latitude": 41.116,
+            "longitude": 28.649,
+            "timezone": "Europe/Istanbul"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "GSG-TR-DC-IST-001",
+            "issuedByAuthority": "GSG_WMS"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-GSG-NL-SOLDTO-PAYER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-GSG-NL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 7000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "ENTERPRISE",
+        "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+        "platformObject": {
+          "platformId": "PLT-GSG-EDI-NL-001",
+          "name": "Enterprise_EDI_NL",
+          "type": "EDI",
+          "provider": "GSG"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-GSG-NL-SOLDTO-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Sold-To Street (Netherlands)",
+            "houseNumber": "9",
+            "city": "Rotterdam",
+            "postalcode": "3013AL",
+            "country": "NL",
+            "latitude": 51.923,
+            "longitude": 4.469,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-GSG-NL-SOLDTO-001",
+            "firstName": "Netherlands",
+            "lastName": "Logistics Owner",
+            "jobTitle": "Sold-To Logistics Owner (Netherlands)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "soldto.nl@gsg.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-GSG-NL-MASTER-001",
+            "contractName": "DHL eCommerce Netherlands – Master Logistics Contract (Template)",
+            "startDate": "2025-02-15",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-GSG-NL-001",
+              "billingAccountNumber": "BILL-GSG-NL-3001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "ING",
+                "iban": "NL00BANK0000000000003301",
+                "bic": "INGBNL2A"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "ERP-GSG-NL-BILL-3001",
+                  "issuedByAuthority": "GSG_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "GSG-NL-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_NL"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-GSG-NL-PICKUP-DC-RTM-001",
+        "parentAccountId": "ACC-GSG-NL-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-GSG-NL-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "WAREHOUSE",
+        "segmentGroup2": "PICKUP_LOCATION",
+        "platformObject": {
+          "platformId": "PLT-GSG-WMS-NL-001",
+          "name": "Warehouse_API_NL",
+          "type": "API",
+          "provider": "GSG"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-GSG-NL-PICKUP-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Pickup Location Street (Rotterdam DC)",
+            "houseNumber": "21",
+            "city": "Rotterdam",
+            "postalcode": "3089JK",
+            "country": "NL",
+            "latitude": 51.887,
+            "longitude": 4.453,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "GSG-NL-DC-RTM-001",
+            "issuedByAuthority": "GSG_WMS"
+          }
+        ]
+      }
+    ]
   }
 ]
