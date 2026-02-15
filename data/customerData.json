@@ -4067,5 +4067,500 @@
       }
     ],
     "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Generic Reseller (Template) — Aggregator with 3 Micro-SME Shippers",
+    "customer": {
+      "customerType": "RESELLERS",
+      "customerLevel": "SME",
+      "mdmCustomerId": "CUST-RES-ES-0001",
+      "parentMdmCustomerId": null,
+      "officialName": "Generic Reseller Aggregator Spain, S.L. (Template)",
+      "tradingName": "Reseller Aggregator (Spain)",
+      "globalGroupCode": null,
+      "industrySector": "LOGISTICS_PROVIDER",
+      "taxId": "ES-RES-0000001",
+      "countryOfRegistration": "ES",
+      "addresses": [
+        {
+          "addressId": "ADDR-RES-ES-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Calle Integración",
+          "houseNumber": "7",
+          "city": "Barcelona",
+          "postalcode": "08018",
+          "country": "ES",
+          "latitude": 41.4036,
+          "longitude": 2.1906,
+          "timezone": "Europe/Madrid"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-RES-ES-001",
+          "firstName": "Partner",
+          "lastName": "Manager",
+          "jobTitle": "Partner Operations Manager (Reseller)",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "partner.ops@reseller-agg-es.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+34-930-200-001"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-RES-ES-SOLDTO-PAYER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-RES-ES-0001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_15",
+        "creditLimit": 150000,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "RESELLER",
+        "segmentGroup2": "AGGREGATOR_CONTRACT_OWNER",
+        "platformObject": {
+          "platformId": "PLT-RES-AGG-ES-001",
+          "name": "Reseller_Aggregation_Platform",
+          "type": "INTEGRATOR",
+          "provider": "Generic_Reseller_Aggregator"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-RES-ES-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Reseller HQ Address",
+            "houseNumber": "10",
+            "city": "Barcelona",
+            "postalcode": "08005",
+            "country": "ES",
+            "latitude": 41.3851,
+            "longitude": 2.1734,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-RES-ES-001",
+            "firstName": "Billing",
+            "lastName": "Coordinator",
+            "jobTitle": "Billing & Contract Coordinator (Reseller Account)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "billing@reseller-agg-es.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-RES-ES-001",
+            "contractName": "DHL eCommerce Spain – Reseller Aggregation Contract (Template)",
+            "startDate": "2025-06-01",
+            "contractDetail": {
+              "contractType": "RESELLER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%"
+              ]
+            },
+            "addresses": [
+              {
+                "addressId": "ADDR-CON-RES-ES-NOTICE-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Contract Notice Address (Reseller)",
+                "houseNumber": "1",
+                "city": "Barcelona",
+                "postalcode": "08002",
+                "country": "ES",
+                "latitude": 41.3825,
+                "longitude": 2.1769,
+                "timezone": "Europe/Madrid"
+              }
+            ],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-CON-RES-ES-001",
+                "firstName": "Reseller",
+                "lastName": "Contract Owner",
+                "jobTitle": "Contract Owner (Reseller)",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts@reseller-agg-es.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-RES-ES-001",
+              "billingAccountNumber": "BILL-RES-ES-9001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "BBVA",
+                "iban": "ES00BANK0000000000009901",
+                "bic": "BBVAESMM"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-BPROF-RES-ES-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Billing Address (Reseller)",
+                  "houseNumber": "22",
+                  "city": "Barcelona",
+                  "postalcode": "08009",
+                  "country": "ES",
+                  "latitude": 41.3936,
+                  "longitude": 2.1649,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-BPROF-RES-ES-AP-001",
+                  "firstName": "Accounts",
+                  "lastName": "Payable",
+                  "jobTitle": "Accounts Payable (Reseller)",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@reseller-agg-es.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "RES-ES-ERP-BILL-9001",
+                  "issuedByAuthority": "RESELLER_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "RES-ES-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_ES"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-RES-ES-SHIPPER-FASHION-001",
+        "parentAccountId": "ACC-RES-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-RES-ES-0001",
+        "businessRoles": [
+          "SHIPPER",
+          "SOLDTO"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "RESELLER_SHIPPER",
+        "segmentGroup2": "MICRO_SME_FASHION",
+        "platformObject": {
+          "platformId": "PLT-RES-AGG-ES-001",
+          "name": "Reseller_Aggregation_Platform",
+          "type": "INTEGRATOR",
+          "provider": "Generic_Reseller_Aggregator"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-RES-ES-SHIPPER-FASHION-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Shipper Address (Fashion Micro-SME #1)",
+            "houseNumber": "3",
+            "city": "Barcelona",
+            "postalcode": "08013",
+            "country": "ES",
+            "latitude": 41.4000,
+            "longitude": 2.1744,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-RES-ES-SHIPPER-FASHION-001",
+            "firstName": "Fashion",
+            "lastName": "Owner",
+            "jobTitle": "Owner (Fashion Micro-SME)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "owner@micro-fashion.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-611-000-101"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "SELLER_ID",
+            "refValue": "SELLER-FASHION-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          },
+          {
+            "refType": "MERCHANT_ID",
+            "refValue": "MRC-FASHION-ES-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          },
+          {
+            "refType": "PLATFORM_SHIPPER_ID",
+            "refValue": "PSHIP-FASHION-ES-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-RES-ES-SHIPPER-HEALTH-001",
+        "parentAccountId": "ACC-RES-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-RES-ES-0001",
+        "businessRoles": [
+          "SHIPPER",
+          "SOLDTO"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "RESELLER_SHIPPER",
+        "segmentGroup2": "MICRO_SME_HEALTH",
+        "platformObject": {
+          "platformId": "PLT-RES-AGG-ES-001",
+          "name": "Reseller_Aggregation_Platform",
+          "type": "INTEGRATOR",
+          "provider": "Generic_Reseller_Aggregator"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-RES-ES-SHIPPER-HEALTH-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Shipper Address (Health Micro-SME #2)",
+            "houseNumber": "9",
+            "city": "Valencia",
+            "postalcode": "46002",
+            "country": "ES",
+            "latitude": 39.4699,
+            "longitude": -0.3763,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-RES-ES-SHIPPER-HEALTH-001",
+            "firstName": "Health",
+            "lastName": "Operator",
+            "jobTitle": "Operations Lead (Health Micro-SME)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "ops@micro-health.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "SELLER_ID",
+            "refValue": "SELLER-HEALTH-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          },
+          {
+            "refType": "MERCHANT_ID",
+            "refValue": "MRC-HEALTH-ES-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          },
+          {
+            "refType": "PLATFORM_SHIPPER_ID",
+            "refValue": "PSHIP-HEALTH-ES-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-RES-ES-SHIPPER-ELECTRONICS-001",
+        "parentAccountId": "ACC-RES-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-RES-ES-0001",
+        "businessRoles": [
+          "SHIPPER",
+          "SOLDTO"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "RESELLER_SHIPPER",
+        "segmentGroup2": "MICRO_SME_ELECTRONICS",
+        "platformObject": {
+          "platformId": "PLT-RES-AGG-ES-001",
+          "name": "Reseller_Aggregation_Platform",
+          "type": "INTEGRATOR",
+          "provider": "Generic_Reseller_Aggregator"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-RES-ES-SHIPPER-ELECTRONICS-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Shipper Address (Electronics Micro-SME #3)",
+            "houseNumber": "14",
+            "city": "Sevilla",
+            "postalcode": "41001",
+            "country": "ES",
+            "latitude": 37.3891,
+            "longitude": -5.9845,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-RES-ES-SHIPPER-ELECTRONICS-001",
+            "firstName": "Electronics",
+            "lastName": "Owner",
+            "jobTitle": "Owner (Electronics Micro-SME)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "owner@micro-electronics.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-611-000-303"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "SELLER_ID",
+            "refValue": "SELLER-ELEC-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          },
+          {
+            "refType": "MERCHANT_ID",
+            "refValue": "MRC-ELEC-ES-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          },
+          {
+            "refType": "PLATFORM_SHIPPER_ID",
+            "refValue": "PSHIP-ELEC-ES-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-RES-ES-PICKUP-DROPOFF-POINT-001",
+        "parentAccountId": "ACC-RES-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-RES-ES-0001",
+        "businessRoles": [
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_15",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "RESELLER",
+        "segmentGroup2": "SHARED_DROPOFF_POINT",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-RES-ES-DROPOFF-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Shared Drop-off Point (Reseller Hub)",
+            "houseNumber": "77",
+            "city": "Barcelona",
+            "postalcode": "08020",
+            "country": "ES",
+            "latitude": 41.4300,
+            "longitude": 2.2050,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-RES-ES-DROPOFF-001",
+            "firstName": "Drop-off",
+            "lastName": "Coordinator",
+            "jobTitle": "Drop-off Point Coordinator",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "dropoff@reseller-agg-es.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "RES-ES-DROPOFF-0001",
+            "issuedByAuthority": "RESELLER_PLATFORM"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
   }
 ]
