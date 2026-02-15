@@ -5394,5 +5394,223 @@
       }
     ],
     "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Generic Internal Customer — DHL Internal Service Entity",
+    "customer": {
+      "customerType": "INTERNAL_CUSTOMERS",
+      "customerLevel": "INTERNAL",
+      "mdmCustomerId": "CUST-DHL-INTERNAL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "DHL eCommerce Internal Operations Entity",
+      "tradingName": "DHL Internal Ops",
+      "globalGroupCode": "DHL_INTERNAL",
+      "industrySector": "DHL_INTERNAL",
+      "taxId": "INT-DHL-0001",
+      "countryOfRegistration": "DE",
+      "addresses": [
+        {
+          "addressId": "ADDR-DHL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Sträßchensweg",
+          "houseNumber": "10",
+          "city": "Bonn",
+          "postalcode": "53113",
+          "country": "DE",
+          "latitude": 50.7374,
+          "longitude": 7.0982,
+          "timezone": "Europe/Berlin"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-DHL-LEGAL-001",
+          "firstName": "Internal",
+          "lastName": "Coordinator",
+          "jobTitle": "Internal Service Owner",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "internal.services@dhl.example"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-DHL-COSTCENTER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-DHL-INTERNAL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "INTERNAL_CLEARING",
+        "creditLimit": 0,
+        "salesChannel": "INTERNAL",
+        "salesManager": "INTERNAL_FINANCE",
+        "segmentGroup": "INTERNAL",
+        "segmentGroup2": "COST_CENTER",
+        "platformObject": {
+          "platformId": "PLT-DHL-ERP-001",
+          "name": "SAP_Internal",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "DHL_IT"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-DHL-FIN-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Finance Campus",
+            "houseNumber": "2",
+            "city": "Bonn",
+            "postalcode": "53115",
+            "country": "DE",
+            "latitude": 50.731,
+            "longitude": 7.09,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-DHL-FIN-001",
+            "firstName": "Finance",
+            "lastName": "Controller",
+            "jobTitle": "Internal Billing Owner",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "internal.billing@dhl.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-DHL-INTERNAL-001",
+            "contractName": "Internal Logistics Service Agreement",
+            "startDate": "2025-01-01",
+            "contractDetail": {
+              "contractType": "INTERNAL_AGREEMENT",
+              "services": [
+                "PARCEL",
+                "LINEHAUL"
+              ],
+              "slaLevel": "INTERNAL",
+              "pricingModel": "TRANSFER_PRICE",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "INTERNAL_CLEARING",
+              "kpiPack": [
+                "PPH",
+                "LU%",
+                "NOP%"
+              ]
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-DHL-INTERNAL-001",
+              "billingAccountNumber": "INT-CLEAR-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "INTERNAL_SYSTEM",
+              "paymentMethod": {
+                "type": "INTERNAL_LEDGER",
+                "bankName": "DHL Treasury",
+                "iban": "N/A",
+                "bic": "N/A"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "DHL_INTERNAL_ID",
+                  "refValue": "INT-BILL-0001",
+                  "issuedByAuthority": "DHL_FINANCE_SYSTEM"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "DHL_INTERNAL_ID",
+            "refValue": "COSTCENTER-OPS-001",
+            "issuedByAuthority": "DHL_HR_SYSTEM"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-DHL-HUB-001",
+        "parentAccountId": "ACC-DHL-COSTCENTER-001",
+        "mdmCustomerId": "CUST-DHL-INTERNAL-001",
+        "businessRoles": [
+          "SHIPPER",
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "INTERNAL_CLEARING",
+        "creditLimit": 0,
+        "salesChannel": "INTERNAL",
+        "salesManager": "NETWORK_OPS",
+        "segmentGroup": "INTERNAL",
+        "segmentGroup2": "HUB_NODE",
+        "platformObject": {
+          "platformId": "PLT-DHL-WMS-001",
+          "name": "HubControl",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "DHL_IT"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-DHL-HUB-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Logistikstraße",
+            "houseNumber": "7",
+            "city": "Leipzig",
+            "postalcode": "04347",
+            "country": "DE",
+            "latitude": 51.34,
+            "longitude": 12.37,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-DHL-HUB-OPS-001",
+            "firstName": "Hub",
+            "lastName": "Supervisor",
+            "jobTitle": "Hub Operations Lead",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "hub.ops@dhl.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "DHL_INTERNAL_ID",
+            "refValue": "HUB-LEJ-001",
+            "issuedByAuthority": "NETWORK_DIRECTORY"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
   }
 ]
