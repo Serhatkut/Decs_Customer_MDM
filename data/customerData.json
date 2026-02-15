@@ -3740,5 +3740,332 @@
         ]
       }
     ]
+  },
+  {
+    "scenarioName": "Generic Relationship Customer (Template) — Country B2B (Single Country)",
+    "customer": {
+      "customerType": "RELATIONSHIP_CUSTOMERS",
+      "customerLevel": "SME",
+      "mdmCustomerId": "CUST-REL-ES-0001",
+      "parentMdmCustomerId": null,
+      "officialName": "Generic Relationship Customer Spain, S.L. (Template)",
+      "tradingName": "Relationship Customer (Spain)",
+      "globalGroupCode": null,
+      "industrySector": "AUTOMOTIVE_PARTS",
+      "taxId": "ES-REL-0000001",
+      "countryOfRegistration": "ES",
+      "addresses": [
+        {
+          "addressId": "ADDR-REL-ES-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Calle Empresa",
+          "houseNumber": "12",
+          "city": "Madrid",
+          "postalcode": "28027",
+          "country": "ES",
+          "latitude": 40.4386,
+          "longitude": -3.6332,
+          "timezone": "Europe/Madrid"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-REL-ES-LEGAL-001",
+          "firstName": "Spain",
+          "lastName": "Legal Representative",
+          "jobTitle": "Legal Entity Representative (Spain)",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "legal@relationship-customer-es.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+34-910-111-001"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-REL-ES-SOLDTO-PAYER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-REL-ES-0001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 250000,
+        "salesChannel": "FIELD_SALES",
+        "salesManager": "FIELD_SALES_EXECUTIVE",
+        "segmentGroup": "RELATIONSHIP",
+        "segmentGroup2": "COUNTRY_SINGLE_ENTITY",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-REL-ES-SOLDTO-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Sold-To Address (HQ / Main Office)",
+            "houseNumber": "20",
+            "city": "Madrid",
+            "postalcode": "28037",
+            "country": "ES",
+            "latitude": 40.4272,
+            "longitude": -3.6267,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-REL-ES-SOLDTO-001",
+            "firstName": "Spain",
+            "lastName": "Logistics Manager",
+            "jobTitle": "Logistics Manager (Sold-To Account)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "logistics@relationship-customer-es.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-910-111-010"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-REL-ES-001",
+            "contractName": "DHL eCommerce Spain – Standard B2B Parcel Contract (Template)",
+            "startDate": "2025-05-01",
+            "contractDetail": {
+              "contractType": "STANDARD",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%"
+              ]
+            },
+            "addresses": [
+              {
+                "addressId": "ADDR-CON-REL-ES-NOTICE-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Contract Notice Address",
+                "houseNumber": "1",
+                "city": "Madrid",
+                "postalcode": "28001",
+                "country": "ES",
+                "latitude": 40.4168,
+                "longitude": -3.7038,
+                "timezone": "Europe/Madrid"
+              }
+            ],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-CON-REL-ES-001",
+                "firstName": "Spain",
+                "lastName": "Contract Owner",
+                "jobTitle": "Contract Owner (Relationship Customer)",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts@relationship-customer-es.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-REL-ES-001",
+              "billingAccountNumber": "BILL-REL-ES-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "CaixaBank",
+                "iban": "ES00BANK0000000000004101",
+                "bic": "CAIXESBB"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-BPROF-REL-ES-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Billing Address",
+                  "houseNumber": "55",
+                  "city": "Madrid",
+                  "postalcode": "28046",
+                  "country": "ES",
+                  "latitude": 40.4515,
+                  "longitude": -3.692,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-BPROF-REL-ES-AP-001",
+                  "firstName": "Spain",
+                  "lastName": "Accounts Payable",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@relationship-customer-es.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "REL-ES-ERP-BILL-1001",
+                  "issuedByAuthority": "CUSTOMER_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "REL-ES-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_ES"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-REL-ES-PICKUP-WH-001",
+        "parentAccountId": "ACC-REL-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-REL-ES-0001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "FIELD_SALES",
+        "salesManager": "FIELD_SALES_EXECUTIVE",
+        "segmentGroup": "RELATIONSHIP",
+        "segmentGroup2": "WAREHOUSE_PICKUP",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-REL-ES-WH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Pickup Warehouse Address (Warehouse #1)",
+            "houseNumber": "8",
+            "city": "Madrid",
+            "postalcode": "28050",
+            "country": "ES",
+            "latitude": 40.5129,
+            "longitude": -3.6643,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-REL-ES-WH-001",
+            "firstName": "Warehouse",
+            "lastName": "Supervisor One",
+            "jobTitle": "Warehouse Supervisor (Pickup Location #1)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "warehouse1@relationship-customer-es.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "REL-ES-WH-001",
+            "issuedByAuthority": "CUSTOMER_WMS"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-REL-ES-PICKUP-WH-002",
+        "parentAccountId": "ACC-REL-ES-SOLDTO-PAYER-001",
+        "mdmCustomerId": "CUST-REL-ES-0001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "FIELD_SALES",
+        "salesManager": "FIELD_SALES_EXECUTIVE",
+        "segmentGroup": "RELATIONSHIP",
+        "segmentGroup2": "WAREHOUSE_PICKUP",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-REL-ES-WH-002",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Pickup Warehouse Address (Warehouse #2)",
+            "houseNumber": "15",
+            "city": "Valencia",
+            "postalcode": "46980",
+            "country": "ES",
+            "latitude": 39.4699,
+            "longitude": -0.3763,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-REL-ES-WH-002",
+            "firstName": "Warehouse",
+            "lastName": "Supervisor Two",
+            "jobTitle": "Warehouse Supervisor (Pickup Location #2)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "warehouse2@relationship-customer-es.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "REL-ES-WH-002",
+            "issuedByAuthority": "CUSTOMER_WMS"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
   }
 ]
