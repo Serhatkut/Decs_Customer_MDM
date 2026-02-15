@@ -2128,5 +2128,927 @@
       }
     ],
     "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Amazon Marketplace Ecosystem",
+    "customer": {
+      "customerType": "PARTNERS",
+      "customerLevel": "KEY_ACCT",
+      "mdmCustomerId": "CUST-AMAZON-GLOBAL-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Amazon.com, Inc. (Amazon Global)",
+      "tradingName": "Amazon",
+      "globalGroupCode": "AMAZON",
+      "industrySector": "E_COMMERCE_MARKETPLACE",
+      "taxId": "US-91-1646860",
+      "countryOfRegistration": "US",
+      "addresses": [
+        {
+          "addressId": "ADDR-AMAZON-GLOBAL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "7th Ave",
+          "houseNumber": "410",
+          "city": "Seattle",
+          "postalcode": "98109",
+          "country": "US",
+          "latitude": 47.6222,
+          "longitude": -122.3365,
+          "timezone": "America/Los_Angeles"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-AMAZON-GLOBAL-001",
+          "firstName": "Rachel",
+          "lastName": "Morgan",
+          "jobTitle": "Global Partner Logistics Governance",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "global.partner.ops@amazon.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+1-206-000-0001"
+            }
+          ]
+        }
+      ]
+    },
+    "relatedCustomers": [
+      {
+        "customerType": "PARTNERS",
+        "customerLevel": "KEY_ACCT",
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "parentMdmCustomerId": "CUST-AMAZON-GLOBAL-001",
+        "officialName": "Amazon Spain Fulfillment, S.L.U.",
+        "tradingName": "Amazon España",
+        "globalGroupCode": "AMAZON",
+        "industrySector": "E_COMMERCE_MARKETPLACE",
+        "taxId": "ES-B65900331",
+        "countryOfRegistration": "ES",
+        "addresses": [
+          {
+            "addressId": "ADDR-AMAZON-ES-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Paseo de la Castellana",
+            "houseNumber": "163",
+            "city": "Madrid",
+            "postalcode": "28046",
+            "country": "ES",
+            "latitude": 40.4531,
+            "longitude": -3.6896,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-AMAZON-ES-LEGAL-001",
+            "firstName": "María",
+            "lastName": "Hernández",
+            "jobTitle": "Legal Entity Representative",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.es@amazon.example"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "customerType": "PARTNERS",
+        "customerLevel": "KEY_ACCT",
+        "mdmCustomerId": "CUST-AMAZON-US-001",
+        "parentMdmCustomerId": "CUST-AMAZON-GLOBAL-001",
+        "officialName": "Amazon Fulfillment Services, Inc.",
+        "tradingName": "Amazon US",
+        "globalGroupCode": "AMAZON",
+        "industrySector": "E_COMMERCE_MARKETPLACE",
+        "taxId": "US-91-1646860",
+        "countryOfRegistration": "US",
+        "addresses": [
+          {
+            "addressId": "ADDR-AMAZON-US-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Terry Ave N",
+            "houseNumber": "2021",
+            "city": "Seattle",
+            "postalcode": "98109",
+            "country": "US",
+            "latitude": 47.6148,
+            "longitude": -122.3377,
+            "timezone": "America/Los_Angeles"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-AMAZON-US-LEGAL-001",
+            "firstName": "Jason",
+            "lastName": "Lee",
+            "jobTitle": "Legal Entity Representative",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.us@amazon.example"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "accounts": [
+      /* =========================
+       SPAIN — FBA (Contract Owner)
+    ========================= */
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-FBA-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 15000000,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "FBA",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-MARKETPLACE-001",
+          "name": "Amazon_Marketplace",
+          "type": "MARKETPLACE",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMAZON-ES-FBA-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Calle Ramírez de Prado",
+            "houseNumber": "5",
+            "city": "Madrid",
+            "postalcode": "28045",
+            "country": "ES",
+            "latitude": 40.3954,
+            "longitude": -3.6908,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-AMAZON-ES-FBA-001",
+            "firstName": "Diego",
+            "lastName": "Sanz",
+            "jobTitle": "FBA Logistics Operations (Spain)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "fba.ops.es@amazon.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-910-000-100"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-AMAZON-ES-FBA-001",
+            "contractName": "DHL eCommerce Spain – Amazon FBA Linehaul & Parcel Contract",
+            "startDate": "2025-01-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "LINEHAUL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "VOLUME_TIERED",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
+            },
+            "addresses": [
+              {
+                "addressId": "ADDR-AMAZON-ES-FBA-CONTRACT-NOTICE-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Avenida de Europa",
+                "houseNumber": "1",
+                "city": "Madrid",
+                "postalcode": "28108",
+                "country": "ES",
+                "latitude": 40.5388,
+                "longitude": -3.6362,
+                "timezone": "Europe/Madrid"
+              }
+            ],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-AMAZON-ES-FBA-CONTRACT-001",
+                "firstName": "Laura",
+                "lastName": "Gómez",
+                "jobTitle": "Contract Owner (Amazon FBA Spain)",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts.fba.es@amazon.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-AMAZON-ES-FBA-001",
+              "billingAccountNumber": "BILL-AMZ-ES-FBA-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EDI",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Banco Santander",
+                "iban": "ES00BANK0000000000000101",
+                "bic": "BSCHESMM"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-AMAZON-ES-FBA-BILLING-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Calle de Serrano",
+                  "houseNumber": "45",
+                  "city": "Madrid",
+                  "postalcode": "28001",
+                  "country": "ES",
+                  "latitude": 40.4283,
+                  "longitude": -3.6868,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-AMAZON-ES-FBA-AP-001",
+                  "firstName": "Sofía",
+                  "lastName": "Ruiz",
+                  "jobTitle": "Accounts Payable (Amazon ES)",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap.es@amazon.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "AMZ-ES-ERP-BILL-FBA-1001",
+                  "issuedByAuthority": "AMAZON_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "AMZ-ES-FBA-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_ES"
+          }
+        ]
+      },
+      /* FBA Pickup / FC nodes (Spain) */
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-FC-BCN-PICKUP-001",
+        "parentAccountId": "ACC-AMAZON-ES-FBA-SOLDTO-001",
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "FBA",
+        "segmentGroup2": "FULFILLMENT_CENTER",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-WMS-ES-001",
+          "name": "Amazon_WMS_ES",
+          "type": "API",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-ES-FC-BCN-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Carrer de la Logística",
+            "houseNumber": "12",
+            "city": "El Prat de Llobregat",
+            "postalcode": "08820",
+            "country": "ES",
+            "latitude": 41.3177,
+            "longitude": 2.0933,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "AMZ-ES-FC-BCN-01",
+            "issuedByAuthority": "AMAZON_WMS"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-FC-MAD-PICKUP-001",
+        "parentAccountId": "ACC-AMAZON-ES-FBA-SOLDTO-001",
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "FBA",
+        "segmentGroup2": "FULFILLMENT_CENTER",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-WMS-ES-001",
+          "name": "Amazon_WMS_ES",
+          "type": "API",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-ES-FC-MAD-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Polígono Industrial",
+            "houseNumber": "7",
+            "city": "Getafe",
+            "postalcode": "28906",
+            "country": "ES",
+            "latitude": 40.3083,
+            "longitude": -3.7326,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "AMZ-ES-FC-MAD-01",
+            "issuedByAuthority": "AMAZON_WMS"
+          }
+        ]
+      },
+      /* =========================
+       SPAIN — Amazon Flex (separate contract)
+    ========================= */
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-FLEX-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 6000000,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "FLEX",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-FLEX-ES-001",
+          "name": "Amazon_Flex_ES",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-ES-FLEX-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Calle de Méndez Álvaro",
+            "houseNumber": "20",
+            "city": "Madrid",
+            "postalcode": "28045",
+            "country": "ES",
+            "latitude": 40.3937,
+            "longitude": -3.6767,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-AMZ-ES-FLEX-001",
+            "firstName": "Iván",
+            "lastName": "Navarro",
+            "jobTitle": "Flex Operations Lead (Spain)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "flex.ops.es@amazon.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-AMAZON-ES-FLEX-001",
+            "contractName": "DHL eCommerce Spain – Amazon Flex Injection & Last-Mile Support",
+            "startDate": "2025-03-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED"
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-AMAZON-ES-FLEX-001",
+              "billingAccountNumber": "BILL-AMZ-ES-FLEX-2001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "BBVA",
+                "iban": "ES00BANK0000000000000201",
+                "bic": "BBVAESMM"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "AMZ-ES-ERP-BILL-FLEX-2001",
+                  "issuedByAuthority": "AMAZON_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "AMZ-ES-FLEX-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_ES"
+          }
+        ]
+      },
+      /* Flex Pickup / Delivery station */
+      {
+        "mdmAccountId": "ACC-AMZ-ES-DS-BCN-PICKUP-001",
+        "parentAccountId": "ACC-AMAZON-ES-FLEX-SOLDTO-001",
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "FLEX",
+        "segmentGroup2": "DELIVERY_STATION",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-FLEX-ES-001",
+          "name": "Amazon_Flex_ES",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-ES-DS-BCN-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Carrer del Transport",
+            "houseNumber": "3",
+            "city": "Barcelona",
+            "postalcode": "08040",
+            "country": "ES",
+            "latitude": 41.3526,
+            "longitude": 2.1482,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "AMZ-ES-DS-BCN-01",
+            "issuedByAuthority": "AMAZON_FLEX"
+          }
+        ]
+      },
+      /* =========================
+       SPAIN — Amazon Easy Ship (micro/SME shippers via platform + shipper IDs)
+       NOTE: Contract at "Easy Ship program" account; sellers are sub-accounts with PLATFORM_SHIPPER_ID
+    ========================= */
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-EASYSHIP-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 2500000,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "EASY_SHIP",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-EASYSHIP-ES-001",
+          "name": "Amazon_EasyShip_ES",
+          "type": "API",
+          "provider": "Amazon"
+        },
+        "addresses": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-AMZ-ES-EASYSHIP-001",
+            "firstName": "Nuria",
+            "lastName": "Calvo",
+            "jobTitle": "Easy Ship Program Manager (Spain)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "easyship.es@amazon.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-AMAZON-ES-EASYSHIP-001",
+            "contractName": "DHL eCommerce Spain – Amazon Easy Ship (Label + Drop-off) Contract",
+            "startDate": "2025-04-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED"
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-AMAZON-ES-EASYSHIP-001",
+              "billingAccountNumber": "BILL-AMZ-ES-EASYSHIP-3001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "PORTAL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "CaixaBank",
+                "iban": "ES00BANK0000000000000301",
+                "bic": "CAIXESBB"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "AMZ-ES-ERP-BILL-EASYSHIP-3001",
+                  "issuedByAuthority": "AMAZON_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "PROGRAM_ID",
+            "refValue": "AMZ-ES-EASYSHIP-PRG-01",
+            "issuedByAuthority": "AMAZON"
+          }
+        ]
+      },
+      /* Easy Ship — Merchant Sellers (sub-accounts, no contracts) */
+      {
+        "mdmAccountId": "ACC-AMZ-ES-SELLER-BCN-0001",
+        "parentAccountId": "ACC-AMAZON-ES-EASYSHIP-SOLDTO-001",
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "DIGITAL",
+        "salesManager": "DIGITAL_SALES_BOT",
+        "segmentGroup": "SME",
+        "segmentGroup2": "MERCHANT_SELLER",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-EASYSHIP-ES-001",
+          "name": "Amazon_EasyShip_ES",
+          "type": "API",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-SELLER-BCN-0001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Carrer de Mallorca",
+            "houseNumber": "401",
+            "city": "Barcelona",
+            "postalcode": "08013",
+            "country": "ES",
+            "latitude": 41.4040,
+            "longitude": 2.1744,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-SELLER-BCN-0001",
+            "firstName": "Jordi",
+            "lastName": "Vila",
+            "jobTitle": "Owner",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "owner@barcelona-gadgets.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-600-000-111"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "PLATFORM_SHIPPER_ID",
+            "refValue": "ES-SHP-BCN-829194",
+            "issuedByAuthority": "AMAZON"
+          }
+        ]
+      },
+      /* Easy Ship — Drop-off / Locker nodes (pickup points) */
+      {
+        "mdmAccountId": "ACC-AMZ-ES-LOCKER-BCN-01",
+        "parentAccountId": "ACC-AMAZON-ES-EASYSHIP-SOLDTO-001",
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": [
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "DIGITAL",
+        "salesManager": "DIGITAL_SALES_BOT",
+        "segmentGroup": "DROP_OFF",
+        "segmentGroup2": "LOCKER",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-EASYSHIP-ES-001",
+          "name": "Amazon_EasyShip_ES",
+          "type": "API",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-LOCKER-BCN-01",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Plaça de Catalunya",
+            "houseNumber": "1",
+            "city": "Barcelona",
+            "postalcode": "08002",
+            "country": "ES",
+            "latitude": 41.3870,
+            "longitude": 2.1701,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "AMZ-LOCKER-BCN-0001",
+            "issuedByAuthority": "AMAZON"
+          }
+        ]
+      },
+      /* =========================
+       UNITED STATES — Returns (separate contract + returns warehouse delivery point)
+    ========================= */
+      {
+        "mdmAccountId": "ACC-AMAZON-US-RETURNS-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-US-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "USD",
+        "paymentTerms": "NET_30",
+        "creditLimit": 20000000,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "RETURNS",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-RETURNS-US-001",
+          "name": "Amazon_Returns_US",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-US-RETURNS-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "4th St",
+            "houseNumber": "500",
+            "city": "Louisville",
+            "postalcode": "40202",
+            "country": "US",
+            "latitude": 38.2561,
+            "longitude": -85.7513,
+            "timezone": "America/Kentucky/Louisville"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-AMZ-US-RETURNS-001",
+            "firstName": "Kevin",
+            "lastName": "Baker",
+            "jobTitle": "Returns Network Manager (US)",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "returns.ops.us@amazon.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-AMAZON-US-RETURNS-001",
+            "contractName": "DHL eCommerce US – Amazon Returns Consolidation & Delivery Point Contract",
+            "startDate": "2025-01-15",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "RETURNS",
+                "PARCEL"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "VOLUME_TIERED",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED"
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-AMAZON-US-RETURNS-001",
+              "billingAccountNumber": "BILL-AMZ-US-RETURNS-9001",
+              "billingCurrency": "USD",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EDI",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "JPMorgan Chase",
+                "iban": "US00BANK0000000000009001",
+                "bic": "CHASUS33"
+              },
+              "addresses": [],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "AMZ-US-ERP-BILL-RETURNS-9001",
+                  "issuedByAuthority": "AMAZON_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "AMZ-US-RETURNS-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_US"
+          }
+        ]
+      },
+      /* US Returns warehouse delivery point */
+      {
+        "mdmAccountId": "ACC-AMZ-US-RETURNS-WH-DELIVERY-001",
+        "parentAccountId": "ACC-AMAZON-US-RETURNS-SOLDTO-001",
+        "mdmCustomerId": "CUST-AMAZON-US-001",
+        "businessRoles": [
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "USD",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "RETURNS",
+        "segmentGroup2": "WAREHOUSE_DELIVERY_POINT",
+        "platformObject": {
+          "platformId": "PLT-AMAZON-RETURNS-US-001",
+          "name": "Amazon_Returns_US",
+          "type": "INTERNAL_SYSTEM",
+          "provider": "Amazon"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-AMZ-US-RETURNS-WH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "International Pkwy",
+            "houseNumber": "3800",
+            "city": "Hebron",
+            "postalcode": "41048",
+            "country": "US",
+            "latitude": 39.0562,
+            "longitude": -84.7040,
+            "timezone": "America/New_York"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "AMZ-US-RET-WH-01",
+            "issuedByAuthority": "AMAZON_RETURNS"
+          }
+        ]
+      }
+    ]
   }
 ]
