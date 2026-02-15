@@ -1,6 +1,6 @@
 [
-  [
-    {
+  
+  {
       "scenarioName": "Inditex Group",
       "customer": {
         "customerType": "STRATEGIC_CUSTOMERS",
@@ -962,8 +962,8 @@
           ]
         }
       ]
-    }
-  ],
+  }
+  ,
   {
     "scenarioName": "Müller Auto Parts",
     "customer": {
