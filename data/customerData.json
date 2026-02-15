@@ -2132,7 +2132,7 @@
   {
     "scenarioName": "Amazon Marketplace Ecosystem",
     "customer": {
-      "customerType": "PARTNERS",
+      "customerType": "STRATEGIC_CUSTOMERS",
       "customerLevel": "KEY_ACCT",
       "mdmCustomerId": "CUST-AMAZON-GLOBAL-001",
       "parentMdmCustomerId": null,
