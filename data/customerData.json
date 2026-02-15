@@ -1,71 +1,21 @@
 [
-{
-  "scenarioName": "Inditex Group",
-  "customer": {
-    "customerType": "STRATEGIC_CUSTOMERS",
-    "customerLevel": "STRATEGIC",
-    "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-    "parentMdmCustomerId": null,
-    "officialName": "Industria de Diseño Textil, S.A. (Inditex Global)",
-    "tradingName": "Inditex",
-    "globalGroupCode": "INDITEX",
-    "industrySector": "RETAIL_FASHION",
-    "taxId": "ES-A48001826",
-    "countryOfRegistration": "ES",
-    "addresses": [
-      {
-        "addressId": "ADDR-INDITEX-GLOBAL-REG-001",
-        "addressType": "REGISTERED_OFFICE",
-        "isGeoManual": false,
-        "street": "Avenida de la Diputación",
-        "houseNumber": "1",
-        "city": "Arteixo",
-        "postalcode": "15142",
-        "country": "ES",
-        "latitude": 43.3041,
-        "longitude": -8.5077,
-        "timezone": "Europe/Madrid"
-      }
-    ],
-    "contactPersons": [
-      {
-        "contactPersonId": "CONT-INDITEX-GLOBAL-001",
-        "firstName": "Ana",
-        "lastName": "García",
-        "jobTitle": "Global Logistics Governance Lead",
-        "contactType": "BUSINESS",
-        "communicationChannels": [
-          { "type": "EMAIL", "value": "global.logistics@inditex.example" },
-          { "type": "PHONE", "value": "+34-900-000-001" }
-        ]
-      }
-    ]
-  },
-  "accounts": [
-    {
-      "mdmAccountId": "ACC-INDITEX-ES-SOLDTO-001",
-      "parentAccountId": null,
+  {
+    "scenarioName": "Inditex Group",
+    "customer": {
+      "customerType": "STRATEGIC_CUSTOMERS",
+      "customerLevel": "STRATEGIC",
       "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-      "businessRoles": ["SOLDTO", "PAYER"],
-      "accountStatus": "ACTIVE",
-      "isNaturalPerson": false,
-      "currency": "EUR",
-      "paymentTerms": "NET_30",
-      "creditLimit": 5000000,
-      "salesChannel": "KEY_ACCOUNT",
-      "salesManager": "GLOBAL_KAM_TEAM",
-      "segmentGroup": "KEY_ACCOUNT",
-      "segmentGroup2": "GLOBAL_STRATEGIC",
-      "platformObject": {
-        "platformId": "PLT-INDITEX-EDI-001",
-        "name": "EDI_INTEGRATION",
-        "type": "EDI",
-        "provider": "INDITEX"
-      },
+      "parentMdmCustomerId": null,
+      "officialName": "Industria de Diseño Textil, S.A. (Inditex Global)",
+      "tradingName": "Inditex",
+      "globalGroupCode": "INDITEX",
+      "industrySector": "RETAIL_FASHION",
+      "taxId": "ES-A48001826",
+      "countryOfRegistration": "ES",
       "addresses": [
         {
-          "addressId": "ADDR-INDITEX-ES-HQ-001",
-          "addressType": "BUSINESS",
+          "addressId": "ADDR-INDITEX-GLOBAL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
           "isGeoManual": false,
           "street": "Avenida de la Diputación",
           "houseNumber": "1",
@@ -79,593 +29,950 @@
       ],
       "contactPersons": [
         {
-          "contactPersonId": "CONT-INDITEX-ES-001",
-          "firstName": "Luis",
-          "lastName": "Pérez",
-          "jobTitle": "Spain Logistics Manager",
+          "contactPersonId": "CONT-INDITEX-GLOBAL-001",
+          "firstName": "Ana",
+          "lastName": "García",
+          "jobTitle": "Global Logistics Governance Lead",
           "contactType": "BUSINESS",
           "communicationChannels": [
-            { "type": "EMAIL", "value": "spain.logistics@inditex.example" }
+            {
+              "type": "EMAIL",
+              "value": "global.logistics@inditex.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+34-900-000-001"
+            }
           ]
         }
-      ],
-      "contracts": [
-        {
-          "contractId": "CON-INDITEX-ES-001",
-          "contractName": "DHL Spain – Master Logistics Contract",
-          "startDate": "2025-01-01",
-          "contractDetail": {
-            "contractType": "MASTER",
-            "services": ["PARCEL", "RETURNS"],
-            "slaLevel": "ENTERPRISE",
-            "pricingModel": "CUSTOM",
-            "billingFrequency": "MONTHLY",
-            "billingModel": "CONSOLIDATED",
-            "kpiPack": ["OTD%", "OTSD%", "CDT-h"]
-          },
-          "addresses": [
-            {
-              "addressId": "ADDR-INDITEX-CONTRACT-NOTICE-ES-001",
-              "addressType": "BUSINESS",
-              "isGeoManual": false,
-              "street": "Calle de Negocios",
-              "houseNumber": "10",
-              "city": "Madrid",
-              "postalcode": "28001",
-              "country": "ES",
-              "latitude": 40.4168,
-              "longitude": -3.7038,
-              "timezone": "Europe/Madrid"
-            }
-          ],
-          "contactPersons": [
-            {
-              "contactPersonId": "CONT-INDITEX-CONTRACT-ES-001",
-              "firstName": "María",
-              "lastName": "Santos",
-              "jobTitle": "Contract Owner (Inditex Spain)",
-              "contactType": "BUSINESS",
-              "communicationChannels": [
-                { "type": "EMAIL", "value": "contracts.es@inditex.example" }
+      ]
+    },
+    "relatedCustomers": [
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "STRATEGIC",
+        "mdmCustomerId": "CUST-INDITEX-ES-001",
+        "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "officialName": "Inditex España, S.L.",
+        "tradingName": "Inditex España",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "ES-B12345678",
+        "countryOfRegistration": "ES",
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-ES-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Avenida de la Diputación",
+            "houseNumber": "1",
+            "city": "Arteixo",
+            "postalcode": "15142",
+            "country": "ES",
+            "latitude": 43.3041,
+            "longitude": -8.5077,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-ES-LEGAL-001",
+            "firstName": "Luis",
+            "lastName": "Pérez",
+            "jobTitle": "Legal Entity Representative",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.es@inditex.example"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "KEY_ACCOUNT",
+        "mdmCustomerId": "CUST-ZARA-ES-001",
+        "parentMdmCustomerId": "CUST-INDITEX-ES-001",
+        "officialName": "Zara España, S.L.",
+        "tradingName": "Zara España",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "ES-B87654321",
+        "countryOfRegistration": "ES",
+        "addresses": [],
+        "contactPersons": []
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "STRATEGIC",
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "officialName": "Inditex Turkey A.Ş.",
+        "tradingName": "Inditex Türkiye",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "TR0000000001",
+        "countryOfRegistration": "TR",
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-TR-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Büyükdere Caddesi",
+            "houseNumber": "199",
+            "city": "İstanbul",
+            "postalcode": "34394",
+            "country": "TR",
+            "latitude": 41.0673,
+            "longitude": 29.0063,
+            "timezone": "Europe/Istanbul"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-TR-LEGAL-001",
+            "firstName": "Aslı",
+            "lastName": "Koç",
+            "jobTitle": "Legal Entity Representative",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.tr@inditex.example"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "customerType": "STRATEGIC_CUSTOMERS",
+        "customerLevel": "STRATEGIC",
+        "mdmCustomerId": "CUST-INDITEX-NL-001",
+        "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
+        "officialName": "Inditex Netherlands B.V.",
+        "tradingName": "Inditex Netherlands",
+        "globalGroupCode": "INDITEX",
+        "industrySector": "RETAIL_FASHION",
+        "taxId": "NL0000000001",
+        "countryOfRegistration": "NL",
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-NL-REG-001",
+            "addressType": "REGISTERED_OFFICE",
+            "isGeoManual": false,
+            "street": "Weena",
+            "houseNumber": "505",
+            "city": "Rotterdam",
+            "postalcode": "3013AL",
+            "country": "NL",
+            "latitude": 51.923,
+            "longitude": 4.469,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-NL-LEGAL-001",
+            "firstName": "Jasper",
+            "lastName": "van Dijk",
+            "jobTitle": "Legal Entity Representative",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "legal.nl@inditex.example"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "accounts": [
+      /* =========================
+         SPAIN (attached to CUST-INDITEX-ES-001)
+      ========================= */
+      {
+        "mdmAccountId": "ACC-INDITEX-ES-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-INDITEX-ES-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 5000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-EDI-001",
+          "name": "EDI_INTEGRATION",
+          "type": "EDI",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-ES-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Avenida de la Diputación",
+            "houseNumber": "1",
+            "city": "Arteixo",
+            "postalcode": "15142",
+            "country": "ES",
+            "latitude": 43.3041,
+            "longitude": -8.5077,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-ES-001",
+            "firstName": "Luis",
+            "lastName": "Pérez",
+            "jobTitle": "Spain Logistics Manager",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "spain.logistics@inditex.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-INDITEX-ES-001",
+            "contractName": "DHL Spain – Master Logistics Contract",
+            "startDate": "2025-01-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
               ]
-            }
-          ],
-          "billingProfile": {
-            "billingProfileId": "BPROF-INDITEX-ES-001",
-            "billingAccountNumber": "BILL-INDITEX-ES-1001",
-            "billingCurrency": "EUR",
-            "billingFrequency": "MONTHLY",
-            "invoiceDelivery": "EDI",
-            "paymentMethod": {
-              "type": "BANK_TRANSFER",
-              "bankName": "Banco Santander",
-              "iban": "ES00BANK0000000000000001",
-              "bic": "BSCHESMM"
             },
             "addresses": [
               {
-                "addressId": "ADDR-INDITEX-BILLING-ES-001",
-                "addressType": "BILLING",
+                "addressId": "ADDR-INDITEX-CONTRACT-NOTICE-ES-001",
+                "addressType": "BUSINESS",
                 "isGeoManual": false,
-                "street": "Calle Finanzas",
-                "houseNumber": "5",
+                "street": "Calle de Negocios",
+                "houseNumber": "10",
                 "city": "Madrid",
-                "postalcode": "28046",
+                "postalcode": "28001",
                 "country": "ES",
-                "latitude": 40.4515,
-                "longitude": -3.692,
+                "latitude": 40.4168,
+                "longitude": -3.7038,
                 "timezone": "Europe/Madrid"
               }
             ],
             "contactPersons": [
               {
-                "contactPersonId": "CONT-INDITEX-AP-ES-001",
-                "firstName": "Sofía",
-                "lastName": "Ruiz",
-                "jobTitle": "Accounts Payable (Inditex Spain)",
+                "contactPersonId": "CONT-INDITEX-CONTRACT-ES-001",
+                "firstName": "María",
+                "lastName": "Santos",
+                "jobTitle": "Contract Owner (Inditex Spain)",
                 "contactType": "BUSINESS",
                 "communicationChannels": [
-                  { "type": "EMAIL", "value": "ap.es@inditex.example" }
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts.es@inditex.example"
+                  }
                 ]
               }
             ],
-            "referenceIds": [
+            "billingProfile": {
+              "billingProfileId": "BPROF-INDITEX-ES-001",
+              "billingAccountNumber": "BILL-INDITEX-ES-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EDI",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Banco Santander",
+                "iban": "ES00BANK0000000000000001",
+                "bic": "BSCHESMM"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-INDITEX-BILLING-ES-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Calle Finanzas",
+                  "houseNumber": "5",
+                  "city": "Madrid",
+                  "postalcode": "28046",
+                  "country": "ES",
+                  "latitude": 40.4515,
+                  "longitude": -3.692,
+                  "timezone": "Europe/Madrid"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-INDITEX-AP-ES-001",
+                  "firstName": "Sofía",
+                  "lastName": "Ruiz",
+                  "jobTitle": "Accounts Payable (Inditex Spain)",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap.es@inditex.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "SAP-BILL-INDITEX-ES-1001",
+                  "issuedByAuthority": "INDITEX_SAP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "INDITEX-ES-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_ES"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARA-ES-SOLDTO-001",
+        "parentAccountId": "ACC-INDITEX-ES-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-ES-001",
+        "businessRoles": [
+          "SOLDTO"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 2000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "BRAND",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-PORTAL-001",
+          "name": "ENTERPRISE_PORTAL",
+          "type": "PORTAL",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ZARA-ES-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Calle de la Moda",
+            "houseNumber": "10",
+            "city": "Madrid",
+            "postalcode": "28001",
+            "country": "ES",
+            "latitude": 40.4168,
+            "longitude": -3.7038,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ZARA-ES-OPS-001",
+            "firstName": "Carlos",
+            "lastName": "López",
+            "jobTitle": "Distribution Lead",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
               {
-                "refType": "ERP_ID",
-                "refValue": "SAP-BILL-INDITEX-ES-1001",
-                "issuedByAuthority": "INDITEX_SAP"
+                "type": "EMAIL",
+                "value": "distribution@zara.example"
               }
             ]
           }
-        }
-      ],
-      "referenceIds": [
-        {
-          "refType": "CUSTOMER_NUMBER",
-          "refValue": "INDITEX-GLOBAL-CUST-001",
-          "issuedByAuthority": "DHL_ECOMMERCE"
-        }
-      ]
-    },
-
-    {
-      "mdmAccountId": "ACC-ZARA-ES-SOLDTO-001",
-      "parentAccountId": "ACC-INDITEX-ES-SOLDTO-001",
-      "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-      "businessRoles": ["SOLDTO"],
-      "accountStatus": "ACTIVE",
-      "isNaturalPerson": false,
-      "currency": "EUR",
-      "paymentTerms": "NET_30",
-      "creditLimit": 2000000,
-      "salesChannel": "KEY_ACCOUNT",
-      "salesManager": "GLOBAL_KAM_TEAM",
-      "segmentGroup": "KEY_ACCOUNT",
-      "segmentGroup2": "BRAND",
-      "platformObject": {
-        "platformId": "PLT-INDITEX-PORTAL-001",
-        "name": "ENTERPRISE_PORTAL",
-        "type": "PORTAL",
-        "provider": "INDITEX"
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "ERP_ID",
+            "refValue": "INDITEX-SAP-ZARA-ES-01",
+            "issuedByAuthority": "INDITEX_SAP"
+          }
+        ]
       },
-      "addresses": [
-        {
-          "addressId": "ADDR-ZARA-ES-HQ-001",
-          "addressType": "BUSINESS",
-          "isGeoManual": false,
-          "street": "Calle de la Moda",
-          "houseNumber": "10",
-          "city": "Madrid",
-          "postalcode": "28001",
-          "country": "ES",
-          "latitude": 40.4168,
-          "longitude": -3.7038,
-          "timezone": "Europe/Madrid"
-        }
-      ],
-      "contactPersons": [
-        {
-          "contactPersonId": "CONT-ZARA-ES-OPS-001",
-          "firstName": "Carlos",
-          "lastName": "López",
-          "jobTitle": "Distribution Lead",
-          "contactType": "BUSINESS",
-          "communicationChannels": [
-            { "type": "EMAIL", "value": "distribution@zara.example" }
-          ]
-        }
-      ],
-      "contracts": [],
-      "referenceIds": [
-        {
-          "refType": "ERP_ID",
-          "refValue": "INDITEX-SAP-ZARA-ES-01",
-          "issuedByAuthority": "INDITEX_SAP"
-        }
-      ]
-    },
-
-    {
-      "mdmAccountId": "ACC-ZARA-MAD-DC-PICKUP-001",
-      "parentAccountId": "ACC-ZARA-ES-SOLDTO-001",
-      "mdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-      "businessRoles": ["PICKUP", "SHIPPER"],
-      "accountStatus": "ACTIVE",
-      "isNaturalPerson": false,
-      "currency": "EUR",
-      "paymentTerms": "NET_30",
-      "creditLimit": 0,
-      "salesChannel": "KEY_ACCOUNT",
-      "salesManager": "GLOBAL_KAM_TEAM",
-      "segmentGroup": "KEY_ACCOUNT",
-      "segmentGroup2": "FULFILLMENT_NODE",
-      "platformObject": {
-        "platformId": "PLT-INDITEX-WMS-001",
-        "name": "WMS_CONNECTOR",
-        "type": "API",
-        "provider": "INDITEX"
+      {
+        "mdmAccountId": "ACC-ZARA-MAD-DC-PICKUP-001",
+        "parentAccountId": "ACC-ZARA-ES-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-ES-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "FULFILLMENT_NODE",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-WMS-001",
+          "name": "WMS_CONNECTOR",
+          "type": "API",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ZARA-MAD-DC-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Polígono Logístico",
+            "houseNumber": "25",
+            "city": "Madrid",
+            "postalcode": "28850",
+            "country": "ES",
+            "latitude": 40.4321,
+            "longitude": -3.561,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "ZARA-MAD-DC-001",
+            "issuedByAuthority": "INDITEX_WMS"
+          }
+        ]
       },
-      "addresses": [
-        {
-          "addressId": "ADDR-ZARA-MAD-DC-001",
-          "addressType": "PICKUP",
-          "isGeoManual": false,
-          "street": "Polígono Logístico",
-          "houseNumber": "25",
-          "city": "Madrid",
-          "postalcode": "28850",
-          "country": "ES",
-          "latitude": 40.4321,
-          "longitude": -3.561,
-          "timezone": "Europe/Madrid"
-        }
-      ],
-      "contactPersons": [],
-      "contracts": [],
-      "referenceIds": [
-        {
-          "refType": "EXTERNAL_ID",
-          "refValue": "ZARA-MAD-DC-001",
-          "issuedByAuthority": "INDITEX_WMS"
-        }
-      ]
-    },
-
-    {
-      "mdmAccountId": "ACC-INDITEX-TR-SOLDTO-001",
-      "parentAccountId": null,
-      "mdmCustomerId": "CUST-INDITEX-TR-001",
-      "businessRoles": ["SOLDTO", "PAYER"],
-      "accountStatus": "ACTIVE",
-      "isNaturalPerson": false,
-      "currency": "TRY",
-      "paymentTerms": "NET_30",
-      "creditLimit": 9000000,
-      "salesChannel": "KEY_ACCOUNT",
-      "salesManager": "GLOBAL_KAM_TEAM",
-      "segmentGroup": "KEY_ACCOUNT",
-      "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
-      "platformObject": {
-        "platformId": "PLT-INDITEX-TR-EDI-001",
-        "name": "INDITEX_TR_EDI",
-        "type": "EDI",
-        "provider": "INDITEX"
-      },
-      "addresses": [
-        {
-          "addressId": "ADDR-INDITEX-TR-HQ-001",
-          "addressType": "BUSINESS",
-          "isGeoManual": false,
-          "street": "Büyükdere Caddesi",
-          "houseNumber": "199",
-          "city": "İstanbul",
-          "postalcode": "34394",
-          "country": "TR",
-          "latitude": 41.0673,
-          "longitude": 29.0063,
-          "timezone": "Europe/Istanbul"
-        }
-      ],
-      "contactPersons": [
-        {
-          "contactPersonId": "CONT-INDITEX-TR-001",
-          "firstName": "Ece",
-          "lastName": "Yılmaz",
-          "jobTitle": "Turkey Logistics Manager",
-          "contactType": "BUSINESS",
-          "communicationChannels": [
-            { "type": "EMAIL", "value": "tr.logistics@inditex.example" },
-            { "type": "PHONE", "value": "+90-212-000-0001" }
-          ]
-        }
-      ],
-      "contracts": [
-        {
-          "contractId": "CON-INDITEX-TR-001",
-          "contractName": "DHL Turkey – Master Logistics Contract",
-          "startDate": "2025-02-01",
-          "contractDetail": {
-            "contractType": "MASTER",
-            "services": ["PARCEL", "RETURNS"],
-            "slaLevel": "ENTERPRISE",
-            "pricingModel": "CUSTOM",
-            "billingFrequency": "MONTHLY",
-            "billingModel": "CONSOLIDATED",
-            "kpiPack": ["OTD%", "OTSD%", "CDT-h"]
-          },
-          "addresses": [
-            {
-              "addressId": "ADDR-INDITEX-CONTRACT-NOTICE-TR-001",
-              "addressType": "BUSINESS",
-              "isGeoManual": false,
-              "street": "Maslak Mahallesi",
-              "houseNumber": "5",
-              "city": "İstanbul",
-              "postalcode": "34398",
-              "country": "TR",
-              "latitude": 41.112,
-              "longitude": 29.021,
-              "timezone": "Europe/Istanbul"
-            }
-          ],
-          "contactPersons": [
-            {
-              "contactPersonId": "CONT-INDITEX-CONTRACT-TR-001",
-              "firstName": "Mert",
-              "lastName": "Kaya",
-              "jobTitle": "Contract Owner (Inditex Turkey)",
-              "contactType": "BUSINESS",
-              "communicationChannels": [
-                { "type": "EMAIL", "value": "contracts.tr@inditex.example" }
+      /* =========================
+         TURKEY (attached to CUST-INDITEX-TR-001)
+      ========================= */
+      {
+        "mdmAccountId": "ACC-INDITEX-TR-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 9000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-TR-EDI-001",
+          "name": "INDITEX_TR_EDI",
+          "type": "EDI",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-TR-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Büyükdere Caddesi",
+            "houseNumber": "199",
+            "city": "İstanbul",
+            "postalcode": "34394",
+            "country": "TR",
+            "latitude": 41.0673,
+            "longitude": 29.0063,
+            "timezone": "Europe/Istanbul"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-TR-001",
+            "firstName": "Ece",
+            "lastName": "Yılmaz",
+            "jobTitle": "Turkey Logistics Manager",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "tr.logistics@inditex.example"
+              },
+              {
+                "type": "PHONE",
+                "value": "+90-212-000-0001"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-INDITEX-TR-001",
+            "contractName": "DHL Turkey – Master Logistics Contract",
+            "startDate": "2025-02-01",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
               ]
-            }
-          ],
-          "billingProfile": {
-            "billingProfileId": "BPROF-INDITEX-TR-001",
-            "billingAccountNumber": "BILL-INDITEX-TR-2001",
-            "billingCurrency": "TRY",
-            "billingFrequency": "MONTHLY",
-            "invoiceDelivery": "EMAIL",
-            "paymentMethod": {
-              "type": "BANK_TRANSFER",
-              "bankName": "Garanti BBVA",
-              "iban": "TR00BANK0000000000000006",
-              "bic": "TGBATRIS"
             },
             "addresses": [
               {
-                "addressId": "ADDR-INDITEX-BILLING-TR-001",
-                "addressType": "BILLING",
+                "addressId": "ADDR-INDITEX-CONTRACT-NOTICE-TR-001",
+                "addressType": "BUSINESS",
                 "isGeoManual": false,
-                "street": "Levent Mahallesi",
-                "houseNumber": "12",
+                "street": "Maslak Mahallesi",
+                "houseNumber": "5",
                 "city": "İstanbul",
-                "postalcode": "34330",
+                "postalcode": "34398",
                 "country": "TR",
-                "latitude": 41.081,
-                "longitude": 29.011,
+                "latitude": 41.112,
+                "longitude": 29.021,
                 "timezone": "Europe/Istanbul"
               }
             ],
             "contactPersons": [
               {
-                "contactPersonId": "CONT-INDITEX-AP-TR-001",
-                "firstName": "Selin",
-                "lastName": "Demir",
-                "jobTitle": "Accounts Payable (Inditex Turkey)",
+                "contactPersonId": "CONT-INDITEX-CONTRACT-TR-001",
+                "firstName": "Mert",
+                "lastName": "Kaya",
+                "jobTitle": "Contract Owner (Inditex Turkey)",
                 "contactType": "BUSINESS",
                 "communicationChannels": [
-                  { "type": "EMAIL", "value": "ap.tr@inditex.example" }
+                  {
+                    "type": "EMAIL",
+                    "value": "contracts.tr@inditex.example"
+                  }
                 ]
               }
             ],
-            "referenceIds": [
+            "billingProfile": {
+              "billingProfileId": "BPROF-INDITEX-TR-001",
+              "billingAccountNumber": "BILL-INDITEX-TR-2001",
+              "billingCurrency": "TRY",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Garanti BBVA",
+                "iban": "TR00BANK0000000000000006",
+                "bic": "TGBATRIS"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-INDITEX-BILLING-TR-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Levent Mahallesi",
+                  "houseNumber": "12",
+                  "city": "İstanbul",
+                  "postalcode": "34330",
+                  "country": "TR",
+                  "latitude": 41.081,
+                  "longitude": 29.011,
+                  "timezone": "Europe/Istanbul"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-INDITEX-AP-TR-001",
+                  "firstName": "Selin",
+                  "lastName": "Demir",
+                  "jobTitle": "Accounts Payable (Inditex Turkey)",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap.tr@inditex.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "SAP-BILL-INDITEX-TR-2001",
+                  "issuedByAuthority": "INDITEX_SAP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "INDITEX-TR-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_TR"
+          }
+        ]
+      },
+      /* (TR brand + pickup accounts unchanged, still under TR sold-to) */
+      {
+        "mdmAccountId": "ACC-ZARA-TR-001",
+        "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "businessRoles": [
+          "SOLDTO",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "BRAND",
+        "segmentGroup2": "ZARA",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "ERP_ID",
+            "refValue": "INDITEX-SAP-ZARA-TR-01",
+            "issuedByAuthority": "INDITEX_SAP"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARAHOME-TR-001",
+        "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "businessRoles": [
+          "SOLDTO",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "BRAND",
+        "segmentGroup2": "ZARA_HOME",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "ERP_ID",
+            "refValue": "INDITEX-SAP-ZH-TR-01",
+            "issuedByAuthority": "INDITEX_SAP"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-MDUTTI-TR-001",
+        "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "businessRoles": [
+          "SOLDTO",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "BRAND",
+        "segmentGroup2": "MASSIMO_DUTTI",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "ERP_ID",
+            "refValue": "INDITEX-SAP-MD-TR-01",
+            "issuedByAuthority": "INDITEX_SAP"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARA-TR-IST-DC-001",
+        "parentAccountId": "ACC-ZARA-TR-001",
+        "mdmCustomerId": "CUST-INDITEX-TR-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "TRY",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "WAREHOUSE",
+        "segmentGroup2": "ISTANBUL_DC",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-WMS-TR-001",
+          "name": "WMS_CONNECTOR_TR",
+          "type": "API",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ZARA-TR-IST-DC-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Hadımköy Yolu",
+            "houseNumber": "45",
+            "city": "İstanbul",
+            "postalcode": "34555",
+            "country": "TR",
+            "latitude": 41.116,
+            "longitude": 28.649,
+            "timezone": "Europe/Istanbul"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "ZARA-TR-IST-DC-001",
+            "issuedByAuthority": "INDITEX_WMS"
+          }
+        ]
+      },
+      /* =========================
+         NETHERLANDS (attached to CUST-INDITEX-NL-001)
+      ========================= */
+      {
+        "mdmAccountId": "ACC-INDITEX-NL-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-INDITEX-NL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 4000000,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "KEY_ACCOUNT",
+        "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-INDITEX-NL-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Weena",
+            "houseNumber": "505",
+            "city": "Rotterdam",
+            "postalcode": "3013AL",
+            "country": "NL",
+            "latitude": 51.923,
+            "longitude": 4.469,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-INDITEX-NL-001",
+            "firstName": "Sanne",
+            "lastName": "de Jong",
+            "jobTitle": "Netherlands Logistics Manager",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
               {
-                "refType": "ERP_ID",
-                "refValue": "SAP-BILL-INDITEX-TR-2001",
-                "issuedByAuthority": "INDITEX_SAP"
+                "type": "EMAIL",
+                "value": "nl.logistics@inditex.example"
               }
             ]
           }
-        }
-      ],
-      "referenceIds": [
-        {
-          "refType": "CUSTOMER_NUMBER",
-          "refValue": "INDITEX-TR-CUST-0001",
-          "issuedByAuthority": "DHL_ECOMMERCE_TR"
-        }
-      ]
-    },
-
-    { "mdmAccountId": "ACC-ZARA-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "ZARA", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-ZARA-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-ZARAHOME-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "ZARA_HOME", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-ZH-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-MDUTTI-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "MASSIMO_DUTTI", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-MD-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-PULLBEAR-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "PULL_AND_BEAR", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-PB-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-BERSHKA-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "BERSHKA", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-BSK-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-STRADIVARIUS-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "STRADIVARIUS", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-STR-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-OYSHO-TR-001", "parentAccountId": "ACC-INDITEX-TR-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "OYSHO", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-OYS-TR-01","issuedByAuthority":"INDITEX_SAP"}] },
-
-    { "mdmAccountId": "ACC-ZARA-TR-IST-DC-001", "parentAccountId": "ACC-ZARA-TR-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["PICKUP","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "WAREHOUSE", "segmentGroup2": "ISTANBUL_DC", "platformObject": {"platformId":"PLT-INDITEX-WMS-TR-001","name":"WMS_CONNECTOR_TR","type":"API","provider":"INDITEX"}, "addresses": [{"addressId":"ADDR-ZARA-TR-IST-DC-001","addressType":"PICKUP","isGeoManual":false,"street":"Hadımköy Yolu","houseNumber":"45","city":"İstanbul","postalcode":"34555","country":"TR","latitude":41.116,"longitude":28.649,"timezone":"Europe/Istanbul"}], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"EXTERNAL_ID","refValue":"ZARA-TR-IST-DC-001","issuedByAuthority":"INDITEX_WMS"}] },
-    { "mdmAccountId": "ACC-ZARA-TR-ANK-DC-001", "parentAccountId": "ACC-ZARA-TR-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["PICKUP","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "WAREHOUSE", "segmentGroup2": "ANKARA_DC", "platformObject": {"platformId":"PLT-INDITEX-WMS-TR-001","name":"WMS_CONNECTOR_TR","type":"API","provider":"INDITEX"}, "addresses": [{"addressId":"ADDR-ZARA-TR-ANK-DC-001","addressType":"PICKUP","isGeoManual":false,"street":"Anadolu OSB","houseNumber":"12","city":"Ankara","postalcode":"06909","country":"TR","latitude":39.958,"longitude":32.741,"timezone":"Europe/Istanbul"}], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"EXTERNAL_ID","refValue":"ZARA-TR-ANK-DC-001","issuedByAuthority":"INDITEX_WMS"}] },
-    { "mdmAccountId": "ACC-ZARA-TR-IZM-DC-001", "parentAccountId": "ACC-ZARA-TR-001", "mdmCustomerId": "CUST-INDITEX-TR-001", "businessRoles": ["PICKUP","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "TRY", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "WAREHOUSE", "segmentGroup2": "IZMIR_DC", "platformObject": {"platformId":"PLT-INDITEX-WMS-TR-001","name":"WMS_CONNECTOR_TR","type":"API","provider":"INDITEX"}, "addresses": [{"addressId":"ADDR-ZARA-TR-IZM-DC-001","addressType":"PICKUP","isGeoManual":false,"street":"Kemalpaşa Lojistik Bölgesi","houseNumber":"8","city":"İzmir","postalcode":"35730","country":"TR","latitude":38.426,"longitude":27.418,"timezone":"Europe/Istanbul"}], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"EXTERNAL_ID","refValue":"ZARA-TR-IZM-DC-001","issuedByAuthority":"INDITEX_WMS"}] },
-
-    {
-      "mdmAccountId": "ACC-INDITEX-NL-SOLDTO-001",
-      "parentAccountId": null,
-      "mdmCustomerId": "CUST-INDITEX-NL-001",
-      "businessRoles": ["SOLDTO", "PAYER"],
-      "accountStatus": "ACTIVE",
-      "isNaturalPerson": false,
-      "currency": "EUR",
-      "paymentTerms": "NET_30",
-      "creditLimit": 4000000,
-      "salesChannel": "KEY_ACCOUNT",
-      "salesManager": "GLOBAL_KAM_TEAM",
-      "segmentGroup": "KEY_ACCOUNT",
-      "segmentGroup2": "COUNTRY_CONTRACT_OWNER",
-      "platformObject": null,
-      "addresses": [
-        {
-          "addressId": "ADDR-INDITEX-NL-HQ-001",
-          "addressType": "BUSINESS",
-          "isGeoManual": false,
-          "street": "Weena",
-          "houseNumber": "505",
-          "city": "Rotterdam",
-          "postalcode": "3013AL",
-          "country": "NL",
-          "latitude": 51.923,
-          "longitude": 4.469,
-          "timezone": "Europe/Amsterdam"
-        }
-      ],
-      "contactPersons": [
-        {
-          "contactPersonId": "CONT-INDITEX-NL-001",
-          "firstName": "Sanne",
-          "lastName": "de Jong",
-          "jobTitle": "Netherlands Logistics Manager",
-          "contactType": "BUSINESS",
-          "communicationChannels": [
-            { "type": "EMAIL", "value": "nl.logistics@inditex.example" }
-          ]
-        }
-      ],
-      "contracts": [
-        {
-          "contractId": "CON-INDITEX-NL-001",
-          "contractName": "DHL Netherlands – Master Logistics Contract",
-          "startDate": "2025-02-15",
-          "contractDetail": {
-            "contractType": "MASTER",
-            "services": ["PARCEL", "RETURNS"],
-            "slaLevel": "ENTERPRISE",
-            "pricingModel": "CUSTOM",
-            "billingFrequency": "MONTHLY",
-            "billingModel": "CONSOLIDATED",
-            "kpiPack": ["OTD%", "OTSD%", "CDT-h"]
-          },
-          "addresses": [],
-          "contactPersons": [],
-          "billingProfile": {
-            "billingProfileId": "BPROF-INDITEX-NL-001",
-            "billingAccountNumber": "BILL-INDITEX-NL-3001",
-            "billingCurrency": "EUR",
-            "billingFrequency": "MONTHLY",
-            "invoiceDelivery": "EMAIL",
-            "paymentMethod": {
-              "type": "BANK_TRANSFER",
-              "bankName": "ING",
-              "iban": "NL00BANK0000000000000007",
-              "bic": "INGBNL2A"
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-INDITEX-NL-001",
+            "contractName": "DHL Netherlands – Master Logistics Contract",
+            "startDate": "2025-02-15",
+            "contractDetail": {
+              "contractType": "MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
             },
-            "addresses": [
-              {
-                "addressId": "ADDR-INDITEX-BILLING-NL-001",
-                "addressType": "BILLING",
-                "isGeoManual": false,
-                "street": "Coolsingel",
-                "houseNumber": "1",
-                "city": "Rotterdam",
-                "postalcode": "3012AA",
-                "country": "NL",
-                "latitude": 51.922,
-                "longitude": 4.48,
-                "timezone": "Europe/Amsterdam"
-              }
-            ],
+            "addresses": [],
             "contactPersons": [],
-            "referenceIds": [
-              {
-                "refType": "ERP_ID",
-                "refValue": "SAP-BILL-INDITEX-NL-3001",
-                "issuedByAuthority": "INDITEX_SAP"
-              }
-            ]
+            "billingProfile": {
+              "billingProfileId": "BPROF-INDITEX-NL-001",
+              "billingAccountNumber": "BILL-INDITEX-NL-3001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "ING",
+                "iban": "NL00BANK0000000000000007",
+                "bic": "INGBNL2A"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-INDITEX-BILLING-NL-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Coolsingel",
+                  "houseNumber": "1",
+                  "city": "Rotterdam",
+                  "postalcode": "3012AA",
+                  "country": "NL",
+                  "latitude": 51.922,
+                  "longitude": 4.48,
+                  "timezone": "Europe/Amsterdam"
+                }
+              ],
+              "contactPersons": [],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "SAP-BILL-INDITEX-NL-3001",
+                  "issuedByAuthority": "INDITEX_SAP"
+                }
+              ]
+            }
           }
-        }
-      ],
-      "referenceIds": [
-        {
-          "refType": "CUSTOMER_NUMBER",
-          "refValue": "INDITEX-NL-CUST-0001",
-          "issuedByAuthority": "DHL_ECOMMERCE_NL"
-        }
-      ]
-    },
-
-    { "mdmAccountId": "ACC-ZARA-NL-001", "parentAccountId": "ACC-INDITEX-NL-SOLDTO-001", "mdmCustomerId": "CUST-INDITEX-NL-001", "businessRoles": ["SOLDTO","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "EUR", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "BRAND", "segmentGroup2": "ZARA", "platformObject": null, "addresses": [], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"ERP_ID","refValue":"INDITEX-SAP-ZARA-NL-01","issuedByAuthority":"INDITEX_SAP"}] },
-    { "mdmAccountId": "ACC-ZARA-NL-RTM-DC-001", "parentAccountId": "ACC-ZARA-NL-001", "mdmCustomerId": "CUST-INDITEX-NL-001", "businessRoles": ["PICKUP","SHIPPER"], "accountStatus": "ACTIVE", "isNaturalPerson": false, "currency": "EUR", "paymentTerms": "NET_30", "creditLimit": 0, "salesChannel": "KEY_ACCOUNT", "salesManager": "GLOBAL_KAM_TEAM", "segmentGroup": "WAREHOUSE", "segmentGroup2": "ROTTERDAM_DC", "platformObject": {"platformId":"PLT-INDITEX-WMS-NL-001","name":"WMS_CONNECTOR_NL","type":"API","provider":"INDITEX"}, "addresses": [{"addressId":"ADDR-ZARA-NL-RTM-DC-001","addressType":"PICKUP","isGeoManual":false,"street":"Havenstraat","houseNumber":"21","city":"Rotterdam","postalcode":"3089JK","country":"NL","latitude":51.887,"longitude":4.453,"timezone":"Europe/Amsterdam"}], "contactPersons": [], "contracts": [], "referenceIds": [{"refType":"EXTERNAL_ID","refValue":"ZARA-NL-RTM-DC-001","issuedByAuthority":"INDITEX_WMS"}] }
-  ],
-  "relatedCustomers": [
-    {
-      "customerType": "STRATEGIC_CUSTOMERS",
-      "customerLevel": "STRATEGIC",
-      "mdmCustomerId": "CUST-INDITEX-ES-001",
-      "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-      "officialName": "Inditex España, S.L.",
-      "tradingName": "Inditex España",
-      "globalGroupCode": "INDITEX",
-      "industrySector": "RETAIL_FASHION",
-      "taxId": "ES-B12345678",
-      "countryOfRegistration": "ES",
-      "addresses": [],
-      "contactPersons": []
-    },
-    {
-      "customerType": "STRATEGIC_CUSTOMERS",
-      "customerLevel": "KEY_ACCOUNT",
-      "mdmCustomerId": "CUST-ZARA-ES-001",
-      "parentMdmCustomerId": "CUST-INDITEX-ES-001",
-      "officialName": "Zara España, S.L.",
-      "tradingName": "Zara España",
-      "globalGroupCode": "INDITEX",
-      "industrySector": "RETAIL_FASHION",
-      "taxId": "ES-B87654321",
-      "countryOfRegistration": "ES",
-      "addresses": [],
-      "contactPersons": []
-    },
-    {
-      "customerType": "STRATEGIC_CUSTOMERS",
-      "customerLevel": "STRATEGIC",
-      "mdmCustomerId": "CUST-INDITEX-TR-001",
-      "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-      "officialName": "Inditex Turkey A.Ş.",
-      "tradingName": "Inditex Türkiye",
-      "globalGroupCode": "INDITEX",
-      "industrySector": "RETAIL_FASHION",
-      "taxId": "TR0000000001",
-      "countryOfRegistration": "TR",
-      "addresses": [
-        {
-          "addressId": "ADDR-INDITEX-TR-REG-001",
-          "addressType": "REGISTERED_OFFICE",
-          "isGeoManual": false,
-          "street": "Büyükdere Caddesi",
-          "houseNumber": "199",
-          "city": "İstanbul",
-          "postalcode": "34394",
-          "country": "TR",
-          "latitude": 41.0673,
-          "longitude": 29.0063,
-          "timezone": "Europe/Istanbul"
-        }
-      ],
-      "contactPersons": [
-        {
-          "contactPersonId": "CONT-INDITEX-TR-LEGAL-001",
-          "firstName": "Aslı",
-          "lastName": "Koç",
-          "jobTitle": "Legal Entity Representative",
-          "contactType": "BUSINESS",
-          "communicationChannels": [
-            { "type": "EMAIL", "value": "legal.tr@inditex.example" }
-          ]
-        }
-      ]
-    },
-    {
-      "customerType": "STRATEGIC_CUSTOMERS",
-      "customerLevel": "STRATEGIC",
-      "mdmCustomerId": "CUST-INDITEX-NL-001",
-      "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
-      "officialName": "Inditex Netherlands B.V.",
-      "tradingName": "Inditex Netherlands",
-      "globalGroupCode": "INDITEX",
-      "industrySector": "RETAIL_FASHION",
-      "taxId": "NL0000000001",
-      "countryOfRegistration": "NL",
-      "addresses": [
-        {
-          "addressId": "ADDR-INDITEX-NL-REG-001",
-          "addressType": "REGISTERED_OFFICE",
-          "isGeoManual": false,
-          "street": "Weena",
-          "houseNumber": "505",
-          "city": "Rotterdam",
-          "postalcode": "3013AL",
-          "country": "NL",
-          "latitude": 51.923,
-          "longitude": 4.469,
-          "timezone": "Europe/Amsterdam"
-        }
-      ],
-      "contactPersons": [
-        {
-          "contactPersonId": "CONT-INDITEX-NL-LEGAL-001",
-          "firstName": "Jasper",
-          "lastName": "van Dijk",
-          "jobTitle": "Legal Entity Representative",
-          "contactType": "BUSINESS",
-          "communicationChannels": [
-            { "type": "EMAIL", "value": "legal.nl@inditex.example" }
-          ]
-        }
-      ]
-    }
-  ]
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "INDITEX-NL-CUST-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE_NL"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARA-NL-001",
+        "parentAccountId": "ACC-INDITEX-NL-SOLDTO-001",
+        "mdmCustomerId": "CUST-INDITEX-NL-001",
+        "businessRoles": [
+          "SOLDTO",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "BRAND",
+        "segmentGroup2": "ZARA",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "ERP_ID",
+            "refValue": "INDITEX-SAP-ZARA-NL-01",
+            "issuedByAuthority": "INDITEX_SAP"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-ZARA-NL-RTM-DC-001",
+        "parentAccountId": "ACC-ZARA-NL-001",
+        "mdmCustomerId": "CUST-INDITEX-NL-001",
+        "businessRoles": [
+          "PICKUP",
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "KEY_ACCOUNT",
+        "salesManager": "GLOBAL_KAM_TEAM",
+        "segmentGroup": "WAREHOUSE",
+        "segmentGroup2": "ROTTERDAM_DC",
+        "platformObject": {
+          "platformId": "PLT-INDITEX-WMS-NL-001",
+          "name": "WMS_CONNECTOR_NL",
+          "type": "API",
+          "provider": "INDITEX"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-ZARA-NL-RTM-DC-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Havenstraat",
+            "houseNumber": "21",
+            "city": "Rotterdam",
+            "postalcode": "3089JK",
+            "country": "NL",
+            "latitude": 51.887,
+            "longitude": 4.453,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "ZARA-NL-RTM-DC-001",
+            "issuedByAuthority": "INDITEX_WMS"
+          }
+        ]
+      }
+    ]
+  }
+]
 },
   {
     "scenarioName": "Müller Auto Parts",
