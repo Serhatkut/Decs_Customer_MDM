@@ -2,10 +2,8 @@
 
 /* ===============================
    DHL eCommerce · Customer MDM Viewer
-   Fix: Restore Address/Contract/Billing rendering
-   - Contacts + ReferenceIds are rendered as attributes (NOT nodes)
-   - Addresses are nodes (LOCATION)
-   - Accounts are vertical (tree layout)
+   - Filters: single-select dropdown
+   - View toggles: Addresses / Contacts / Contracts
 ================================ */
 
 const PATHS = {
@@ -22,11 +20,19 @@ const UI = {
     reset: document.getElementById("resetZoom"),
     json: document.getElementById("json-display"),
 
-    // Filters
+    // Filters (single select)
     fCustomerType: document.getElementById("filterCustomerType"),
     fIndustry: document.getElementById("filterIndustry"),
     fSalesChannel: document.getElementById("filterSalesChannel"),
     btnClearFilters: document.getElementById("clearFilters"),
+
+    // View toggles
+    tAddresses: document.getElementById("toggleAddresses"),
+    tContacts: document.getElementById("toggleContacts"),
+    tContracts: document.getElementById("toggleContracts"),
+
+    btnCollapseAll: document.getElementById("collapseAll"),
+    btnExpandAll: document.getElementById("expandAll"),
 
     dqDot: document.getElementById("dqDot"),
     dqText: document.getElementById("dqText"),
@@ -49,37 +55,11 @@ let lastRootHierarchy = null;
 const collapsedNodeIds = new Set();
 
 // layout
-const L = {
-    nodeW: 320,
-    nodeH: 160,
-    headerH: 34,
-    gapX: 70,
-    gapY: 30,
-};
+const L = { nodeW: 320, nodeH: 160, headerH: 34, gapX: 70, gapY: 30 };
 
-function asArray(v) {
-    return v ? (Array.isArray(v) ? v : [v]) : [];
-}
-function uniq(arr) {
-    return Array.from(new Set((arr || []).filter(Boolean)));
-}
-function safeOn(el, evt, fn) {
-    if (el && el.addEventListener) el.addEventListener(evt, fn);
-}
-function getSelectedValues(sel) {
-    if (!sel) return [];
-    return Array.from(sel.selectedOptions || []).map((o) => o.value);
-}
-function fillMultiSelect(sel, values) {
-    if (!sel) return;
-    sel.innerHTML = "";
-    (values || []).forEach((v) => {
-        const opt = document.createElement("option");
-        opt.value = v;
-        opt.textContent = v;
-        sel.appendChild(opt);
-    });
-}
+function asArray(v) { return v ? (Array.isArray(v) ? v : [v]) : []; }
+function uniq(arr) { return Array.from(new Set((arr || []).filter(Boolean))); }
+function safeOn(el, evt, fn) { if (el && el.addEventListener) el.addEventListener(evt, fn); }
 
 async function fetchJson(path) {
     const res = await fetch(path, { cache: "no-store" });
@@ -111,10 +91,8 @@ function getSemanticColors(key) {
     const fallback = { header: "#D40511", body: "#FFF7D1", accent: "#000" };
     const sm = refColors?.semanticMapping;
     if (!sm || !sm[key]) return fallback;
-
     const tokenMap = buildTokenHexMap(refColors);
     const m = sm[key];
-
     return {
         header: resolveToken(m.header, tokenMap) || fallback.header,
         body: resolveToken(m.body, tokenMap) || fallback.body,
@@ -122,71 +100,83 @@ function getSemanticColors(key) {
     };
 }
 
-/* ---------- Reference enums + filters ---------- */
+/* ---------- Filters (single select) ---------- */
+function fillSelectSingle(selectEl, values) {
+    if (!selectEl) return;
+
+    // preserve current value if possible
+    const current = selectEl.value || "";
+
+    selectEl.innerHTML = "";
+    const all = document.createElement("option");
+    all.value = "";
+    all.textContent = "All";
+    selectEl.appendChild(all);
+
+    (values || []).forEach((v) => {
+        const opt = document.createElement("option");
+        opt.value = v;
+        opt.textContent = v;
+        selectEl.appendChild(opt);
+    });
+
+    // restore value if exists
+    const canRestore = Array.from(selectEl.options).some(o => o.value === current);
+    selectEl.value = canRestore ? current : "";
+}
+
 function discoverEnums() {
-    // accept multiple shapes
     const e = refEnums || {};
-    const customerTypes =
-        uniq(e.customerTypeEnums || e.customerTypes || e?.enums?.customerType || []);
-    const industries =
-        uniq(e.industryEnums || e.industries || e?.enums?.industrySector || []);
-    const channels =
-        uniq(e.salesChannelEnums || e.channels || e?.enums?.salesChannel || []);
+    const customerTypes = uniq(e.customerTypeEnums || e.customerTypes || e?.enums?.customerType || []);
+    const industries = uniq(e.industryEnums || e.industries || e?.enums?.industrySector || []);
+    const channels = uniq(e.salesChannelEnums || e.channels || e?.enums?.salesChannel || []);
 
-    // dataset fallback
-    const dsCustomerTypes = uniq(scenarios.map(s => (s.customer?.customerType ?? s.customerType)).filter(Boolean));
-    const dsIndustries = uniq(scenarios.map(s => (s.customer?.industrySector ?? s.industrySector)).filter(Boolean));
-    const dsChannels = uniq(
-        scenarios.flatMap(s => asArray(s.accounts || s.customer?.accounts).map(a => a.salesChannel)).filter(Boolean)
-    );
+    const dsCustomerTypes = uniq(scenarios.map(s => s.customer?.customerType).filter(Boolean));
+    const dsIndustries = uniq(scenarios.map(s => s.customer?.industrySector).filter(Boolean));
+    const dsChannels = uniq(scenarios.flatMap(s => asArray(s.accounts).map(a => a.salesChannel)).filter(Boolean));
 
-    fillMultiSelect(UI.fCustomerType, uniq([...customerTypes, ...dsCustomerTypes]).sort());
-    fillMultiSelect(UI.fIndustry, uniq([...industries, ...dsIndustries]).sort());
-    fillMultiSelect(UI.fSalesChannel, uniq([...channels, ...dsChannels]).sort());
+    fillSelectSingle(UI.fCustomerType, uniq([...customerTypes, ...dsCustomerTypes]).sort());
+    fillSelectSingle(UI.fIndustry, uniq([...industries, ...dsIndustries]).sort());
+    fillSelectSingle(UI.fSalesChannel, uniq([...channels, ...dsChannels]).sort());
 
     if (UI.refEnumsPreview) UI.refEnumsPreview.textContent = JSON.stringify(refEnums, null, 2);
     if (UI.refColorsPreview) UI.refColorsPreview.textContent = JSON.stringify(refColors, null, 2);
 
-    // swatches (optional)
+    // simple swatches
     if (UI.swatches) {
         UI.swatches.innerHTML = "";
         const tokenMap = buildTokenHexMap(refColors);
-        const showTokens = [
+        const tokens = [
             "--clr-primary-red",
             "--clr-primary-yellow",
-            "--clr-primary-black",
             "--clr-fg-purple",
             "--clr-fg-blue",
             "--clr-fg-teal",
-            "--clr-neutral-600",
+            "--clr-neutral-600"
         ];
-        showTokens.forEach(t => {
+        tokens.forEach(t => {
             const hex = tokenMap.get(t);
             if (!hex) return;
             const d = document.createElement("div");
             d.className = "swatch";
-            d.title = `${t} = ${hex}`;
             d.style.background = hex;
+            d.title = `${t} = ${hex}`;
             UI.swatches.appendChild(d);
         });
     }
 }
 
 function scenarioMatchesFilters(s) {
-    const selType = getSelectedValues(UI.fCustomerType);
-    const selInd = getSelectedValues(UI.fIndustry);
-    const selCh = getSelectedValues(UI.fSalesChannel);
+    const type = UI.fCustomerType?.value || "";
+    const ind = UI.fIndustry?.value || "";
+    const ch = UI.fSalesChannel?.value || "";
 
-    const cust = s.customer || s;
-    const accounts = asArray(s.accounts || cust.accounts);
+    const cust = s.customer || {};
+    const accounts = asArray(s.accounts);
 
-    const hasType = cust.customerType ? [cust.customerType] : [];
-    const hasInd = cust.industrySector ? [cust.industrySector] : [];
-    const hasCh = uniq(accounts.map(a => a.salesChannel).filter(Boolean));
-
-    const okType = !selType.length || selType.some(x => hasType.includes(x));
-    const okInd = !selInd.length || selInd.some(x => hasInd.includes(x));
-    const okCh = !selCh.length || selCh.some(x => hasCh.includes(x));
+    const okType = !type || cust.customerType === type;
+    const okInd = !ind || cust.industrySector === ind;
+    const okCh = !ch || accounts.some(a => a.salesChannel === ch);
 
     return okType && okInd && okCh;
 }
@@ -208,8 +198,9 @@ function populateScenarioDropdown() {
         UI.selector.appendChild(opt);
     });
 
-    // select first visible if current invalid
-    if (activeScenarioIndex < 0 || !scenarioMatchesFilters(scenarios[activeScenarioIndex])) {
+    // auto-select first if current is filtered out
+    const stillVisible = activeScenarioIndex >= 0 && scenarioMatchesFilters(scenarios[activeScenarioIndex]);
+    if (!stillVisible) {
         const first = Array.from(UI.selector.options).find(o => o.value !== "");
         if (first) {
             activeScenarioIndex = Number(first.value);
@@ -224,36 +215,16 @@ function populateScenarioDropdown() {
     }
 }
 
-/* ---------- Normalize scenario (supports two shapes) ---------- */
-function normalizeScenario(s) {
-    // shape A: {customer:{...}, accounts:[...], relatedCustomers:[...]}
-    if (s && s.customer && Array.isArray(s.accounts)) return s;
-
-    // shape B: flattened customer fields on scenario + accounts + children
-    const legacyCustomer = {
-        customerType: s.customerType,
-        customerLevel: s.customerLevel,
-        mdmCustomerId: s.mdmCustomerId,
-        parentMdmCustomerId: s.parentMdmCustomerId ?? null,
-        officialName: s.officialName,
-        tradingName: s.tradingName,
-        globalGroupCode: s.globalGroupCode ?? null,
-        industrySector: s.industrySector ?? null,
-        taxId: s.taxId ?? null,
-        countryOfRegistration: s.countryOfRegistration ?? null,
-        addresses: asArray(s.addresses),
-        contactPersons: asArray(s.contactPersons),
-    };
-
+/* ---------- View toggles ---------- */
+function getViewFlags() {
     return {
-        scenarioName: s.scenarioName || "Scenario",
-        customer: legacyCustomer,
-        accounts: asArray(s.accounts),
-        relatedCustomers: asArray(s.relatedCustomers || s.children),
+        showAddresses: UI.tAddresses ? !!UI.tAddresses.checked : true,
+        showContacts: UI.tContacts ? !!UI.tContacts.checked : true,
+        showContracts: UI.tContracts ? !!UI.tContracts.checked : true,
     };
 }
 
-/* ---------- Build tree nodes ---------- */
+/* ---------- Tree builder helpers ---------- */
 function stableId(type, obj) {
     if (!obj) return `${type}::${Math.random()}`;
     if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") return obj.mdmCustomerId || `${type}::${obj.officialName}`;
@@ -268,41 +239,32 @@ function stableId(type, obj) {
 function contactSummary(list) {
     const cps = asArray(list);
     if (!cps.length) return [];
-    // show as attributes: Name (Role) · email · phone
     return cps.slice(0, 2).map(cp => {
         const ch = asArray(cp.communicationChannels);
         const email = ch.find(x => x.type === "EMAIL")?.value;
         const phone = ch.find(x => x.type === "PHONE")?.value;
         const name = [cp.firstName, cp.lastName].filter(Boolean).join(" ").trim();
         const role = cp.jobTitle ? ` (${cp.jobTitle})` : "";
-        const parts = [
+        return [
             `${name || cp.contactPersonId || "Contact"}${role}`,
             email ? `email: ${email}` : null,
             phone ? `phone: ${phone}` : null
-        ].filter(Boolean);
-        return parts.join(" · ");
+        ].filter(Boolean).join(" · ");
     });
 }
 
 function refSummary(list) {
     const refs = asArray(list);
     if (!refs.length) return null;
-    // render as inline refs: TYPE:VALUE
     return refs.slice(0, 3).map(r => `${r.refType}:${r.refValue}`).join(" | ");
 }
 
 function makeNode(type, obj, label, extraLines = []) {
-    return {
-        type,
-        data: obj || {},
-        _id: stableId(type, obj || { label }),
-        label: label || type,
-        lines: extraLines || [],
-        children: [],
-    };
+    return { type, data: obj || {}, _id: stableId(type, obj || { label }), label, lines: extraLines, children: [] };
 }
 
-function addAddressChildren(parent, addresses) {
+function addAddressChildren(parent, addresses, view) {
+    if (!view.showAddresses) return;
     asArray(addresses).forEach(a => {
         const lbl = `${a.addressType || "ADDRESS"} · ${a.city || ""}`.trim();
         const lines = [
@@ -310,12 +272,13 @@ function addAddressChildren(parent, addresses) {
             [a.postalcode, a.city].filter(Boolean).join(" "),
             a.country || null,
         ].filter(Boolean);
-
         parent.children.push(makeNode("ADDRESS", a, lbl, lines));
     });
 }
 
-function buildContractsForAccount(accNode, account) {
+function buildContractsForAccount(accNode, account, view) {
+    if (!view.showContracts) return;
+
     const contracts = asArray(account.contracts);
     contracts.forEach(c => {
         const cLines = [
@@ -324,16 +287,12 @@ function buildContractsForAccount(accNode, account) {
             c.contractDetail?.contractType ? `type: ${c.contractDetail.contractType}` : null,
         ].filter(Boolean);
 
+        if (view.showContacts) contactSummary(c.contactPersons).forEach(x => cLines.push(x));
+
         const cNode = makeNode("CONTRACT", c, (c.contractName || "Contract"), cLines);
 
-        // contract addresses as LOCATION nodes
-        addAddressChildren(cNode, c.addresses);
+        addAddressChildren(cNode, c.addresses, view);
 
-        // contract contacts as attributes
-        const cContacts = contactSummary(c.contactPersons);
-        cContacts.forEach(x => cNode.lines.push(x));
-
-        // billing profile node
         if (c.billingProfile) {
             const bp = c.billingProfile;
             const bpLines = [
@@ -343,14 +302,10 @@ function buildContractsForAccount(accNode, account) {
                 refSummary(bp.referenceIds) ? `refs: ${refSummary(bp.referenceIds)}` : null,
             ].filter(Boolean);
 
+            if (view.showContacts) contactSummary(bp.contactPersons).forEach(x => bpLines.push(x));
+
             const bpNode = makeNode("BILLING_PROFILE", bp, (bp.billingProfileId || "Billing Profile"), bpLines);
-
-            // billing addresses as nodes
-            addAddressChildren(bpNode, bp.addresses);
-
-            // billing contacts as attributes
-            const bpContacts = contactSummary(bp.contactPersons);
-            bpContacts.forEach(x => bpNode.lines.push(x));
+            addAddressChildren(bpNode, bp.addresses, view);
 
             cNode.children.push(bpNode);
         }
@@ -359,10 +314,9 @@ function buildContractsForAccount(accNode, account) {
     });
 }
 
-function buildAccountTree(accounts, mdmCustomerIdFilter = null) {
+function buildAccountTree(accounts, mdmCustomerIdFilter, view) {
     const list = asArray(accounts).filter(a => !mdmCustomerIdFilter || a.mdmCustomerId === mdmCustomerIdFilter);
 
-    const byId = new Map(list.map(a => [a.mdmAccountId, a]));
     const childrenByParent = new Map();
     list.forEach(a => {
         const pid = a.parentAccountId || "__ROOT__";
@@ -382,18 +336,14 @@ function buildAccountTree(accounts, mdmCustomerIdFilter = null) {
             refSummary(a.referenceIds) ? `refs: ${refSummary(a.referenceIds)}` : null,
         ].filter(Boolean);
 
-        // contacts as attributes
-        contactSummary(a.contactPersons).forEach(x => accLines.push(x));
+        if (view.showContacts) contactSummary(a.contactPersons).forEach(x => accLines.push(x));
 
         const node = makeNode("ACCOUNT", a, a.mdmAccountId, accLines);
 
-        // addresses as nodes
-        addAddressChildren(node, a.addresses);
+        addAddressChildren(node, a.addresses, view);
+        buildContractsForAccount(node, a, view);
 
-        // contracts + billing profile
-        buildContractsForAccount(node, a);
-
-        // platform as node (optional but useful)
+        // platform as node (kept for visibility)
         if (a.platformObject && (a.platformObject.platformId || a.platformObject.name)) {
             const p = a.platformObject;
             const pLines = [
@@ -404,7 +354,6 @@ function buildAccountTree(accounts, mdmCustomerIdFilter = null) {
             node.children.push(makeNode("PLATFORM", p, (p.name || "Platform"), pLines));
         }
 
-        // child accounts
         const kids = childrenByParent.get(a.mdmAccountId) || [];
         kids.forEach(k => node.children.push(buildNodeForAccount(k)));
 
@@ -415,65 +364,48 @@ function buildAccountTree(accounts, mdmCustomerIdFilter = null) {
     return roots.map(buildNodeForAccount);
 }
 
-function buildHierarchyForScenario(scenario) {
-    const s = normalizeScenario(scenario);
+function buildHierarchyForScenario(scenario, view) {
+    const cust = scenario.customer || {};
+    const accounts = asArray(scenario.accounts);
+    const related = asArray(scenario.relatedCustomers);
 
-    // root global customer
     const gcLines = [
-        s.customer.mdmCustomerId ? `mdmCustomerId: ${s.customer.mdmCustomerId}` : null,
-        s.customer.customerType ? `customerType: ${s.customer.customerType}` : null,
-        s.customer.customerLevel ? `customerLevel: ${s.customer.customerLevel}` : null,
-        s.customer.industrySector ? `industry: ${s.customer.industrySector}` : null,
-        s.customer.countryOfRegistration ? `country: ${s.customer.countryOfRegistration}` : null,
+        cust.mdmCustomerId ? `mdmCustomerId: ${cust.mdmCustomerId}` : null,
+        cust.customerType ? `customerType: ${cust.customerType}` : null,
+        cust.customerLevel ? `customerLevel: ${cust.customerLevel}` : null,
+        cust.industrySector ? `industry: ${cust.industrySector}` : null,
+        cust.countryOfRegistration ? `country: ${cust.countryOfRegistration}` : null,
     ].filter(Boolean);
 
-    // contacts as attributes
-    contactSummary(s.customer.contactPersons).forEach(x => gcLines.push(x));
-    // refs as attributes (if any exist at customer)
-    if (s.customer.referenceIds) {
-        const rs = refSummary(s.customer.referenceIds);
-        if (rs) gcLines.push(`refs: ${rs}`);
-    }
+    if (view.showContacts) contactSummary(cust.contactPersons).forEach(x => gcLines.push(x));
+    const rs = refSummary(cust.referenceIds);
+    if (rs) gcLines.push(`refs: ${rs}`);
 
-    const root = makeNode(
-        "GLOBAL_CUSTOMER",
-        s.customer,
-        (s.customer.tradingName || s.customer.officialName || s.scenarioName),
+    const root = makeNode("GLOBAL_CUSTOMER", cust,
+        (cust.tradingName || cust.officialName || scenario.scenarioName || "Customer"),
         gcLines
     );
 
-    // customer addresses as nodes
-    addAddressChildren(root, s.customer.addresses);
+    addAddressChildren(root, cust.addresses, view);
 
-    // country customers
-    const countries = asArray(s.relatedCustomers);
-    countries.forEach(cc => {
-        const ccLines = [
-            cc.mdmCustomerId ? `mdmCustomerId: ${cc.mdmCustomerId}` : null,
-            cc.customerLevel ? `customerLevel: ${cc.customerLevel}` : null,
-            cc.countryOfRegistration ? `country: ${cc.countryOfRegistration}` : null,
-        ].filter(Boolean);
+    if (related.length) {
+        related.forEach(cc => {
+            const ccLines = [
+                cc.mdmCustomerId ? `mdmCustomerId: ${cc.mdmCustomerId}` : null,
+                cc.customerLevel ? `customerLevel: ${cc.customerLevel}` : null,
+                cc.countryOfRegistration ? `country: ${cc.countryOfRegistration}` : null,
+            ].filter(Boolean);
 
-        contactSummary(cc.contactPersons).forEach(x => ccLines.push(x));
+            if (view.showContacts) contactSummary(cc.contactPersons).forEach(x => ccLines.push(x));
 
-        const ccNode = makeNode(
-            "COUNTRY_CUSTOMER",
-            cc,
-            (cc.tradingName || cc.officialName || cc.mdmCustomerId),
-            ccLines
-        );
-        addAddressChildren(ccNode, cc.addresses);
+            const ccNode = makeNode("COUNTRY_CUSTOMER", cc, (cc.tradingName || cc.officialName || cc.mdmCustomerId), ccLines);
+            addAddressChildren(ccNode, cc.addresses, view);
 
-        // accounts under that country by mdmCustomerId
-        const accRoots = buildAccountTree(s.accounts, cc.mdmCustomerId);
-        accRoots.forEach(a => ccNode.children.push(a));
-
-        root.children.push(ccNode);
-    });
-
-    // if no country customers: attach accounts directly
-    if (!countries.length) {
-        buildAccountTree(s.accounts).forEach(a => root.children.push(a));
+            buildAccountTree(accounts, cc.mdmCustomerId, view).forEach(a => ccNode.children.push(a));
+            root.children.push(ccNode);
+        });
+    } else {
+        buildAccountTree(accounts, null, view).forEach(a => root.children.push(a));
     }
 
     return root;
@@ -489,7 +421,7 @@ function initViz() {
     svg.call(zoom);
 }
 
-function zoomToFit(pad = 50) {
+function zoomToFit(pad = 55) {
     if (!svg || !g) return;
     const bbox = g.node().getBBox();
     const w = UI.viz.clientWidth || 1200;
@@ -514,19 +446,21 @@ function applyCollapse(root) {
     });
 }
 
+function semanticKeyForNodeType(t) {
+    if (t === "GLOBAL_CUSTOMER") return "GLOBAL_CUSTOMER";
+    if (t === "COUNTRY_CUSTOMER") return "COUNTRY_CUSTOMER";
+    if (t === "ACCOUNT") return "ACCOUNT";
+    if (t === "CONTRACT") return "CONTRACT";
+    if (t === "BILLING_PROFILE") return "BILLING_PROFILE";
+    if (t === "ADDRESS") return "ADDRESS";
+    if (t === "CONTACT") return "CONTACT";
+    if (t === "PLATFORM") return "PLATFORM";
+    return "ACCOUNT";
+}
+
 function renderNodeCard(d) {
     const t = d.data.type;
-    const colors = getSemanticColors(
-        t === "ADDRESS" ? "ADDRESS" :
-            t === "CONTACT" ? "CONTACT" :
-                t === "CONTRACT" ? "CONTRACT" :
-                    t === "BILLING_PROFILE" ? "BILLING_PROFILE" :
-                        t === "ACCOUNT" ? "ACCOUNT" :
-                            t === "PLATFORM" ? "PLATFORM" :
-                                t === "COUNTRY_CUSTOMER" ? "COUNTRY_CUSTOMER" :
-                                    "GLOBAL_CUSTOMER"
-    );
-
+    const colors = getSemanticColors(semanticKeyForNodeType(t));
     const w = L.nodeW, h = L.nodeH;
 
     const group = g.append("g")
@@ -544,7 +478,6 @@ function renderNodeCard(d) {
         .attr("width", w).attr("height", L.headerH)
         .attr("fill", colors.header);
 
-    // title + collapse indicator
     group.append("text")
         .attr("x", 12).attr("y", 22)
         .attr("fill", "#fff")
@@ -574,12 +507,12 @@ function renderNodeCard(d) {
         .attr("dy", (x, i) => (i === 0 ? 0 : 16))
         .text(x => x);
 
-    // hover shows JSON
+    // hover json
     group.on("mouseenter", () => {
         if (UI.json) UI.json.textContent = JSON.stringify(d.data.data || d.data, null, 2);
     });
 
-    // click toggles collapse
+    // click collapse
     group.on("click", () => {
         const id = d.data._id;
         if (collapsedNodeIds.has(id)) collapsedNodeIds.delete(id);
@@ -594,17 +527,16 @@ function renderActiveScenario() {
     if (!activeScenario || !g) return;
     g.selectAll("*").remove();
 
-    const data = buildHierarchyForScenario(activeScenario);
+    const view = getViewFlags();
+    const data = buildHierarchyForScenario(activeScenario, view);
     const root = d3.hierarchy(data);
     lastRootHierarchy = root;
 
     applyCollapse(root);
 
-    // vertical tree
     const tree = d3.tree().nodeSize([L.nodeW + L.gapX, L.nodeH + L.gapY]);
     tree(root);
 
-    // links (orthogonal)
     g.selectAll("path.link")
         .data(root.links())
         .join("path")
@@ -620,9 +552,7 @@ function renderActiveScenario() {
             return `M${sx},${sy} V${(sy + ty) / 2} H${tx} V${ty}`;
         });
 
-    // nodes
     root.descendants().forEach(d => renderNodeCard(d));
-
     zoomToFit(55);
 }
 
@@ -648,26 +578,41 @@ function wireUI() {
     safeOn(UI.search, "input", (e) => {
         const q = (e.target.value || "").trim().toLowerCase();
         if (!q) return;
-        // lightweight: if query exists anywhere, show scenario JSON
         const hay = JSON.stringify(activeScenario || {}).toLowerCase();
         if (hay.includes(q) && UI.json) UI.json.textContent = JSON.stringify(activeScenario, null, 2);
     });
 
-    safeOn(UI.btnClearFilters, "click", () => {
-        [UI.fCustomerType, UI.fIndustry, UI.fSalesChannel].forEach(sel => {
-            if (!sel) return;
-            Array.from(sel.options).forEach(o => (o.selected = false));
-        });
-        populateScenarioDropdown();
-        if (activeScenarioIndex >= 0) renderActiveScenario();
-    });
-
+    // filters live
     [UI.fCustomerType, UI.fIndustry, UI.fSalesChannel].forEach(sel => {
         safeOn(sel, "change", () => {
             populateScenarioDropdown();
             if (activeScenarioIndex >= 0) renderActiveScenario();
             else if (UI.json) UI.json.textContent = "No scenarios match selected filters.";
         });
+    });
+
+    safeOn(UI.btnClearFilters, "click", () => {
+        if (UI.fCustomerType) UI.fCustomerType.value = "";
+        if (UI.fIndustry) UI.fIndustry.value = "";
+        if (UI.fSalesChannel) UI.fSalesChannel.value = "";
+        populateScenarioDropdown();
+        if (activeScenarioIndex >= 0) renderActiveScenario();
+    });
+
+    // view toggles live rerender
+    [UI.tAddresses, UI.tContacts, UI.tContracts].forEach(t => {
+        safeOn(t, "change", () => renderActiveScenario());
+    });
+
+    safeOn(UI.btnCollapseAll, "click", () => {
+        if (!lastRootHierarchy) return;
+        lastRootHierarchy.descendants().forEach(d => collapsedNodeIds.add(d.data?._id));
+        renderActiveScenario();
+    });
+
+    safeOn(UI.btnExpandAll, "click", () => {
+        collapsedNodeIds.clear();
+        renderActiveScenario();
     });
 }
 
@@ -691,6 +636,7 @@ function wireUI() {
         populateScenarioDropdown();
         renderDQ();
 
+        // select first available scenario
         if (activeScenarioIndex >= 0) {
             activeScenario = scenarios[activeScenarioIndex];
             renderActiveScenario();
