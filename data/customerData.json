@@ -5150,5 +5150,249 @@
       }
     ],
     "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Generic Multichannel / Digital Customer (Template) — Self-Onboarded API/Plugin Client",
+    "customer": {
+      "customerType": "MULTICHANNEL_DIGITAL_CUSTOMERS",
+      "customerLevel": "SME",
+      "mdmCustomerId": "CUST-DIGITAL-EU-0001",
+      "parentMdmCustomerId": null,
+      "officialName": "Generic Digital Commerce Client Europe Ltd. (Template)",
+      "tradingName": "Digital Commerce Client",
+      "globalGroupCode": null,
+      "industrySector": "ECOMMERCE",
+      "taxId": "IE-DIGITAL-0001",
+      "countryOfRegistration": "IE",
+      "addresses": [
+        {
+          "addressId": "ADDR-DIGITAL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Digital Park",
+          "houseNumber": "5",
+          "city": "Dublin",
+          "postalcode": "D02X285",
+          "country": "IE",
+          "latitude": 53.3498,
+          "longitude": -6.2603,
+          "timezone": "Europe/Dublin"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-DIGITAL-LEGAL-001",
+          "firstName": "Digital",
+          "lastName": "Admin",
+          "jobTitle": "Platform Administrator",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "admin@digital-client.example"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-DIGITAL-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-DIGITAL-EU-0001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_14",
+        "creditLimit": 100000,
+        "salesChannel": "MULTICHANNEL",
+        "salesManager": "DIGITAL_SALES_BOT",
+        "segmentGroup": "DIGITAL",
+        "segmentGroup2": "SELF_ONBOARDED",
+        "platformObject": {
+          "platformId": "PLT-DIGITAL-PLUGIN-001",
+          "name": "Shopify_Plugin",
+          "type": "PLUGIN",
+          "provider": "Shopify"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-DIGITAL-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Commerce Street",
+            "houseNumber": "15",
+            "city": "Dublin",
+            "postalcode": "D02AB12",
+            "country": "IE",
+            "latitude": 53.344,
+            "longitude": -6.267,
+            "timezone": "Europe/Dublin"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-DIGITAL-OPS-001",
+            "firstName": "API",
+            "lastName": "Operator",
+            "jobTitle": "Integration Manager",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "api@digital-client.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-DIGITAL-001",
+            "contractName": "DHL eCommerce EU – Digital Self-Service Contract",
+            "startDate": "2025-08-01",
+            "contractDetail": {
+              "contractType": "STANDARD_DIGITAL",
+              "services": [
+                "PARCEL"
+              ],
+              "slaLevel": "STANDARD",
+              "pricingModel": "RATE_CARD",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "AUTOMATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%"
+              ]
+            },
+            "addresses": [],
+            "contactPersons": [],
+            "billingProfile": {
+              "billingProfileId": "BPROF-DIGITAL-001",
+              "billingAccountNumber": "BILL-DIGITAL-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EMAIL",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "Stripe Treasury",
+                "iban": "IE00BANK0000000000007001",
+                "bic": "STRPIE2D"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-DIGITAL-BILL-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Finance Dock",
+                  "houseNumber": "2",
+                  "city": "Dublin",
+                  "postalcode": "D02Z999",
+                  "country": "IE",
+                  "latitude": 53.346,
+                  "longitude": -6.239,
+                  "timezone": "Europe/Dublin"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-DIGITAL-BILL-001",
+                  "firstName": "Finance",
+                  "lastName": "Bot",
+                  "jobTitle": "Billing Automation Contact",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "billing@digital-client.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "DIGITAL-BILL-1001",
+                  "issuedByAuthority": "AUTO_BILLING_SYSTEM"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "DIGITAL-CLIENT-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-DIGITAL-WH-001",
+        "parentAccountId": "ACC-DIGITAL-SOLDTO-001",
+        "mdmCustomerId": "CUST-DIGITAL-EU-0001",
+        "businessRoles": [
+          "SHIPPER",
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_14",
+        "creditLimit": 0,
+        "salesChannel": "MULTICHANNEL",
+        "salesManager": "DIGITAL_SALES_BOT",
+        "segmentGroup": "DIGITAL",
+        "segmentGroup2": "WAREHOUSE_NODE",
+        "platformObject": {
+          "platformId": "PLT-DIGITAL-API-001",
+          "name": "API_Integration",
+          "type": "API",
+          "provider": "Inhouse System"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-DIGITAL-WH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Warehouse District",
+            "houseNumber": "44",
+            "city": "Rotterdam",
+            "postalcode": "3011AA",
+            "country": "NL",
+            "latitude": 51.9244,
+            "longitude": 4.4777,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-DIGITAL-WH-001",
+            "firstName": "Warehouse",
+            "lastName": "API Node",
+            "jobTitle": "Automated Fulfillment Node",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "warehouse@digital-client.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "WH-DIGITAL-001",
+            "issuedByAuthority": "WMS_SYSTEM"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
   }
 ]
