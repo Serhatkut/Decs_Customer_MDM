@@ -93,20 +93,6 @@
         },
         {
           "customerType": "STRATEGIC_CUSTOMERS",
-          "customerLevel": "KEY_ACCOUNT",
-          "mdmCustomerId": "CUST-ZARA-ES-001",
-          "parentMdmCustomerId": "CUST-INDITEX-ES-001",
-          "officialName": "Zara España, S.L.",
-          "tradingName": "Zara España",
-          "globalGroupCode": "INDITEX",
-          "industrySector": "RETAIL_FASHION",
-          "taxId": "ES-B87654321",
-          "countryOfRegistration": "ES",
-          "addresses": [],
-          "contactPersons": []
-        },
-        {
-          "customerType": "STRATEGIC_CUSTOMERS",
           "customerLevel": "STRATEGIC",
           "mdmCustomerId": "CUST-INDITEX-TR-001",
           "parentMdmCustomerId": "CUST-INDITEX-GLOBAL-001",
