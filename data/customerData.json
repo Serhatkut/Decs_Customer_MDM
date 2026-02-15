@@ -4562,5 +4562,179 @@
       }
     ],
     "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Generic Retail / Cash Customer (Template) — ServicePoint Ad-hoc Shipper",
+    "customer": {
+      "customerType": "RETAIL_CASH_CUSTOMERS",
+      "customerLevel": "RETAIL",
+      "mdmCustomerId": "CUST-RETAIL-ES-0001",
+      "parentMdmCustomerId": null,
+      "officialName": "John Smith (Retail Cash Customer Template)",
+      "tradingName": "John Smith",
+      "globalGroupCode": null,
+      "industrySector": "RETAIL_GENERAL",
+      "taxId": "ES-RETAIL-TAXREF-0001",
+      "countryOfRegistration": "ES",
+      "addresses": [
+        {
+          "addressId": "ADDR-RETAIL-ES-RES-001",
+          "addressType": "RESIDENTIAL",
+          "isGeoManual": false,
+          "street": "Carrer de la Marina",
+          "houseNumber": "100",
+          "city": "Barcelona",
+          "postalcode": "08013",
+          "country": "ES",
+          "latitude": 41.4036,
+          "longitude": 2.1744,
+          "timezone": "Europe/Madrid"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-RETAIL-ES-001",
+          "firstName": "John",
+          "lastName": "Smith",
+          "jobTitle": "Retail Shipper",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "john.smith.retail@example.com"
+            },
+            {
+              "type": "PHONE",
+              "value": "+34-600-100-200"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-RETAIL-ES-SHIPPER-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-RETAIL-ES-0001",
+        "businessRoles": [
+          "SHIPPER",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": true,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "SERVICE_POINTS_RETAIL",
+        "salesManager": "SERVICEPOINT_POS",
+        "segmentGroup": "RETAIL",
+        "segmentGroup2": "ADHOC",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-ACC-RETAIL-ES-001",
+            "addressType": "RESIDENTIAL",
+            "isGeoManual": false,
+            "street": "Carrer de la Marina",
+            "houseNumber": "100",
+            "city": "Barcelona",
+            "postalcode": "08013",
+            "country": "ES",
+            "latitude": 41.4036,
+            "longitude": 2.1744,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-RETAIL-ES-001",
+            "firstName": "John",
+            "lastName": "Smith",
+            "jobTitle": "Retail Shipper",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "john.smith.retail@example.com"
+              },
+              {
+                "type": "PHONE",
+                "value": "+34-600-100-200"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "RETAIL-ES-ADHOC-0001",
+            "issuedByAuthority": "SERVICEPOINT_POS"
+          },
+          {
+            "refType": "TAX_REFERENCE",
+            "refValue": "ES-RETAIL-TAXREF-0001",
+            "issuedByAuthority": "CUSTOMER_DECLARED"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-RETAIL-ES-SERVICEPOINT-PICKUP-001",
+        "parentAccountId": "ACC-RETAIL-ES-SHIPPER-001",
+        "mdmCustomerId": "CUST-RETAIL-ES-0001",
+        "businessRoles": [
+          "PICKUP"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "SERVICE_POINTS_RETAIL",
+        "salesManager": "SERVICEPOINT_POS",
+        "segmentGroup": "RETAIL",
+        "segmentGroup2": "SERVICE_POINT",
+        "platformObject": null,
+        "addresses": [
+          {
+            "addressId": "ADDR-SP-ES-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Carrer del Comerç",
+            "houseNumber": "45",
+            "city": "Barcelona",
+            "postalcode": "08003",
+            "country": "ES",
+            "latitude": 41.3849,
+            "longitude": 2.1830,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-SP-ES-001",
+            "firstName": "ServicePoint",
+            "lastName": "Agent",
+            "jobTitle": "ServicePoint Counter Agent",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "PHONE",
+                "value": "+34-930-555-010"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "EXTERNAL_ID",
+            "refValue": "SP-BCN-0001",
+            "issuedByAuthority": "DHL_NETWORK"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
   }
 ]
