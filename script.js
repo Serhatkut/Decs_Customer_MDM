@@ -780,32 +780,52 @@ function applyFiltersToGraph() {
     if (!lastRootHierarchy) return;
 
     const filters = selectedFilters();
-    const anyActive = filters.customerTypes.length || filters.industries.length || filters.salesChannels.length;
+    const anyActive =
+        filters.customerTypes.length ||
+        filters.industries.length ||
+        filters.salesChannels.length;
 
-    // No filters -> clear dim/match
     if (!anyActive) {
         g.selectAll(".node").classed("filter-dim", false).classed("filter-match", false);
         return;
     }
 
-    // 1) Find direct matches
+    // 1) Direct matches
     const matched = new Set();
     lastRootHierarchy.descendants().forEach(d => {
         const sig = nodeFilterSignature(d);
         if (matchesFilters(sig, filters)) matched.add(d);
     });
 
-    // 2) Build visibility context = matched + ancestors + descendants
+    // 2) Visible context = matched + ancestors + descendants
+    //    PLUS: ancestor "attachments" (their direct children) so customer-level Address/Contact won't dim.
     const visible = new Set();
-    const addAncestors = (n) => { let p = n; while (p) { visible.add(p); p = p.parent; } };
-    const addDescendants = (n) => { n.descendants().forEach(x => visible.add(x)); };
+
+    const addDescendants = (n) => n.descendants().forEach(x => visible.add(x));
+
+    const addAncestorsWithAttachments = (n) => {
+        let p = n;
+        while (p) {
+            visible.add(p);
+
+            // IMPORTANT: include direct children of each ancestor to keep "attached objects" visible
+            if (p.children && p.children.length) {
+                p.children.forEach(ch => visible.add(ch));
+            }
+            if (p._children && p._children.length) {
+                p._children.forEach(ch => visible.add(ch));
+            }
+
+            p = p.parent;
+        }
+    };
 
     matched.forEach(n => {
-        addAncestors(n);
         addDescendants(n);
+        addAncestorsWithAttachments(n);
     });
 
-    // 3) Apply classes: dim only nodes not in context
+    // 3) Apply classes
     g.selectAll(".node").each(function (d) {
         const isMatch = matched.has(d);
         const inContext = visible.has(d);
