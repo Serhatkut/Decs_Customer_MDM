@@ -2264,9 +2264,6 @@
       }
     ],
     "accounts": [
-      /* =========================
-       SPAIN — FBA (Contract Owner)
-    ========================= */
       {
         "mdmAccountId": "ACC-AMAZON-ES-FBA-SOLDTO-001",
         "parentAccountId": null,
@@ -2437,7 +2434,6 @@
           }
         ]
       },
-      /* FBA Pickup / FC nodes (Spain) */
       {
         "mdmAccountId": "ACC-AMAZON-ES-FC-BCN-PICKUP-001",
         "parentAccountId": "ACC-AMAZON-ES-FBA-SOLDTO-001",
@@ -2534,9 +2530,6 @@
           }
         ]
       },
-      /* =========================
-       SPAIN — Amazon Flex (separate contract)
-    ========================= */
       {
         "mdmAccountId": "ACC-AMAZON-ES-FLEX-SOLDTO-001",
         "parentAccountId": null,
@@ -2640,7 +2633,6 @@
           }
         ]
       },
-      /* Flex Pickup / Delivery station */
       {
         "mdmAccountId": "ACC-AMZ-ES-DS-BCN-PICKUP-001",
         "parentAccountId": "ACC-AMAZON-ES-FLEX-SOLDTO-001",
@@ -2689,10 +2681,6 @@
           }
         ]
       },
-      /* =========================
-       SPAIN — Amazon Easy Ship (micro/SME shippers via platform + shipper IDs)
-       NOTE: Contract at "Easy Ship program" account; sellers are sub-accounts with PLATFORM_SHIPPER_ID
-    ========================= */
       {
         "mdmAccountId": "ACC-AMAZON-ES-EASYSHIP-SOLDTO-001",
         "parentAccountId": null,
@@ -2781,7 +2769,6 @@
           }
         ]
       },
-      /* Easy Ship — Merchant Sellers (sub-accounts, no contracts) */
       {
         "mdmAccountId": "ACC-AMZ-ES-SELLER-BCN-0001",
         "parentAccountId": "ACC-AMAZON-ES-EASYSHIP-SOLDTO-001",
@@ -2847,7 +2834,6 @@
           }
         ]
       },
-      /* Easy Ship — Drop-off / Locker nodes (pickup points) */
       {
         "mdmAccountId": "ACC-AMZ-ES-LOCKER-BCN-01",
         "parentAccountId": "ACC-AMAZON-ES-EASYSHIP-SOLDTO-001",
@@ -2895,9 +2881,6 @@
           }
         ]
       },
-      /* =========================
-       UNITED STATES — Returns (separate contract + returns warehouse delivery point)
-    ========================= */
       {
         "mdmAccountId": "ACC-AMAZON-US-RETURNS-SOLDTO-001",
         "parentAccountId": null,
@@ -3001,7 +2984,6 @@
           }
         ]
       },
-      /* US Returns warehouse delivery point */
       {
         "mdmAccountId": "ACC-AMZ-US-RETURNS-WH-DELIVERY-001",
         "parentAccountId": "ACC-AMAZON-US-RETURNS-SOLDTO-001",
