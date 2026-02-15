@@ -1,47 +1,91 @@
-"semanticMapping": {
-  "GLOBAL_CUSTOMER": {
-    "header": "--clr-fg-purple",
-    "body": "--clr-bg-lavender",
-    "accent": "--clr-primary-yellow"
+{
+  "palette": {
+    "primary": {
+      "red": "#D40511",
+      "yellow": "#FFCC00",
+      "green": "#006B3F",
+      "black": "#000000"
+    },
+    "foreground": {
+      "dark": "#1F1F1F",
+      "indigo": "#3E3A63",
+      "purple": "#3B3696",
+      "blue": "#245B8F",
+      "cyan": "#1793C6",
+      "teal": "#3AA39A",
+      "olive": "#6E9641",
+      "brick": "#8E3E3A",
+      "orange": "#E36A23",
+      "tan": "#B79063"
+    },
+    "background": {
+      "gray": "#A7AEB4",
+      "steel": "#9FAAB2",
+      "lavender": "#A7ADBD",
+      "sky": "#8FC5D6",
+      "lightblue": "#BFD7E3",
+      "mint": "#9FC9C1",
+      "lightgreen": "#B7C78D",
+      "palegreen": "#BFD0A9",
+      "warmgray": "#B7B5A8",
+      "beige": "#C9C0B8"
+    },
+    "neutral": {
+      "900": "#000000",
+      "800": "#2B2B2B",
+      "700": "#555555",
+      "600": "#777777",
+      "500": "#999999",
+      "400": "#BBBBBB",
+      "300": "#DDDDDD",
+      "200": "#EEEEEE"
+    }
   },
-  "COUNTRY_CUSTOMER": {
-    "header": "--clr-primary-yellow",
-    "body": "--clr-neutral-200",
-    "accent": "--clr-primary-black"
-  },
-  "ACCOUNT": {
-    "header": "--clr-primary-red",
-    "body": "--clr-primary-yellow",
-    "accent": "--clr-primary-black"
-  },
-  "CONTRACT": {
-    "header": "--clr-fg-blue",
-    "body": "--clr-bg-lightblue",
-    "accent": "--clr-primary-yellow"
-  },
-  "BILLING_PROFILE": {
-    "header": "--clr-fg-indigo",
-    "body": "--clr-bg-lavender",
-    "accent": "--clr-primary-yellow"
-  },
-  "CONTACT": {
-    "header": "--clr-fg-teal",
-    "body": "--clr-bg-mint",
-    "accent": "--clr-primary-yellow"
-  },
-  "ADDRESS": {
-    "header": "--clr-neutral-700",
-    "body": "--clr-neutral-200",
-    "accent": "--clr-primary-yellow"
-  },
-  "PLATFORM": {
-    "header": "--clr-fg-cyan",
-    "body": "--clr-bg-sky",
-    "accent": "--clr-primary-yellow"
-  },
-  "REFERENCE_ID": {
-    "header": "--clr-fg-orange",
-    "body": "--clr-fg-tan",
-    "accent": "--clr-primary-yellow"
+  "semanticMapping": {
+    "GLOBAL_CUSTOMER": {
+      "header": "foreground.purple",
+      "body": "background.lavender",
+      "accent": "primary.yellow"
+    },
+    "COUNTRY_CUSTOMER": {
+      "header": "primary.yellow",
+      "body": "neutral.200",
+      "accent": "primary.black"
+    },
+    "ACCOUNT": {
+      "header": "primary.red",
+      "body": "primary.yellow",
+      "accent": "primary.black"
+    },
+    "CONTRACT": {
+      "header": "foreground.blue",
+      "body": "background.lightblue",
+      "accent": "primary.yellow"
+    },
+    "BILLING_PROFILE": {
+      "header": "foreground.indigo",
+      "body": "background.lavender",
+      "accent": "primary.yellow"
+    },
+    "ADDRESS": {
+      "header": "neutral.700",
+      "body": "neutral.200",
+      "accent": "primary.yellow"
+    },
+    "CONTACT": {
+      "header": "foreground.teal",
+      "body": "background.mint",
+      "accent": "primary.yellow"
+    },
+    "PLATFORM": {
+      "header": "foreground.cyan",
+      "body": "background.sky",
+      "accent": "primary.yellow"
+    },
+    "REFERENCE_ID": {
+      "header": "foreground.orange",
+      "body": "foreground.tan",
+      "accent": "primary.yellow"
+    }
   }
 }
