@@ -4736,5 +4736,419 @@
       }
     ],
     "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Generic Partner (Template) — Marketplace Platform with Multi-Industry Sellers",
+    "customer": {
+      "customerType": "PARTNERS",
+      "customerLevel": "KEY_ACCOUNT",
+      "mdmCustomerId": "CUST-PARTNER-EU-0001",
+      "parentMdmCustomerId": null,
+      "officialName": "Generic Marketplace Platform Europe B.V. (Template)",
+      "tradingName": "Marketplace Partner Europe",
+      "globalGroupCode": null,
+      "industrySector": "MARKETPLACE",
+      "taxId": "NL-PARTNER-0001",
+      "countryOfRegistration": "NL",
+      "addresses": [
+        {
+          "addressId": "ADDR-PARTNER-NL-REG-001",
+          "addressType": "REGISTERED_OFFICE",
+          "isGeoManual": false,
+          "street": "Platformstraat",
+          "houseNumber": "1",
+          "city": "Amsterdam",
+          "postalcode": "1011AB",
+          "country": "NL",
+          "latitude": 52.3702,
+          "longitude": 4.8952,
+          "timezone": "Europe/Amsterdam"
+        }
+      ],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-PARTNER-NL-001",
+          "firstName": "Platform",
+          "lastName": "Manager",
+          "jobTitle": "Partner Platform Manager",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            {
+              "type": "EMAIL",
+              "value": "partner@marketplace.example"
+            },
+            {
+              "type": "PHONE",
+              "value": "+31-20-100-1000"
+            }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-PARTNER-EU-SOLDTO-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-PARTNER-EU-0001",
+        "businessRoles": [
+          "SOLDTO",
+          "PAYER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 500000,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "MARKETPLACE_PLATFORM",
+        "platformObject": {
+          "platformId": "PLT-MARKETPLACE-EU-001",
+          "name": "Marketplace_Core_Platform",
+          "type": "MARKETPLACE",
+          "provider": "Generic Marketplace Platform"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-PARTNER-HQ-001",
+            "addressType": "BUSINESS",
+            "isGeoManual": false,
+            "street": "Platform HQ Street",
+            "houseNumber": "10",
+            "city": "Amsterdam",
+            "postalcode": "1012CD",
+            "country": "NL",
+            "latitude": 52.372,
+            "longitude": 4.899,
+            "timezone": "Europe/Amsterdam"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-PARTNER-CONTRACT-001",
+            "firstName": "Global",
+            "lastName": "Contract Owner",
+            "jobTitle": "Marketplace Contract Owner",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "contracts@marketplace.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [
+          {
+            "contractId": "CON-PARTNER-EU-001",
+            "contractName": "DHL eCommerce EU – Marketplace Platform Contract",
+            "startDate": "2025-07-01",
+            "contractDetail": {
+              "contractType": "PARTNER_MASTER",
+              "services": [
+                "PARCEL",
+                "RETURNS"
+              ],
+              "slaLevel": "ENTERPRISE",
+              "pricingModel": "CUSTOM",
+              "billingFrequency": "MONTHLY",
+              "billingModel": "CONSOLIDATED",
+              "kpiPack": [
+                "OTD%",
+                "OTSD%",
+                "CDT-h"
+              ]
+            },
+            "addresses": [
+              {
+                "addressId": "ADDR-PARTNER-CONTRACT-001",
+                "addressType": "BUSINESS",
+                "isGeoManual": false,
+                "street": "Contract Street",
+                "houseNumber": "5",
+                "city": "Amsterdam",
+                "postalcode": "1013EF",
+                "country": "NL",
+                "latitude": 52.374,
+                "longitude": 4.889,
+                "timezone": "Europe/Amsterdam"
+              }
+            ],
+            "contactPersons": [
+              {
+                "contactPersonId": "CONT-PARTNER-CONTRACT-LEGAL-001",
+                "firstName": "Legal",
+                "lastName": "Representative",
+                "jobTitle": "Legal Contract Contact",
+                "contactType": "BUSINESS",
+                "communicationChannels": [
+                  {
+                    "type": "EMAIL",
+                    "value": "legal@marketplace.example"
+                  }
+                ]
+              }
+            ],
+            "billingProfile": {
+              "billingProfileId": "BPROF-PARTNER-001",
+              "billingAccountNumber": "BILL-PARTNER-1001",
+              "billingCurrency": "EUR",
+              "billingFrequency": "MONTHLY",
+              "invoiceDelivery": "EDI",
+              "paymentMethod": {
+                "type": "BANK_TRANSFER",
+                "bankName": "ING",
+                "iban": "NL00BANK0000000000008001",
+                "bic": "INGBNL2A"
+              },
+              "addresses": [
+                {
+                  "addressId": "ADDR-PARTNER-BILL-001",
+                  "addressType": "BILLING",
+                  "isGeoManual": false,
+                  "street": "Finance Street",
+                  "houseNumber": "22",
+                  "city": "Amsterdam",
+                  "postalcode": "1017GH",
+                  "country": "NL",
+                  "latitude": 52.368,
+                  "longitude": 4.903,
+                  "timezone": "Europe/Amsterdam"
+                }
+              ],
+              "contactPersons": [
+                {
+                  "contactPersonId": "CONT-PARTNER-AP-001",
+                  "firstName": "Finance",
+                  "lastName": "Team",
+                  "jobTitle": "Accounts Payable",
+                  "contactType": "BUSINESS",
+                  "communicationChannels": [
+                    {
+                      "type": "EMAIL",
+                      "value": "ap@marketplace.example"
+                    }
+                  ]
+                }
+              ],
+              "referenceIds": [
+                {
+                  "refType": "ERP_ID",
+                  "refValue": "MP-EU-ERP-1001",
+                  "issuedByAuthority": "PARTNER_ERP"
+                }
+              ]
+            }
+          }
+        ],
+        "referenceIds": [
+          {
+            "refType": "CUSTOMER_NUMBER",
+            "refValue": "PARTNER-EU-0001",
+            "issuedByAuthority": "DHL_ECOMMERCE"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-SELLER-FASHION-001",
+        "parentAccountId": "ACC-PARTNER-EU-SOLDTO-001",
+        "mdmCustomerId": "CUST-PARTNER-EU-0001",
+        "businessRoles": [
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "SELLER",
+        "segmentGroup2": "FASHION",
+        "platformObject": {
+          "platformId": "PLT-MARKETPLACE-EU-001",
+          "name": "Marketplace_Core_Platform",
+          "type": "MARKETPLACE",
+          "provider": "Generic Marketplace Platform"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-SELLER-FASHION-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Fashion Seller Warehouse",
+            "houseNumber": "7",
+            "city": "Madrid",
+            "postalcode": "28022",
+            "country": "ES",
+            "latitude": 40.456,
+            "longitude": -3.623,
+            "timezone": "Europe/Madrid"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-SELLER-FASHION-001",
+            "firstName": "Fashion",
+            "lastName": "Seller",
+            "jobTitle": "Seller Operations",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "ops@fashion-seller.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "SELLER_ID",
+            "refValue": "SELLER-FASHION-001",
+            "issuedByAuthority": "PLATFORM"
+          },
+          {
+            "refType": "MERCHANT_ID",
+            "refValue": "MERCH-FASHION-001",
+            "issuedByAuthority": "PLATFORM"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-SELLER-HEALTH-001",
+        "parentAccountId": "ACC-PARTNER-EU-SOLDTO-001",
+        "mdmCustomerId": "CUST-PARTNER-EU-0001",
+        "businessRoles": [
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "SELLER",
+        "segmentGroup2": "PHARMA_HEALTH",
+        "platformObject": {
+          "platformId": "PLT-MARKETPLACE-EU-001",
+          "name": "Marketplace_Core_Platform",
+          "type": "MARKETPLACE",
+          "provider": "Generic Marketplace Platform"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-SELLER-HEALTH-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Health Seller Pickup",
+            "houseNumber": "19",
+            "city": "Berlin",
+            "postalcode": "10115",
+            "country": "DE",
+            "latitude": 52.52,
+            "longitude": 13.405,
+            "timezone": "Europe/Berlin"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-SELLER-HEALTH-001",
+            "firstName": "Health",
+            "lastName": "Seller",
+            "jobTitle": "Warehouse Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "warehouse@health-seller.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "SELLER_ID",
+            "refValue": "SELLER-HEALTH-001",
+            "issuedByAuthority": "PLATFORM"
+          },
+          {
+            "refType": "MERCHANT_ID",
+            "refValue": "MERCH-HEALTH-001",
+            "issuedByAuthority": "PLATFORM"
+          }
+        ]
+      },
+      {
+        "mdmAccountId": "ACC-SELLER-ELECTRONICS-001",
+        "parentAccountId": "ACC-PARTNER-EU-SOLDTO-001",
+        "mdmCustomerId": "CUST-PARTNER-EU-0001",
+        "businessRoles": [
+          "SHIPPER"
+        ],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "IMMEDIATE",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MANAGER_TEAM",
+        "segmentGroup": "SELLER",
+        "segmentGroup2": "ELECTRONICS",
+        "platformObject": {
+          "platformId": "PLT-MARKETPLACE-EU-001",
+          "name": "Marketplace_Core_Platform",
+          "type": "MARKETPLACE",
+          "provider": "Generic Marketplace Platform"
+        },
+        "addresses": [
+          {
+            "addressId": "ADDR-SELLER-ELECTRONICS-001",
+            "addressType": "PICKUP",
+            "isGeoManual": false,
+            "street": "Electronics Warehouse",
+            "houseNumber": "55",
+            "city": "Paris",
+            "postalcode": "75001",
+            "country": "FR",
+            "latitude": 48.8566,
+            "longitude": 2.3522,
+            "timezone": "Europe/Paris"
+          }
+        ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-SELLER-ELECTRONICS-001",
+            "firstName": "Electronics",
+            "lastName": "Seller",
+            "jobTitle": "Shipping Manager",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              {
+                "type": "EMAIL",
+                "value": "shipping@electronics-seller.example"
+              }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": [
+          {
+            "refType": "SELLER_ID",
+            "refValue": "SELLER-ELEC-001",
+            "issuedByAuthority": "PLATFORM"
+          },
+          {
+            "refType": "MERCHANT_ID",
+            "refValue": "MERCH-ELEC-001",
+            "issuedByAuthority": "PLATFORM"
+          }
+        ]
+      }
+    ],
+    "relatedCustomers": []
   }
 ]
