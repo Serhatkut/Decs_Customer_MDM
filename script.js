@@ -2,8 +2,11 @@
 
 /* ===============================
    DHL eCommerce · Customer MDM Viewer
-   - Filters: single-select dropdown
-   - View toggles: Addresses / Contacts / Contracts
+   Fixes requested:
+   - Contacts are separate NODE cards again (CONTACT)
+   - Contact channels (email/phone) shown inside CONTACT card (not separate nodes)
+   - Icons restored for all major objects
+   - Remove left reference panels; add top-right legend bar
 ================================ */
 
 const PATHS = {
@@ -12,21 +15,19 @@ const PATHS = {
     colors: "./data/reference_colors.json",
 };
 
-/* ---------- UI ---------- */
 const UI = {
     viz: document.getElementById("viz-container"),
+    legend: document.getElementById("legendBar"),
     selector: document.getElementById("scenarioSelector"),
     search: document.getElementById("nodeSearch"),
     reset: document.getElementById("resetZoom"),
     json: document.getElementById("json-display"),
 
-    // Filters (single select)
     fCustomerType: document.getElementById("filterCustomerType"),
     fIndustry: document.getElementById("filterIndustry"),
     fSalesChannel: document.getElementById("filterSalesChannel"),
     btnClearFilters: document.getElementById("clearFilters"),
 
-    // View toggles
     tAddresses: document.getElementById("toggleAddresses"),
     tContacts: document.getElementById("toggleContacts"),
     tContracts: document.getElementById("toggleContracts"),
@@ -36,10 +37,6 @@ const UI = {
 
     dqDot: document.getElementById("dqDot"),
     dqText: document.getElementById("dqText"),
-
-    swatches: document.getElementById("colorSwatches"),
-    refEnumsPreview: document.getElementById("refEnumsPreview"),
-    refColorsPreview: document.getElementById("refColorsPreview"),
 };
 
 let scenarios = [];
@@ -50,8 +47,6 @@ let activeScenario = null;
 
 let svg, g, zoom;
 let lastRootHierarchy = null;
-
-// collapse state
 const collapsedNodeIds = new Set();
 
 // layout
@@ -65,6 +60,29 @@ async function fetchJson(path) {
     const res = await fetch(path, { cache: "no-store" });
     if (!res.ok) throw new Error(`Fetch failed: ${path} (${res.status})`);
     return await res.json();
+}
+
+/* ---------- Icons ---------- */
+const ICON = {
+    GLOBAL_CUSTOMER: "🌐",
+    COUNTRY_CUSTOMER: "🏢",
+    ACCOUNT: "🧾",
+    ADDRESS: "📍",
+    ADDRESS_PICKUP: "🏬",
+    CONTACT: "👤",
+    CONTRACT: "📄",
+    BILLING_PROFILE: "💳",
+    PLATFORM: "🧩",
+};
+
+function iconForNode(d) {
+    const t = d.data.type;
+    if (t === "ADDRESS") {
+        const at = (d.data.data?.addressType || "").toUpperCase();
+        if (at.includes("PICKUP")) return ICON.ADDRESS_PICKUP;
+        return ICON.ADDRESS;
+    }
+    return ICON[t] || "•";
 }
 
 /* ---------- Colors ---------- */
@@ -99,15 +117,52 @@ function getSemanticColors(key) {
         accent: resolveToken(m.accent, tokenMap) || fallback.accent,
     };
 }
+function semanticKeyForType(t) {
+    if (t === "GLOBAL_CUSTOMER") return "GLOBAL_CUSTOMER";
+    if (t === "COUNTRY_CUSTOMER") return "COUNTRY_CUSTOMER";
+    if (t === "ACCOUNT") return "ACCOUNT";
+    if (t === "CONTRACT") return "CONTRACT";
+    if (t === "BILLING_PROFILE") return "BILLING_PROFILE";
+    if (t === "ADDRESS") return "ADDRESS";
+    if (t === "CONTACT") return "CONTACT";
+    if (t === "PLATFORM") return "PLATFORM";
+    return "ACCOUNT";
+}
+
+/* ---------- Legend (top-right) ---------- */
+function renderLegend() {
+    if (!UI.legend) return;
+
+    const items = [
+        { type: "GLOBAL_CUSTOMER", label: "Global Customer" },
+        { type: "COUNTRY_CUSTOMER", label: "Customer" },
+        { type: "ACCOUNT", label: "Account" },
+        { type: "CONTRACT", label: "Contract" },
+        { type: "BILLING_PROFILE", label: "Billing" },
+        { type: "ADDRESS", label: "Address" },
+        { type: "CONTACT", label: "Contact" },
+        { type: "PLATFORM", label: "Platform" },
+    ];
+
+    UI.legend.innerHTML = items.map(it => {
+        const c = getSemanticColors(semanticKeyForType(it.type));
+        const icon = ICON[it.type] || "•";
+        return `
+      <div class="legend-item" title="${it.label}">
+        <span class="legend-swatch" style="background:${c.header}"></span>
+        <span class="legend-icon">${icon}</span>
+        <span class="legend-text">${it.label}</span>
+      </div>
+    `;
+    }).join("");
+}
 
 /* ---------- Filters (single select) ---------- */
 function fillSelectSingle(selectEl, values) {
     if (!selectEl) return;
-
-    // preserve current value if possible
     const current = selectEl.value || "";
-
     selectEl.innerHTML = "";
+
     const all = document.createElement("option");
     all.value = "";
     all.textContent = "All";
@@ -120,7 +175,6 @@ function fillSelectSingle(selectEl, values) {
         selectEl.appendChild(opt);
     });
 
-    // restore value if exists
     const canRestore = Array.from(selectEl.options).some(o => o.value === current);
     selectEl.value = canRestore ? current : "";
 }
@@ -138,32 +192,6 @@ function discoverEnums() {
     fillSelectSingle(UI.fCustomerType, uniq([...customerTypes, ...dsCustomerTypes]).sort());
     fillSelectSingle(UI.fIndustry, uniq([...industries, ...dsIndustries]).sort());
     fillSelectSingle(UI.fSalesChannel, uniq([...channels, ...dsChannels]).sort());
-
-    if (UI.refEnumsPreview) UI.refEnumsPreview.textContent = JSON.stringify(refEnums, null, 2);
-    if (UI.refColorsPreview) UI.refColorsPreview.textContent = JSON.stringify(refColors, null, 2);
-
-    // simple swatches
-    if (UI.swatches) {
-        UI.swatches.innerHTML = "";
-        const tokenMap = buildTokenHexMap(refColors);
-        const tokens = [
-            "--clr-primary-red",
-            "--clr-primary-yellow",
-            "--clr-fg-purple",
-            "--clr-fg-blue",
-            "--clr-fg-teal",
-            "--clr-neutral-600"
-        ];
-        tokens.forEach(t => {
-            const hex = tokenMap.get(t);
-            if (!hex) return;
-            const d = document.createElement("div");
-            d.className = "swatch";
-            d.style.background = hex;
-            d.title = `${t} = ${hex}`;
-            UI.swatches.appendChild(d);
-        });
-    }
 }
 
 function scenarioMatchesFilters(s) {
@@ -198,7 +226,6 @@ function populateScenarioDropdown() {
         UI.selector.appendChild(opt);
     });
 
-    // auto-select first if current is filtered out
     const stillVisible = activeScenarioIndex >= 0 && scenarioMatchesFilters(scenarios[activeScenarioIndex]);
     if (!stillVisible) {
         const first = Array.from(UI.selector.options).find(o => o.value !== "");
@@ -224,7 +251,7 @@ function getViewFlags() {
     };
 }
 
-/* ---------- Tree builder helpers ---------- */
+/* ---------- Tree builder ---------- */
 function stableId(type, obj) {
     if (!obj) return `${type}::${Math.random()}`;
     if (type === "GLOBAL_CUSTOMER" || type === "COUNTRY_CUSTOMER") return obj.mdmCustomerId || `${type}::${obj.officialName}`;
@@ -232,25 +259,9 @@ function stableId(type, obj) {
     if (type === "CONTRACT") return obj.contractId || `${type}::${obj.contractName}`;
     if (type === "BILLING_PROFILE") return obj.billingProfileId || `${type}::${obj.billingAccountNumber}`;
     if (type === "ADDRESS") return obj.addressId || `${type}::${obj.city}-${obj.postalcode}`;
+    if (type === "CONTACT") return obj.contactPersonId || `${type}::${obj.firstName}-${obj.lastName}`;
     if (type === "PLATFORM") return obj.platformId || `${type}::${obj.name}`;
     return `${type}::${JSON.stringify(obj).slice(0, 40)}`;
-}
-
-function contactSummary(list) {
-    const cps = asArray(list);
-    if (!cps.length) return [];
-    return cps.slice(0, 2).map(cp => {
-        const ch = asArray(cp.communicationChannels);
-        const email = ch.find(x => x.type === "EMAIL")?.value;
-        const phone = ch.find(x => x.type === "PHONE")?.value;
-        const name = [cp.firstName, cp.lastName].filter(Boolean).join(" ").trim();
-        const role = cp.jobTitle ? ` (${cp.jobTitle})` : "";
-        return [
-            `${name || cp.contactPersonId || "Contact"}${role}`,
-            email ? `email: ${email}` : null,
-            phone ? `phone: ${phone}` : null
-        ].filter(Boolean).join(" · ");
-    });
 }
 
 function refSummary(list) {
@@ -276,6 +287,27 @@ function addAddressChildren(parent, addresses, view) {
     });
 }
 
+function addContactChildren(parent, contactPersons, view) {
+    if (!view.showContacts) return;
+
+    asArray(contactPersons).forEach(cp => {
+        const ch = asArray(cp.communicationChannels);
+        const email = ch.find(x => x.type === "EMAIL")?.value;
+        const phone = ch.find(x => x.type === "PHONE")?.value;
+
+        const name = [cp.firstName, cp.lastName].filter(Boolean).join(" ").trim() || cp.contactPersonId || "Contact";
+        const header = cp.jobTitle ? `${name} · ${cp.jobTitle}` : name;
+
+        const lines = [
+            cp.contactType ? `type: ${cp.contactType}` : null,
+            email ? `email: ${email}` : null,
+            phone ? `phone: ${phone}` : null,
+        ].filter(Boolean);
+
+        parent.children.push(makeNode("CONTACT", cp, header, lines));
+    });
+}
+
 function buildContractsForAccount(accNode, account, view) {
     if (!view.showContracts) return;
 
@@ -287,11 +319,10 @@ function buildContractsForAccount(accNode, account, view) {
             c.contractDetail?.contractType ? `type: ${c.contractDetail.contractType}` : null,
         ].filter(Boolean);
 
-        if (view.showContacts) contactSummary(c.contactPersons).forEach(x => cLines.push(x));
-
         const cNode = makeNode("CONTRACT", c, (c.contractName || "Contract"), cLines);
 
         addAddressChildren(cNode, c.addresses, view);
+        addContactChildren(cNode, c.contactPersons, view);
 
         if (c.billingProfile) {
             const bp = c.billingProfile;
@@ -302,10 +333,9 @@ function buildContractsForAccount(accNode, account, view) {
                 refSummary(bp.referenceIds) ? `refs: ${refSummary(bp.referenceIds)}` : null,
             ].filter(Boolean);
 
-            if (view.showContacts) contactSummary(bp.contactPersons).forEach(x => bpLines.push(x));
-
             const bpNode = makeNode("BILLING_PROFILE", bp, (bp.billingProfileId || "Billing Profile"), bpLines);
             addAddressChildren(bpNode, bp.addresses, view);
+            addContactChildren(bpNode, bp.contactPersons, view);
 
             cNode.children.push(bpNode);
         }
@@ -336,14 +366,14 @@ function buildAccountTree(accounts, mdmCustomerIdFilter, view) {
             refSummary(a.referenceIds) ? `refs: ${refSummary(a.referenceIds)}` : null,
         ].filter(Boolean);
 
-        if (view.showContacts) contactSummary(a.contactPersons).forEach(x => accLines.push(x));
-
         const node = makeNode("ACCOUNT", a, a.mdmAccountId, accLines);
 
+        // children nodes (controlled by view toggles)
         addAddressChildren(node, a.addresses, view);
+        addContactChildren(node, a.contactPersons, view);
         buildContractsForAccount(node, a, view);
 
-        // platform as node (kept for visibility)
+        // platform as node (always visible if exists)
         if (a.platformObject && (a.platformObject.platformId || a.platformObject.name)) {
             const p = a.platformObject;
             const pLines = [
@@ -354,6 +384,7 @@ function buildAccountTree(accounts, mdmCustomerIdFilter, view) {
             node.children.push(makeNode("PLATFORM", p, (p.name || "Platform"), pLines));
         }
 
+        // child accounts
         const kids = childrenByParent.get(a.mdmAccountId) || [];
         kids.forEach(k => node.children.push(buildNodeForAccount(k)));
 
@@ -377,16 +408,19 @@ function buildHierarchyForScenario(scenario, view) {
         cust.countryOfRegistration ? `country: ${cust.countryOfRegistration}` : null,
     ].filter(Boolean);
 
-    if (view.showContacts) contactSummary(cust.contactPersons).forEach(x => gcLines.push(x));
     const rs = refSummary(cust.referenceIds);
     if (rs) gcLines.push(`refs: ${rs}`);
 
-    const root = makeNode("GLOBAL_CUSTOMER", cust,
+    const root = makeNode(
+        "GLOBAL_CUSTOMER",
+        cust,
         (cust.tradingName || cust.officialName || scenario.scenarioName || "Customer"),
         gcLines
     );
 
+    // optional children
     addAddressChildren(root, cust.addresses, view);
+    addContactChildren(root, cust.contactPersons, view);
 
     if (related.length) {
         related.forEach(cc => {
@@ -396,10 +430,15 @@ function buildHierarchyForScenario(scenario, view) {
                 cc.countryOfRegistration ? `country: ${cc.countryOfRegistration}` : null,
             ].filter(Boolean);
 
-            if (view.showContacts) contactSummary(cc.contactPersons).forEach(x => ccLines.push(x));
+            const ccNode = makeNode(
+                "COUNTRY_CUSTOMER",
+                cc,
+                (cc.tradingName || cc.officialName || cc.mdmCustomerId),
+                ccLines
+            );
 
-            const ccNode = makeNode("COUNTRY_CUSTOMER", cc, (cc.tradingName || cc.officialName || cc.mdmCustomerId), ccLines);
             addAddressChildren(ccNode, cc.addresses, view);
+            addContactChildren(ccNode, cc.contactPersons, view);
 
             buildAccountTree(accounts, cc.mdmCustomerId, view).forEach(a => ccNode.children.push(a));
             root.children.push(ccNode);
@@ -446,21 +485,9 @@ function applyCollapse(root) {
     });
 }
 
-function semanticKeyForNodeType(t) {
-    if (t === "GLOBAL_CUSTOMER") return "GLOBAL_CUSTOMER";
-    if (t === "COUNTRY_CUSTOMER") return "COUNTRY_CUSTOMER";
-    if (t === "ACCOUNT") return "ACCOUNT";
-    if (t === "CONTRACT") return "CONTRACT";
-    if (t === "BILLING_PROFILE") return "BILLING_PROFILE";
-    if (t === "ADDRESS") return "ADDRESS";
-    if (t === "CONTACT") return "CONTACT";
-    if (t === "PLATFORM") return "PLATFORM";
-    return "ACCOUNT";
-}
-
 function renderNodeCard(d) {
     const t = d.data.type;
-    const colors = getSemanticColors(semanticKeyForNodeType(t));
+    const colors = getSemanticColors(semanticKeyForType(t));
     const w = L.nodeW, h = L.nodeH;
 
     const group = g.append("g")
@@ -478,13 +505,23 @@ function renderNodeCard(d) {
         .attr("width", w).attr("height", L.headerH)
         .attr("fill", colors.header);
 
+    // icon
     group.append("text")
         .attr("x", 12).attr("y", 22)
+        .attr("fill", "#fff")
+        .attr("font-weight", 900)
+        .attr("font-size", 12)
+        .text(iconForNode(d));
+
+    // title
+    group.append("text")
+        .attr("x", 32).attr("y", 22)
         .attr("fill", "#fff")
         .attr("font-weight", 800)
         .attr("font-size", 12)
         .text(d.data.label || t);
 
+    // collapse indicator
     const hasKids = (d.children && d.children.length) || (d._children && d._children.length);
     if (hasKids) {
         group.append("text")
@@ -534,9 +571,11 @@ function renderActiveScenario() {
 
     applyCollapse(root);
 
+    // vertical tree layout
     const tree = d3.tree().nodeSize([L.nodeW + L.gapX, L.nodeH + L.gapY]);
     tree(root);
 
+    // links (orthogonal)
     g.selectAll("path.link")
         .data(root.links())
         .join("path")
@@ -552,6 +591,7 @@ function renderActiveScenario() {
             return `M${sx},${sy} V${(sy + ty) / 2} H${tx} V${ty}`;
         });
 
+    // nodes
     root.descendants().forEach(d => renderNodeCard(d));
     zoomToFit(55);
 }
@@ -582,7 +622,7 @@ function wireUI() {
         if (hay.includes(q) && UI.json) UI.json.textContent = JSON.stringify(activeScenario, null, 2);
     });
 
-    // filters live
+    // filter live
     [UI.fCustomerType, UI.fIndustry, UI.fSalesChannel].forEach(sel => {
         safeOn(sel, "change", () => {
             populateScenarioDropdown();
@@ -599,7 +639,7 @@ function wireUI() {
         if (activeScenarioIndex >= 0) renderActiveScenario();
     });
 
-    // view toggles live rerender
+    // view toggles
     [UI.tAddresses, UI.tContacts, UI.tContracts].forEach(t => {
         safeOn(t, "change", () => renderActiveScenario());
     });
@@ -636,7 +676,9 @@ function wireUI() {
         populateScenarioDropdown();
         renderDQ();
 
-        // select first available scenario
+        renderLegend();
+
+        // select first scenario
         if (activeScenarioIndex >= 0) {
             activeScenario = scenarios[activeScenarioIndex];
             renderActiveScenario();

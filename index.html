@@ -11,7 +11,6 @@
 </head>
 
 <body>
-    <!-- Top bar -->
     <header class="topbar">
         <div class="topbar-left">
             <div class="brand">
@@ -34,10 +33,8 @@
     </header>
 
     <div class="layout">
-        <!-- Sidebar -->
         <aside class="sidebar">
 
-            <!-- Scenario -->
             <section class="panel">
                 <div class="panel-title">Scenario</div>
 
@@ -55,7 +52,6 @@
                 </div>
             </section>
 
-            <!-- Filters (single-select dropdown) -->
             <section class="panel">
                 <div class="panel-title">Filters</div>
 
@@ -65,7 +61,6 @@
                         <select id="filterCustomerType" class="select">
                             <option value="">All</option>
                         </select>
-                        <div class="field-note">From reference_master_data.json (+ dataset fallback)</div>
                     </div>
 
                     <div class="stack-item">
@@ -73,7 +68,6 @@
                         <select id="filterIndustry" class="select">
                             <option value="">All</option>
                         </select>
-                        <div class="field-note">From reference_master_data.json (+ dataset fallback)</div>
                     </div>
 
                     <div class="stack-item">
@@ -81,7 +75,6 @@
                         <select id="filterSalesChannel" class="select">
                             <option value="">All</option>
                         </select>
-                        <div class="field-note">From reference_master_data.json (+ dataset fallback)</div>
                     </div>
                 </div>
 
@@ -90,7 +83,6 @@
                 </div>
             </section>
 
-            <!-- View options (toggle: addresses/contacts/contracts) -->
             <section class="panel">
                 <div class="panel-title">View</div>
 
@@ -117,36 +109,17 @@
                 </div>
             </section>
 
-            <!-- Reference Master Data (keep palette only) -->
-            <section class="panel">
-                <div class="panel-title">Reference Master Data</div>
-
-                <details id="refEnumsPanel">
-                    <summary class="details-summary">Enums (customerType / industry / channel / roles…)</summary>
-                    <div class="details-body">
-                        <pre id="refEnumsPreview" class="json-mini">{}</pre>
-                    </div>
-                </details>
-
-                <details id="refColorsPanel" open>
-                    <summary class="details-summary">Color Palette (reference_colors.json)</summary>
-                    <div class="details-body">
-                        <div id="colorSwatches" class="swatch-grid"></div>
-                        <pre id="refColorsPreview" class="json-mini">{}</pre>
-                    </div>
-                </details>
-            </section>
-
-            <!-- Selected JSON -->
             <section class="panel json-panel">
                 <div class="panel-title">Selected / Hover JSON</div>
                 <pre id="json-display" class="json-display">{}</pre>
             </section>
         </aside>
 
-        <!-- Canvas -->
         <main class="canvas">
             <div id="viz-container" class="viz-container"></div>
+
+            <!-- Legend overlay -->
+            <div id="legendBar" class="legend-bar" aria-label="Object legend"></div>
 
             <div class="footer-note">
                 Data sources:
