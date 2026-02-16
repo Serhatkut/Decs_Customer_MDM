@@ -437,9 +437,6 @@
 
         rootG.selectAll("*").remove();
 
-        // defs for clipPaths (prevents any label overflow outside cards)
-        const defs = rootG.append("defs");
-
         const isHidden = (node) => hiddenTypes.has(node.data.__type);
 
         // LINKS: only if both ends visible
@@ -462,24 +459,6 @@
         // NODES: only visible types
         const visibleNodes = root.descendants().filter((n) => !isHidden(n));
 
-        // Per-node clip path to prevent any label overflow outside cards
-        visibleNodes.forEach((n) => {
-            const id = `clip-${cssSafeId(n.data.__stableKey)}`;
-            defs
-                .append("clipPath")
-                .attr("id", id)
-                .append("rect")
-                .attr("x", -CARD_W / 2 + 10)
-                .attr("y", -CARD_H / 2 + 10)
-                .attr("width", CARD_W - 20)
-                .attr("height", CARD_H - 20)
-                .attr("rx", 12)
-                .attr("ry", 12);
-
-            // store on node for use in text selections
-            n.data.__clipId = id;
-        });
-
         const nodes = rootG
             .selectAll(".node")
             .data(visibleNodes, (d) => d.data.__stableKey)
@@ -498,9 +477,8 @@
             .attr("height", CARD_H);
 
         nodes.select("rect")
-            .style("cursor", (d) => (d.data.__type === "CHILD_ACCOUNTS_GROUP" ? "default" : "pointer"))
+            .style("cursor", "pointer")
             .on("click", (event, d) => {
-                if (d.data.__type === "CHILD_ACCOUNTS_GROUP") return;
                 setSelectedObject(d.data.__raw, currentScenario, d.data.__type);
             });
 
@@ -512,7 +490,6 @@
             .style("cursor", (d) => (d.data.__hasChildrenOriginal ? "pointer" : "default"))
             .on("click", (event, d) => {
                 event.stopPropagation();
-                if (d.data.__type === "CHILD_ACCOUNTS_GROUP") return;
                 if (!d.data.__hasChildrenOriginal) return;
 
                 if (collapsedKeys.has(d.data.__stableKey)) collapsedKeys.delete(d.data.__stableKey);
@@ -536,13 +513,10 @@
         // the visible +/- glyph
         pm.append("text")
             .attr("class", "pm")
-            .attr("x", CARD_W / 2 - 21)
-            .attr("y", -CARD_H / 2 + 26)
+            .attr("x", CARD_W / 2 - 22)
+            .attr("y", -CARD_H / 2 + 28)
             .attr("text-anchor", "middle")
-            .text((d) => {
-                if (d.data.__type === "CHILD_ACCOUNTS_GROUP") return "";
-                return d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : "";
-            })
+            .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
             .style("pointer-events", "none");
 
         // Title line with icon (icon larger) + truncation for long titles
@@ -551,7 +525,6 @@
             .attr("class", "node-title")
             .attr("text-anchor", "middle")
             .attr("dy", "-18")
-            .style("clip-path", (d) => `url(#${d.data.__clipId})`)
             .style("pointer-events", "none");
 
         titleText.each(function (d) {
@@ -572,7 +545,7 @@
                 .text(d.data.__title || "");
 
             // Truncate title to available width (leave room for icon)
-            const maxPx = (CARD_W - 78);
+            const maxPx = (CARD_W - 28);
             truncateSvgTextToWidth(t.node(), maxPx);
         });
 
@@ -584,7 +557,6 @@
             .attr("dy", "4")
             .style("font-weight", 800)
             .style("font-size", "11px")
-            .style("clip-path", (d) => `url(#${d.data.__clipId})`)
             .style("pointer-events", "none")
             .text((d) => d.data.__k1 || "");
 
@@ -601,7 +573,6 @@
             .attr("dy", "22")
             .style("font-weight", 800)
             .style("font-size", "11px")
-            .style("clip-path", (d) => `url(#${d.data.__clipId})`)
             .style("pointer-events", "none")
             .text((d) => d.data.__k2 || "");
 
@@ -793,19 +764,8 @@
             node.children.push(cn);
         });
 
-        // Child accounts: render as a separate lane (one depth deeper) to avoid mixing
-        // account-owned objects (contacts/addresses/contracts/platform) with the hierarchy.
         const kids = byParent.get(acc.mdmAccountId) || [];
-        if (kids.length) {
-            const group = makeNode(
-                "CHILD_ACCOUNTS_GROUP",
-                stableKey("CHILD_ACCOUNTS_GROUP", acc.mdmAccountId),
-                "Child accounts",
-                { parentAccountId: acc.mdmAccountId }
-            );
-            kids.forEach((k) => group.children.push(buildAccountSubtree(k, byParent)));
-            node.children.push(group);
-        }
+        kids.forEach((k) => node.children.push(buildAccountSubtree(k, byParent)));
 
         return node;
     }
@@ -872,7 +832,6 @@
             case "ADDRESS": return "📍";
             case "CONTACT": return "👤";
             case "PLATFORM": return "🧩";
-            case "CHILD_ACCOUNTS_GROUP": return "↧";
             default: return "•";
         }
     }
@@ -883,9 +842,6 @@
                 k1: `mdmCustomerId: ${r.mdmCustomerId || "—"}`,
                 k2: `${r.customerType || "—"} · ${(r.countryOfRegistration || r.country || "—")}`,
             };
-        }
-        if (type === "CHILD_ACCOUNTS_GROUP") {
-            return { k1: "Child accounts", k2: "" };
         }
         if (type === "ACCOUNT") {
             const roles = (r.businessRoles || []).join(", ");
@@ -1268,12 +1224,4 @@
             truncateSvgTextToWidth(textNode, maxPx, false);
         }
     }
-    // Helper to make a CSS-safe id for use in clipPath URLs
-    function cssSafeId(s) {
-        return String(s || "")
-            .replace(/[^a-zA-Z0-9_-]/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
-    }
-
 })();
