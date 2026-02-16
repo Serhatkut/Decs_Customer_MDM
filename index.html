@@ -1,71 +1,115 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DHL eCommerce · MDM Intelligence & Audit</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DHL eCommerce · Customer Master Data Viewer</title>
+
+    <link rel="stylesheet" href="style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 
 <body>
+    <!-- Topbar -->
     <header class="topbar">
-        <div class="brand">
-            <span class="dhl-logo">DHL</span>
-            <div class="divider"></div>
-            <span class="app-title">Master Data Intelligence</span>
+        <div class="topbar__brand">
+            <div class="brand__name">DHL eCommerce</div>
+            <div class="brand__subtitle">Customer Master Data Viewer · Scenarios · MDM Objects · Relationships</div>
         </div>
 
-        <div class="controls-grid">
-            <div class="control-group">
-                <label>Scenario</label>
-                <select id="scenarioSelector" class="custom-select"></select>
+        <div class="topbar__filters">
+            <div class="filter">
+                <label class="filter__label" for="scenarioSelector">Scenario</label>
+                <select id="scenarioSelector" class="filter__select"></select>
             </div>
-            <div class="control-group">
-                <label>Industry</label>
-                <select id="filterIndustry" class="custom-select"></select>
+
+            <div class="filter">
+                <label class="filter__label" for="filterCustomerType">Customer Type</label>
+                <select id="filterCustomerType" class="filter__select"></select>
             </div>
-            <div class="control-group">
-                <label>Sales Channel</label>
-                <select id="filterSalesChannel" class="custom-select"></select>
+
+            <div class="filter">
+                <label class="filter__label" for="filterIndustry">Industry</label>
+                <select id="filterIndustry" class="filter__select"></select>
             </div>
+
+            <div class="filter">
+                <label class="filter__label" for="filterSalesChannel">Sales Channel</label>
+                <select id="filterSalesChannel" class="filter__select"></select>
+            </div>
+
+            <button id="clearFilters" class="btn btn--ghost" title="Clear filters">Clear</button>
         </div>
 
-        <div class="actions">
-            <div id="dqGlobalBadge" class="dq-badge">DQ: --</div>
-            <button id="resetZoom" class="btn-icon" title="Reset View">Target</button>
+        <div class="topbar__actions">
+            <div class="dq" id="dqBadge" title="Data Quality (computed)">
+                <span class="dq__dot" id="dqDot"></span>
+                <span class="dq__text" id="dqText">DQ: N/A</span>
+            </div>
+
+            <button id="collapseAll" class="btn btn--light">Collapse All</button>
+            <button id="expandAll" class="btn btn--light">Expand All</button>
+
+            <button id="toggleInspector" class="btn btn--dark">Inspector</button>
+            <button id="resetView" class="btn btn--primary">Reset View</button>
         </div>
     </header>
 
-    <div class="main-layout">
-        <aside class="sidebar">
-            <section class="audit-panel">
-                <h3 class="panel-header">Object Inspector</h3>
-                <div id="inspectorContent" class="inspector-empty">
-                    Select a node to audit details
+    <!-- Layout -->
+    <div class="layout">
+        <!-- Collapsible Inspector -->
+        <aside class="inspector" id="inspector">
+            <div class="inspector__section">
+                <div class="inspector__title">Classification</div>
+                <div class="pill-row" id="classificationPills">
+                    <span class="pill pill--muted">customerType: —</span>
+                    <span class="pill pill--muted">industry: —</span>
+                    <span class="pill pill--muted">channel: —</span>
                 </div>
-            </section>
+            </div>
 
-            <section class="visibility-panel">
-                <h3 class="panel-header">View Layers</h3>
-                <div class="toggle-list">
-                    <label class="switch"><input type="checkbox" id="toggleAddresses"
-                            checked><span>Addresses</span></label>
-                    <label class="switch"><input type="checkbox" id="toggleContacts"
-                            checked><span>Contacts</span></label>
-                    <label class="switch"><input type="checkbox" id="toggleContracts"
-                            checked><span>Contracts</span></label>
-                </div>
-            </section>
+            <div class="inspector__section">
+                <div class="inspector__title">Selected object</div>
+                <div id="objectSummary" class="kv-card"></div>
+            </div>
 
-            <section class="legend-panel" id="legendBar"></section>
+            <div class="inspector__section">
+                <div class="inspector__title">Business meaning</div>
+                <div id="meaningBox" class="meaning"></div>
+            </div>
+
+            <div class="inspector__section">
+                <div class="inspector__title">Readable JSON</div>
+                <div id="readableJson" class="readable"></div>
+            </div>
+
+            <div class="inspector__section">
+                <div class="inspector__title">Raw JSON</div>
+                <pre id="rawJson" class="raw">{}</pre>
+            </div>
         </aside>
 
-        <main class="canvas-container">
-            <div id="viz-container"></div>
+        <!-- Canvas -->
+        <main class="canvas">
+            <div id="viz" class="viz"></div>
         </main>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__legend">
+            <div class="legend__title">Object legend</div>
+            <div id="legend" class="legend"></div>
+            <div class="legend__hint">Click a legend item to hide/show that object type.</div>
+        </div>
+
+        <div class="footer__credit">
+            Serhat Kut, PhD
+        </div>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 
