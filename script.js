@@ -121,9 +121,21 @@
             // ensure dropdown is consistent with default filters
             filterScenarioListByTopFilters(true);
 
-            // default scenario
+            // default scenario (prefer Relationship Customers if present)
             if (dataset.length) {
-                setScenario(els.scenarioSelector.value || dataset[0].scenarioName, { fit: true });
+                const preferred =
+                    dataset.find(s => s?.customer?.customerType === "RELATIONSHIP_CUSTOMERS") ||
+                    dataset.find(s => (s?.scenarioName || "").toLowerCase().includes("relationship")) ||
+                    dataset[0];
+
+                const preferredName =
+                    preferred?.scenarioName ||
+                    (dataset[0]?.scenarioName ?? "");
+
+                if (preferredName) {
+                    els.scenarioSelector.value = preferredName;
+                    setScenario(preferredName, { fit: true });
+                }
             }
         })
         .catch((err) => {
