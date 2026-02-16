@@ -442,10 +442,10 @@
           ],
           "contactPersons": [
             {
-              "contactPersonId": "CONT-AUTO-GEN",
+              "contactPersonId": "CONT-ACC-ZARA-MAD-DC-PICKUP-001-OPS-001",
               "firstName": "Operations",
               "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
+              "jobTitle": "Pickup Location Coordinator",
               "contactType": "BUSINESS",
               "communicationChannels": [
                 { "type": "EMAIL", "value": "ops@example.com" },
@@ -692,10 +692,10 @@
           "addresses": [],
           "contactPersons": [
             {
-              "contactPersonId": "CONT-AUTO-GEN",
+              "contactPersonId": "CONT-ACC-ZARAHOME-TR-001-OPS-001",
               "firstName": "Operations",
               "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
+              "jobTitle": "Brand Operations Coordinator",
               "contactType": "BUSINESS",
               "communicationChannels": [
                 { "type": "EMAIL", "value": "ops@example.com" },
@@ -733,10 +733,10 @@
           "addresses": [],
           "contactPersons": [
             {
-              "contactPersonId": "CONT-AUTO-GEN",
+              "contactPersonId": "CONT-ACC-MDUTTI-TR-001-OPS-001",
               "firstName": "Operations",
               "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
+              "jobTitle": "Brand Operations Coordinator",
               "contactType": "BUSINESS",
               "communicationChannels": [
                 { "type": "EMAIL", "value": "ops@example.com" },
@@ -793,10 +793,10 @@
           ],
           "contactPersons": [
             {
-              "contactPersonId": "CONT-AUTO-GEN",
+              "contactPersonId": "CONT-ACC-ZARA-TR-IST-DC-001-OPS-001",
               "firstName": "Operations",
               "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
+              "jobTitle": "Pickup Location Coordinator",
               "contactType": "BUSINESS",
               "communicationChannels": [
                 { "type": "EMAIL", "value": "ops@example.com" },
@@ -951,10 +951,10 @@
           "addresses": [],
           "contactPersons": [
             {
-              "contactPersonId": "CONT-AUTO-GEN",
+              "contactPersonId": "CONT-ACC-ZARA-NL-001-OPS-001",
               "firstName": "Operations",
               "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
+              "jobTitle": "Brand Operations Coordinator",
               "contactType": "BUSINESS",
               "communicationChannels": [
                 { "type": "EMAIL", "value": "ops@example.com" },
@@ -1011,10 +1011,10 @@
           ],
           "contactPersons": [
             {
-              "contactPersonId": "CONT-AUTO-GEN",
+              "contactPersonId": "CONT-ACC-ZARA-NL-RTM-DC-001-OPS-001",
               "firstName": "Operations",
               "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
+              "jobTitle": "Pickup Location Coordinator",
               "contactType": "BUSINESS",
               "communicationChannels": [
                 { "type": "EMAIL", "value": "ops@example.com" },
@@ -1260,19 +1260,19 @@
             "timezone": "Europe/Berlin"
           }
         ],
-          "contactPersons": [
-            {
-              "contactPersonId": "CONT-AUTO-GEN",
-              "firstName": "Operations",
-              "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
-              "contactType": "BUSINESS",
-              "communicationChannels": [
-                { "type": "EMAIL", "value": "ops@example.com" },
-                { "type": "PHONE", "value": "+00-000-000-0000" }
-              ]
-            }
-          ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-MULLER-WH-HAMBURG-PICKUP-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Pickup Location Coordinator",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [],
         "referenceIds": []
       },
@@ -1309,19 +1309,19 @@
             "timezone": "Europe/Berlin"
           }
         ],
-          "contactPersons": [
-            {
-              "contactPersonId": "CONT-AUTO-GEN",
-              "firstName": "Operations",
-              "lastName": "Contact",
-              "jobTitle": "Location Coordinator",
-              "contactType": "BUSINESS",
-              "communicationChannels": [
-                { "type": "EMAIL", "value": "ops@example.com" },
-                { "type": "PHONE", "value": "+00-000-000-0000" }
-              ]
-            }
-          ],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-MULLER-WH-MUNICH-PICKUP-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Pickup Location Coordinator",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [],
         "referenceIds": []
       }
@@ -1411,7 +1411,19 @@
             "timezone": "Europe/Amsterdam"
           }
         ],
-        "contactPersons": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-SENDCLOUD-SOLDTO-001-OPS-001",
+            "firstName": "Partner",
+            "lastName": "Operations",
+            "jobTitle": "Reseller Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [
           {
             "contractId": "CON-SENDCLOUD-001",
@@ -1527,7 +1539,19 @@
             "timezone": "Europe/Berlin"
           }
         ],
-        "contactPersons": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-TECHSTORE-DE-PICKUP-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Pickup Location Coordinator",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [],
         "referenceIds": [
           {
@@ -1633,7 +1657,19 @@
             "timezone": "Europe/Madrid"
           }
         ],
-        "contactPersons": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-RETAIL-JSMITH-SP-001-OPS-001",
+            "firstName": "Service",
+            "lastName": "Point",
+            "jobTitle": "Retail Counter Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [],
         "referenceIds": [
           {
@@ -1729,7 +1765,19 @@
             "timezone": "Europe/Vilnius"
           }
         ],
-        "contactPersons": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-VINTED-SOLDTO-001-OPS-001",
+            "firstName": "Partner",
+            "lastName": "Operations",
+            "jobTitle": "Marketplace Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [
           {
             "contractId": "CON-VINTED-001",
@@ -1859,7 +1907,19 @@
             "timezone": "Europe/Madrid"
           }
         ],
-        "contactPersons": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-SARAH-BOUTIQUE-PICKUP-001-OPS-001",
+            "firstName": "Store",
+            "lastName": "Contact",
+            "jobTitle": "Pickup Location Coordinator",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [],
         "referenceIds": [
           {
@@ -2166,7 +2226,19 @@
             "timezone": "Europe/Berlin"
           }
         ],
-        "contactPersons": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-DHL-IT-COSTCENTER-001-OPS-001",
+            "firstName": "Internal",
+            "lastName": "Operations",
+            "jobTitle": "Intercompany Logistics Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
         "contracts": [
           {
             "contractId": "CON-DHL-INTERNAL-001",
@@ -5717,6 +5789,230 @@
             "issuedByAuthority": "NETWORK_DIRECTORY"
           }
         ]
+      }
+    ],
+    "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Amazon Spain (Template) — Fulfillment + Delivery Stations + Lockers",
+    "customer": {
+      "customerType": "PARTNERS",
+      "customerLevel": "KEY_ACCOUNT",
+      "mdmCustomerId": "CUST-AMAZON-ES-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Amazon Spain, S.L. (Template)",
+      "tradingName": "Amazon Spain",
+      "globalGroupCode": null,
+      "industrySector": "MARKETPLACE",
+      "taxId": "ES-AMZ-0000001",
+      "countryOfRegistration": "ES",
+      "addresses": [],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-AMZ-ES-LEGAL-001",
+          "firstName": "Spain",
+          "lastName": "Partner Owner",
+          "jobTitle": "Partner Account Owner (Spain)",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            { "type": "EMAIL", "value": "partner.es@amazon.example" },
+            { "type": "PHONE", "value": "+34-900-000-100" }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-FC-BCN-PICKUP-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": ["PICKUP", "SHIPPER"],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "FC_NODE",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-AMAZON-ES-FC-BCN-PICKUP-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Node Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": []
+      },
+      {
+        "mdmAccountId": "ACC-AMAZON-ES-FC-MAD-PICKUP-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": ["PICKUP", "SHIPPER"],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "FC_NODE",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-AMAZON-ES-FC-MAD-PICKUP-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Node Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": []
+      },
+      {
+        "mdmAccountId": "ACC-AMZ-ES-DS-BCN-PICKUP-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": ["PICKUP", "SHIPPER"],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "DS_NODE",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-AMZ-ES-DS-BCN-PICKUP-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Node Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": []
+      },
+      {
+        "mdmAccountId": "ACC-AMZ-ES-LOCKER-BCN-01",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-ES-001",
+        "businessRoles": ["PICKUP", "SHIPPER"],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "EUR",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "LOCKER_NODE",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-AMZ-ES-LOCKER-BCN-01-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Node Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": []
+      }
+    ],
+    "relatedCustomers": []
+  },
+  {
+    "scenarioName": "Amazon US (Template) — Returns Warehouse Delivery Point",
+    "customer": {
+      "customerType": "PARTNERS",
+      "customerLevel": "KEY_ACCOUNT",
+      "mdmCustomerId": "CUST-AMAZON-US-001",
+      "parentMdmCustomerId": null,
+      "officialName": "Amazon.com Services LLC (Template)",
+      "tradingName": "Amazon US",
+      "globalGroupCode": null,
+      "industrySector": "MARKETPLACE",
+      "taxId": "US-AMZ-0000001",
+      "countryOfRegistration": "US",
+      "addresses": [],
+      "contactPersons": [
+        {
+          "contactPersonId": "CONT-AMZ-US-LEGAL-001",
+          "firstName": "US",
+          "lastName": "Partner Owner",
+          "jobTitle": "Partner Account Owner (US)",
+          "contactType": "BUSINESS",
+          "communicationChannels": [
+            { "type": "EMAIL", "value": "partner.us@amazon.example" },
+            { "type": "PHONE", "value": "+1-800-000-1000" }
+          ]
+        }
+      ]
+    },
+    "accounts": [
+      {
+        "mdmAccountId": "ACC-AMZ-US-RETURNS-WH-DELIVERY-001",
+        "parentAccountId": null,
+        "mdmCustomerId": "CUST-AMAZON-US-001",
+        "businessRoles": ["PICKUP", "SHIPPER"],
+        "accountStatus": "ACTIVE",
+        "isNaturalPerson": false,
+        "currency": "USD",
+        "paymentTerms": "NET_30",
+        "creditLimit": 0,
+        "salesChannel": "PARTNER_MANAGERS",
+        "salesManager": "PARTNER_MGMT_TEAM",
+        "segmentGroup": "PARTNER",
+        "segmentGroup2": "RETURNS_NODE",
+        "platformObject": null,
+        "addresses": [],
+        "contactPersons": [
+          {
+            "contactPersonId": "CONT-ACC-AMZ-US-RETURNS-WH-DELIVERY-001-OPS-001",
+            "firstName": "Operations",
+            "lastName": "Contact",
+            "jobTitle": "Node Operations Contact",
+            "contactType": "BUSINESS",
+            "communicationChannels": [
+              { "type": "EMAIL", "value": "ops@example.com" },
+              { "type": "PHONE", "value": "+00-000-000-0000" }
+            ]
+          }
+        ],
+        "contracts": [],
+        "referenceIds": []
       }
     ],
     "relatedCustomers": []
