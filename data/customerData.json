@@ -440,7 +440,19 @@
               "timezone": "Europe/Madrid"
             }
           ],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -637,7 +649,19 @@
           "segmentGroup2": "ZARA",
           "platformObject": null,
           "addresses": [],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -666,7 +690,19 @@
           "segmentGroup2": "ZARA_HOME",
           "platformObject": null,
           "addresses": [],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -695,7 +731,19 @@
           "segmentGroup2": "MASSIMO_DUTTI",
           "platformObject": null,
           "addresses": [],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -743,7 +791,19 @@
               "timezone": "Europe/Istanbul"
             }
           ],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -889,7 +949,19 @@
           "segmentGroup2": "ZARA",
           "platformObject": null,
           "addresses": [],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -937,7 +1009,19 @@
               "timezone": "Europe/Amsterdam"
             }
           ],
-          "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
           "contracts": [],
           "referenceIds": [
             {
@@ -1176,7 +1260,19 @@
             "timezone": "Europe/Berlin"
           }
         ],
-        "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
         "contracts": [],
         "referenceIds": []
       },
@@ -1213,7 +1309,19 @@
             "timezone": "Europe/Berlin"
           }
         ],
-        "contactPersons": [],
+          "contactPersons": [
+            {
+              "contactPersonId": "CONT-AUTO-GEN",
+              "firstName": "Operations",
+              "lastName": "Contact",
+              "jobTitle": "Location Coordinator",
+              "contactType": "BUSINESS",
+              "communicationChannels": [
+                { "type": "EMAIL", "value": "ops@example.com" },
+                { "type": "PHONE", "value": "+00-000-000-0000" }
+              ]
+            }
+          ],
         "contracts": [],
         "referenceIds": []
       }
