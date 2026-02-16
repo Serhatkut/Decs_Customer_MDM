@@ -437,9 +437,6 @@
 
         rootG.selectAll("*").remove();
 
-        // defs for clipPaths (prevents any label overflow outside cards)
-        const defs = rootG.append("defs");
-
         const isHidden = (node) => hiddenTypes.has(node.data.__type);
 
         // LINKS: only if both ends visible
@@ -461,24 +458,6 @@
 
         // NODES: only visible types
         const visibleNodes = root.descendants().filter((n) => !isHidden(n));
-
-        // Per-node clip path to prevent any label overflow outside cards
-        visibleNodes.forEach((n) => {
-            const id = `clip-${cssSafeId(n.data.__stableKey)}`;
-            defs
-                .append("clipPath")
-                .attr("id", id)
-                .append("rect")
-                .attr("x", -CARD_W / 2 + 10)
-                .attr("y", -CARD_H / 2 + 10)
-                .attr("width", CARD_W - 20)
-                .attr("height", CARD_H - 20)
-                .attr("rx", 12)
-                .attr("ry", 12);
-
-            // store on node for use in text selections
-            n.data.__clipId = id;
-        });
 
         const nodes = rootG
             .selectAll(".node")
@@ -534,8 +513,8 @@
         // the visible +/- glyph
         pm.append("text")
             .attr("class", "pm")
-            .attr("x", CARD_W / 2 - 21)
-            .attr("y", -CARD_H / 2 + 26)
+            .attr("x", CARD_W / 2 - 22)
+            .attr("y", -CARD_H / 2 + 28)
             .attr("text-anchor", "middle")
             .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
             .style("pointer-events", "none");
@@ -546,7 +525,6 @@
             .attr("class", "node-title")
             .attr("text-anchor", "middle")
             .attr("dy", "-18")
-            .style("clip-path", (d) => `url(#${d.data.__clipId})`)
             .style("pointer-events", "none");
 
         titleText.each(function (d) {
@@ -567,7 +545,7 @@
                 .text(d.data.__title || "");
 
             // Truncate title to available width (leave room for icon)
-            const maxPx = (CARD_W - 78);
+            const maxPx = (CARD_W - 28);
             truncateSvgTextToWidth(t.node(), maxPx);
         });
 
@@ -579,7 +557,6 @@
             .attr("dy", "4")
             .style("font-weight", 800)
             .style("font-size", "11px")
-            .style("clip-path", (d) => `url(#${d.data.__clipId})`)
             .style("pointer-events", "none")
             .text((d) => d.data.__k1 || "");
 
@@ -596,7 +573,6 @@
             .attr("dy", "22")
             .style("font-weight", 800)
             .style("font-size", "11px")
-            .style("clip-path", (d) => `url(#${d.data.__clipId})`)
             .style("pointer-events", "none")
             .text((d) => d.data.__k2 || "");
 
@@ -670,7 +646,7 @@
         }
 
         const pad = 140;
-        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0)*1.3;
+        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0) * 1.3;
         const tx = vw / 2 - (bbox.x + bbox.width / 2) * scale;
         const ty = vh / 2 - (bbox.y + bbox.height / 2) * scale;
 
@@ -1248,12 +1224,4 @@
             truncateSvgTextToWidth(textNode, maxPx, false);
         }
     }
-// Helper to make a CSS-safe id for use in clipPath URLs
-function cssSafeId(s) {
-    return String(s || "")
-        .replace(/[^a-zA-Z0-9_-]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-}
-
 })();
