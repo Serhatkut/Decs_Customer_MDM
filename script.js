@@ -33,14 +33,18 @@
     let dataset = [];
     let currentScenario = null;
 
-    let hiddenTypes = new Set(); // legend toggles
-    let collapsedIds = new Set(); // collapse all / expand all behavior
+    // Legend hide/show
+    let hiddenTypes = new Set();
+
+    // Collapse state must be STABLE across renders:
+    // store stable keys like "ACCOUNT:ACC-xxx", "CONTRACT:CON-xxx"
+    let collapsedKeys = new Set();
 
     // D3
     let svg, rootG, zoom;
     let tooltip;
 
-    // Channel definitions (your mapping)
+    // ---------- channel definitions ----------
     const channelDefinitions = {
         MAJOR_ACCOUNT: {
             title: "Major & Key Accounts (Strategic Channel)",
@@ -107,16 +111,15 @@
             ref = reference;
 
             initScenarioSelector(dataset);
-            initFilters(reference, dataset);
+            initFilters(reference);
 
             initD3();
-
-            // default: first scenario
-            if (dataset.length) {
-                setScenario(dataset[0].scenarioName);
-            }
-
             bindUI();
+
+            // default scenario
+            if (dataset.length) {
+                setScenario(dataset[0].scenarioName, { fit: true });
+            }
         })
         .catch((err) => {
             console.error("Load failed:", err);
@@ -131,25 +134,30 @@
     }
 
     // ---------- UI init ----------
-    function initScenarioSelector(data) {
+    function initScenarioSelector(data, keepSelection = null) {
+        const sel = keepSelection ?? els.scenarioSelector.value ?? "";
         els.scenarioSelector.innerHTML = "";
+
         data.forEach((s, i) => {
             const opt = document.createElement("option");
             opt.value = s.scenarioName || `Scenario ${i + 1}`;
             opt.textContent = s.scenarioName || `Scenario ${i + 1}`;
             els.scenarioSelector.appendChild(opt);
         });
+
+        // restore selection if possible
+        if (sel && Array.from(els.scenarioSelector.options).some(o => o.value === sel)) {
+            els.scenarioSelector.value = sel;
+        }
     }
 
-    function initFilters(reference, data) {
+    function initFilters(reference) {
         const domains = (reference && reference.domains) || {};
-
         fillSelect(els.filterCustomerType, ["", ...((domains.customerType) || [])], "All");
         fillSelect(els.filterIndustry, ["", ...((domains.industrySector) || [])], "All");
         fillSelect(els.filterSalesChannel, ["", ...((domains.salesChannel) || [])], "All");
-
-        // scenario-dependent DQ
-        computeDQForDataset(reference, data);
+        els.dqDot.style.background = "#9ca3af";
+        els.dqText.textContent = "DQ: N/A";
     }
 
     function fillSelect(selectEl, values, labelAll) {
@@ -163,90 +171,120 @@
     }
 
     function bindUI() {
-        els.scenarioSelector.addEventListener("change", () => setScenario(els.scenarioSelector.value));
+        els.scenarioSelector.addEventListener("change", () => {
+            setScenario(els.scenarioSelector.value, { fit: true });
+        });
 
-        els.filterCustomerType.addEventListener("change", applyTopFilters);
-        els.filterIndustry.addEventListener("change", applyTopFilters);
-        els.filterSalesChannel.addEventListener("change", applyTopFilters);
+        // Filters must affect scenario list + diagram
+        const onFilterChange = () => {
+            filterScenarioListByTopFilters();
+            applyDQAndMeaning();
+            render();
+            scheduleZoomToFit(); // fit after filter can change visibility/dimming
+        };
+
+        els.filterCustomerType.addEventListener("change", onFilterChange);
+        els.filterIndustry.addEventListener("change", onFilterChange);
+        els.filterSalesChannel.addEventListener("change", onFilterChange);
 
         els.clearFilters.addEventListener("click", () => {
             els.filterCustomerType.value = "";
             els.filterIndustry.value = "";
             els.filterSalesChannel.value = "";
-            applyTopFilters();
+            onFilterChange();
         });
 
         els.toggleInspector.addEventListener("click", () => {
             els.inspector.classList.toggle("is-collapsed");
+            scheduleZoomToFit();
         });
 
         els.collapseAll.addEventListener("click", () => {
             if (!currentScenario) return;
-            collapsedIds = new Set();
+            collapsedKeys = new Set();
             const tree = buildTreeForScenario(currentScenario);
-            tree.descendants.forEach((n) => {
-                if (n.depth >= 1) collapsedIds.add(n.id);
+            // collapse everything except root
+            walk(tree.data, (n) => {
+                if (n.__depth >= 1) collapsedKeys.add(n.__stableKey);
             });
             render();
+            scheduleZoomToFit();
         });
 
         els.expandAll.addEventListener("click", () => {
-            collapsedIds = new Set();
+            collapsedKeys = new Set();
             render();
+            scheduleZoomToFit();
         });
 
-        els.resetView.addEventListener("click", () => zoomToFit());
+        els.resetView.addEventListener("click", () => scheduleZoomToFit(true));
+    }
+
+    // ---------- Scenario filtering ----------
+    function filterScenarioListByTopFilters() {
+        const t = els.filterCustomerType.value;
+        const i = els.filterIndustry.value;
+        const c = els.filterSalesChannel.value;
+
+        const filtered = dataset.filter((s) => {
+            const cust = s.customer || {};
+            const okT = t ? cust.customerType === t : true;
+            const okI = i ? cust.industrySector === i : true;
+            const okC = c ? (s.accounts || []).some(a => a.salesChannel === c) : true;
+            return okT && okI && okC;
+        });
+
+        const prevSelected = els.scenarioSelector.value;
+        initScenarioSelector(filtered.length ? filtered : dataset, prevSelected);
+
+        // If current scenario is now not in dropdown, move to first available
+        const stillExists = Array.from(els.scenarioSelector.options).some(o => o.value === prevSelected);
+        if (!stillExists) {
+            const next = els.scenarioSelector.options[0]?.value || "";
+            if (next) setScenario(next, { fit: true, keepCollapse: true });
+        }
     }
 
     // ---------- scenario selection ----------
-    function setScenario(name) {
+    function setScenario(name, opts = {}) {
+        const { fit = false, keepCollapse = false } = opts;
+
         currentScenario = dataset.find((s) => s.scenarioName === name) || dataset[0] || null;
-        hiddenTypes = new Set(); // reset legend toggles per scenario
-        collapsedIds = new Set();
+        hiddenTypes = new Set(); // reset legend per scenario
+        if (!keepCollapse) collapsedKeys = new Set();
 
-        applyTopFilters();
         renderLegend();
-        render();
-        zoomToFit();
+        applyDQAndMeaning();
 
-        // defaults in inspector
+        render();
+
+        // set inspector default selection
         setSelectedObject(null, currentScenario);
+
+        if (fit) scheduleZoomToFit(true);
     }
 
-    // ---------- filtering ----------
-    function applyTopFilters() {
+    function applyDQAndMeaning() {
         if (!currentScenario) return;
 
         const t = els.filterCustomerType.value;
         const i = els.filterIndustry.value;
         const c = els.filterSalesChannel.value;
 
-        // In this viewer we don't hide anything at scenario-level unless it mismatches root customer.
-        // Instead we compute a "match score" and update DQ badge visually.
         const rootCustomer = currentScenario.customer || {};
-        const matches =
-            (t ? rootCustomer.customerType === t : true) &&
-            (i ? rootCustomer.industrySector === i : true);
+        const okT = t ? rootCustomer.customerType === t : true;
+        const okI = i ? rootCustomer.industrySector === i : true;
+        const okC = c ? (currentScenario.accounts || []).some(a => a.salesChannel === c) : true;
 
-        // channel is mainly on accounts; scenario-level check is: any account matches channel
-        let channelMatch = true;
-        if (c) {
-            channelMatch = (currentScenario.accounts || []).some((a) => a.salesChannel === c);
-        }
-
-        const ok = matches && channelMatch;
+        const ok = okT && okI && okC;
         els.dqDot.style.background = ok ? "#22c55e" : "#f59e0b";
         els.dqText.textContent = ok ? "DQ: OK" : "DQ: CHECK";
 
-        // Also update Business meaning panel based on selected filters (or selected node later)
         const ct = t || rootCustomer.customerType || "—";
         const ind = i || rootCustomer.industrySector || "—";
         const ch = c || pickDominantChannel(currentScenario) || "—";
         renderBusinessMeaning(ct, ind, ch);
         renderClassificationPills(ct, ind, ch);
-
-        // IMPORTANT: do not rebuild tree here, only update dimming based on hiddenTypes
-        render();
     }
 
     function pickDominantChannel(scenario) {
@@ -255,18 +293,11 @@
             if (!a.salesChannel) return;
             counts.set(a.salesChannel, (counts.get(a.salesChannel) || 0) + 1);
         });
-        let best = null;
-        let bestN = -1;
+        let best = null, bestN = -1;
         for (const [k, v] of counts.entries()) {
             if (v > bestN) { bestN = v; best = k; }
         }
         return best;
-    }
-
-    function computeDQForDataset(reference, data) {
-        // optional: keep minimal; current badge computed on scenario change
-        els.dqDot.style.background = "#9ca3af";
-        els.dqText.textContent = "DQ: N/A";
     }
 
     // ---------- legend ----------
@@ -304,7 +335,8 @@
                 else hiddenTypes.add(t.key);
 
                 item.classList.toggle("off", hiddenTypes.has(t.key));
-                render();
+                render(); // IMPORTANT: will now also remove links of hidden nodes
+                scheduleZoomToFit();
             });
 
             els.legend.appendChild(item);
@@ -322,7 +354,7 @@
         rootG = svg.append("g");
 
         zoom = d3.zoom()
-            .scaleExtent([0.25, 2.5])
+            .scaleExtent([0.25, 3.0])
             .on("zoom", (event) => rootG.attr("transform", event.transform));
 
         svg.call(zoom);
@@ -336,51 +368,51 @@
     function render() {
         if (!currentScenario) return;
 
-        // build tree + apply collapse state
         const tree = buildTreeForScenario(currentScenario);
-
-        // layout
         const root = d3.hierarchy(tree.data, (d) => d.children);
-        const treeLayout = d3.tree().nodeSize([200, 120]);
-        treeLayout(root);
 
-        // clear
+        const layout = d3.tree().nodeSize([230, 130]);
+        layout(root);
+
         rootG.selectAll("*").remove();
 
-        // links
+        // Determine hidden nodes by type
+        const isHidden = (node) => hiddenTypes.has(node.data.__type);
+
+        // LINKS: only draw if both ends visible
+        const visibleLinks = root.links().filter((l) => !isHidden(l.source) && !isHidden(l.target));
+
         rootG.selectAll(".link")
-            .data(root.links())
+            .data(visibleLinks)
             .enter()
             .append("path")
             .attr("class", "link")
             .attr("fill", "none")
             .attr("d", d => {
-                // orthogonal-ish
                 const sx = d.source.x, sy = d.source.y;
                 const tx = d.target.x, ty = d.target.y;
                 const midY = (sy + ty) / 2;
                 return `M${sx},${sy} L${sx},${midY} L${tx},${midY} L${tx},${ty}`;
             });
 
-        // nodes
+        // NODES: only render visible types
+        const visibleNodes = root.descendants().filter((n) => !isHidden(n));
+
         const nodes = rootG.selectAll(".node")
-            .data(root.descendants(), d => d.data.__id)
+            .data(visibleNodes, d => d.data.__stableKey)
             .enter()
             .append("g")
             .attr("class", d => `node node--${d.data.__type}`)
             .attr("transform", d => `translate(${d.x},${d.y})`)
-            .classed("is-hidden", d => hiddenTypes.has(d.data.__type))
             .on("click", (event, d) => {
                 setSelectedObject(d.data.__raw, currentScenario, d.data.__type);
             })
-            .on("mousemove", (event, d) => {
-                showTooltip(event, d.data);
-            })
-            .on("mouseout", () => hideTooltip());
+            .on("mousemove", (event, d) => showTooltip(event, d.data))
+            .on("mouseout", hideTooltip);
 
-        // card
-        const CARD_W = 220;
-        const CARD_H = 72;
+        // Card + key attributes + icon
+        const CARD_W = 250;
+        const CARD_H = 88;
 
         nodes.append("rect")
             .attr("x", -CARD_W / 2)
@@ -388,27 +420,49 @@
             .attr("width", CARD_W)
             .attr("height", CARD_H);
 
+        // PLUS/MINUS toggle (separate from card click)
         nodes.append("text")
+            .attr("class", "pm")
+            .attr("x", CARD_W / 2 - 18)
+            .attr("y", -CARD_H / 2 + 22)
             .attr("text-anchor", "middle")
-            .attr("dy", "-4")
-            .text(d => d.data.__title || d.data.name || d.data.__id || "");
+            .text(d => (d.data.__hasChildren ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
+            .style("cursor", d => (d.data.__hasChildren ? "pointer" : "default"))
+            .on("click", (event, d) => {
+                event.stopPropagation();
+                if (!d.data.__hasChildren) return;
+                if (collapsedKeys.has(d.data.__stableKey)) collapsedKeys.delete(d.data.__stableKey);
+                else collapsedKeys.add(d.data.__stableKey);
+                render();
+                scheduleZoomToFit();
+            });
 
+        // Title line with icon
         nodes.append("text")
             .attr("text-anchor", "middle")
-            .attr("dy", "16")
+            .attr("dy", "-18")
+            .text(d => `${d.data.__icon} ${d.data.__title || ""}`);
+
+        // Key attribute lines (2 lines)
+        nodes.append("text")
+            .attr("text-anchor", "middle")
+            .attr("dy", "4")
             .style("font-weight", 700)
             .style("font-size", "11px")
-            .text(d => d.data.__subtitle || "");
+            .text(d => d.data.__k1 || "");
 
-        // apply dimming if a topbar filter is set and node doesn't match classification
+        nodes.append("text")
+            .attr("text-anchor", "middle")
+            .attr("dy", "22")
+            .style("font-weight", 700)
+            .style("font-size", "11px")
+            .text(d => d.data.__k2 || "");
+
+        // Dimming (keep old behavior)
         applyDimming(nodes);
 
-        // resize svg viewBox to content
-        const xs = root.descendants().map(d => d.x);
-        const ys = root.descendants().map(d => d.y);
-        const minX = Math.min(...xs) - 300, maxX = Math.max(...xs) + 300;
-        const minY = Math.min(...ys) - 200, maxY = Math.max(...ys) + 200;
-        svg.attr("viewBox", `${minX} ${minY} ${maxX - minX} ${maxY - minY}`);
+        // IMPORTANT: auto-fit should use bbox (not viewBox) and must run AFTER render
+        // (we call scheduleZoomToFit from outside)
     }
 
     function applyDimming(nodesSel) {
@@ -416,7 +470,6 @@
         const i = els.filterIndustry.value;
         const c = els.filterSalesChannel.value;
 
-        // if no filters selected, no dimming
         if (!t && !i && !c) {
             nodesSel.classed("is-dimmed", false);
             return;
@@ -433,39 +486,53 @@
                 const okC = c ? raw.salesChannel === c : true;
                 return !okC;
             }
-            // child objects follow parent: don't dim by default
             return false;
         });
     }
 
-    function zoomToFit() {
-        const bbox = rootG.node()?.getBBox?.();
-        if (!bbox) return;
+    // ---------- Zoom-to-fit scheduling ----------
+    function scheduleZoomToFit(force = false) {
+        // Two-frame delay: ensures DOM + fonts computed and bbox is correct
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                zoomToFit(force);
+            });
+        });
+    }
+
+    function zoomToFit(force = false) {
+        const g = rootG.node();
+        if (!g) return;
+
+        const bbox = g.getBBox();
+        if (!bbox || bbox.width === 0 || bbox.height === 0) return;
 
         const vw = els.viz.clientWidth;
         const vh = els.viz.clientHeight;
 
-        const scale = Math.min(vw / (bbox.width + 120), vh / (bbox.height + 120), 1.6);
+        const pad = 120;
+        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 1.8);
         const tx = (vw / 2) - (bbox.x + bbox.width / 2) * scale;
         const ty = (vh / 2) - (bbox.y + bbox.height / 2) * scale;
 
-        svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity.translate(tx, ty).scale(scale));
+        const t = d3.zoomIdentity.translate(tx, ty).scale(scale);
+
+        svg.transition().duration(force ? 350 : 200).call(zoom.transform, t);
     }
 
     // ---------- tree builder ----------
     function buildTreeForScenario(scenario) {
-        // Decide root type: only Strategic multi-country gets GLOBAL_CUSTOMER wrapper
         const rootCustomer = scenario.customer || {};
         const hasMultiCountry = Array.isArray(scenario.relatedCustomers) && scenario.relatedCustomers.length >= 2;
         const isStrategic = rootCustomer.customerType === "STRATEGIC_CUSTOMERS" || rootCustomer.customerLevel === "STRATEGIC";
 
-        const rootNode = isStrategic && hasMultiCountry
-            ? makeNode("GLOBAL_CUSTOMER", rootCustomer.mdmCustomerId || "GLOBAL", rootCustomer.tradingName || rootCustomer.officialName || "Global Customer", "", rootCustomer)
-            : makeNode("CUSTOMER", rootCustomer.mdmCustomerId || "CUSTOMER", rootCustomer.tradingName || rootCustomer.officialName || "Customer", iso2(rootCustomer.countryOfRegistration), rootCustomer);
+        // IMPORTANT: not everyone is global. Keep your rule.
+        const rootNode = (isStrategic && hasMultiCountry)
+            ? makeNode("GLOBAL_CUSTOMER", stableKey("GLOBAL_CUSTOMER", rootCustomer.mdmCustomerId || "GLOBAL"), rootCustomer.tradingName || rootCustomer.officialName || "Global Customer", rootCustomer)
+            : makeNode("CUSTOMER", stableKey("CUSTOMER", rootCustomer.mdmCustomerId || "CUSTOMER"), rootCustomer.tradingName || rootCustomer.officialName || "Customer", rootCustomer);
 
+        // accounts group
         const accounts = scenario.accounts || [];
-
-        // group accounts by parentAccountId
         const byParent = new Map();
         accounts.forEach((a) => {
             const p = a.parentAccountId || "__ROOT__";
@@ -473,138 +540,196 @@
             byParent.get(p).push(a);
         });
 
-        // attach root accounts (parent null)
-        const rootAccounts = (byParent.get("__ROOT__") || []);
-        rootAccounts.forEach((acc) => rootNode.children.push(buildAccountSubtree(acc, byParent)));
+        // helper: attach account trees for a given mdmCustomerId
+        const attachAccountsForCustomer = (custId, parentNode) => {
+            const roots = accounts.filter(a => a.mdmCustomerId === custId && !a.parentAccountId);
+            roots.forEach(acc => parentNode.children.push(buildAccountSubtree(acc, byParent)));
+        };
 
-        // if GLOBAL root, attach country customers as children nodes (based on relatedCustomers)
+        // If GLOBAL, attach related country customers first
         if (rootNode.__type === "GLOBAL_CUSTOMER") {
             (scenario.relatedCustomers || []).forEach((rc) => {
-                const cn = makeNode(
-                    "CUSTOMER",
-                    rc.mdmCustomerId,
-                    rc.tradingName || rc.officialName || "Country Customer",
-                    iso2(rc.countryOfRegistration),
-                    rc
-                );
-
-                // attach accounts belonging to that country customerId if any
-                const countryAccounts = accounts.filter(a => a.mdmCustomerId === rc.mdmCustomerId && !a.parentAccountId);
-                countryAccounts.forEach((acc) => cn.children.push(buildAccountSubtree(acc, byParent)));
-
+                const cn = makeNode("CUSTOMER", stableKey("CUSTOMER", rc.mdmCustomerId), rc.tradingName || rc.officialName || "Country Customer", rc);
+                attachAccountsForCustomer(rc.mdmCustomerId, cn);
                 rootNode.children.push(cn);
             });
 
-            // also include accounts that belong to global mdmCustomerId (if present)
-            // already added above as rootAccounts (since parentAccountId null); ok.
+            // also attach any accounts under global mdmCustomerId (if any)
+            attachAccountsForCustomer(rootCustomer.mdmCustomerId, rootNode);
+        } else {
+            // Non-global: attach accounts for root customer directly
+            attachAccountsForCustomer(rootCustomer.mdmCustomerId, rootNode);
         }
 
-        // Apply collapse-all state: mark children empty if collapsed
-        const flat = [];
-        walk(rootNode, (n) => flat.push(n));
+        // Apply collapse state using stable keys
+        markDepth(rootNode, 0);
+        applyCollapse(rootNode);
 
-        flat.forEach((n) => {
-            if (collapsedIds.has(n.__id)) {
-                n.__collapsed = true;
-                n.__savedChildren = n.children;
-                n.children = [];
-            }
-        });
-
-        // mimic original "tree" object
-        const tree = {
-            data: rootNode,
-            descendants: flat,
-        };
-
-        // assign __id uniqueness
-        return normalizeIds(tree);
+        return { data: rootNode };
     }
 
     function buildAccountSubtree(acc, byParent) {
-        const subtitle = (acc.businessRoles || []).join(", ");
-        const node = makeNode("ACCOUNT", acc.mdmAccountId, acc.tradingName || acc.mdmAccountId, subtitle, acc);
+        const node = makeNode(
+            "ACCOUNT",
+            stableKey("ACCOUNT", acc.mdmAccountId),
+            acc.tradingName || acc.mdmAccountId,
+            acc
+        );
 
-        // contacts as separate objects
+        // Contact cards
         (acc.contactPersons || []).forEach((c) => {
             const nm = `${c.firstName || ""} ${c.lastName || ""}`.trim() || c.contactPersonId;
-            const sub = c.jobTitle || "";
-            node.children.push(makeNode("CONTACT", c.contactPersonId || nm, nm, sub, c));
+            const cn = makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c);
+            node.children.push(cn);
         });
 
-        // addresses as separate objects
+        // Address cards
         (acc.addresses || []).forEach((a) => {
             const nm = `${a.addressType || "ADDRESS"} · ${a.city || ""}`.trim();
-            const sub = `${a.street || ""} ${a.houseNumber || ""}`.trim();
-            node.children.push(makeNode("ADDRESS", a.addressId || nm, nm, sub, a));
+            const an = makeNode("ADDRESS", stableKey("ADDRESS", a.addressId || nm), nm, a);
+            node.children.push(an);
         });
 
-        // platform as separate object
+        // Platform card
         if (acc.platformObject) {
             const p = acc.platformObject;
-            node.children.push(makeNode("PLATFORM", p.platformId || "PLATFORM", p.name || "Platform", p.type || "", p));
+            const pn = makeNode("PLATFORM", stableKey("PLATFORM", p.platformId || p.name || "PLATFORM"), p.name || "Platform", p);
+            node.children.push(pn);
         }
 
-        // contracts
+        // Contracts
         (acc.contracts || []).forEach((c) => {
-            const cn = makeNode("CONTRACT", c.contractId, c.contractName || "Contract", c.startDate || "", c);
+            const cn = makeNode("CONTRACT", stableKey("CONTRACT", c.contractId), c.contractName || "Contract", c);
 
-            // billing profile
             if (c.billingProfile) {
                 const b = c.billingProfile;
-                const bn = makeNode("BILLING", b.billingProfileId || "BILLING", b.billingAccountNumber || "Billing Profile", b.billingCurrency || "", b);
+                const bn = makeNode("BILLING", stableKey("BILLING", b.billingProfileId || b.billingAccountNumber || "BILLING"), b.billingAccountNumber || "Billing Profile", b);
                 cn.children.push(bn);
             }
 
-            // contract contact persons
             (c.contactPersons || []).forEach((cp) => {
                 const nm = `${cp.firstName || ""} ${cp.lastName || ""}`.trim() || cp.contactPersonId;
-                cn.children.push(makeNode("CONTACT", cp.contactPersonId || nm, nm, cp.jobTitle || "", cp));
+                cn.children.push(makeNode("CONTACT", stableKey("CONTACT", cp.contactPersonId || nm), nm, cp));
             });
 
-            // contract addresses
             (c.addresses || []).forEach((ad) => {
                 const nm = `${ad.addressType || "ADDRESS"} · ${ad.city || ""}`.trim();
-                cn.children.push(makeNode("ADDRESS", ad.addressId || nm, nm, `${ad.street || ""} ${ad.houseNumber || ""}`.trim(), ad));
+                cn.children.push(makeNode("ADDRESS", stableKey("ADDRESS", ad.addressId || nm), nm, ad));
             });
 
             node.children.push(cn);
         });
 
-        // sub accounts
+        // Sub accounts
         const kids = byParent.get(acc.mdmAccountId) || [];
         kids.forEach((k) => node.children.push(buildAccountSubtree(k, byParent)));
 
+        markDepth(node, node.__depth || 0);
+        applyCollapse(node);
         return node;
     }
 
-    function makeNode(type, id, title, subtitle, raw) {
+    function stableKey(type, id) {
+        return `${type}:${String(id || "").trim()}`;
+    }
+
+    function markDepth(node, d) {
+        node.__depth = d;
+        (node.children || []).forEach((c) => markDepth(c, d + 1));
+    }
+
+    function applyCollapse(node) {
+        node.__hasChildren = Array.isArray(node.children) && node.children.length > 0;
+        if (collapsedKeys.has(node.__stableKey) && node.__hasChildren) {
+            node.__savedChildren = node.children;
+            node.children = [];
+        }
+        // recurse
+        (node.children || []).forEach(applyCollapse);
+    }
+
+    function makeNode(type, stableKeyValue, title, raw) {
+        const r = raw || {};
+        const icon = iconForType(type);
+
+        // key attributes (2 lines) – like old version
+        const { k1, k2 } = keyAttrs(type, r);
+
         return {
             __type: type,
-            __id: String(id || title || type),
-            __title: title || String(id || type),
-            __subtitle: subtitle || "",
-            __raw: raw || {},
+            __stableKey: stableKeyValue,
+            __title: title || stableKeyValue,
+            __raw: r,
+            __icon: icon,
+            __k1: k1,
+            __k2: k2,
             children: [],
+            __hasChildren: false,
+            __depth: 0
         };
     }
 
-    function normalizeIds(tree) {
-        let seq = 0;
-        const seen = new Map();
-        walk(tree.data, (n) => {
-            const base = n.__id || `node-${seq++}`;
-            const k = `${n.__type}:${base}`;
-            const count = (seen.get(k) || 0) + 1;
-            seen.set(k, count);
-            n.__id = count === 1 ? k : `${k}#${count}`;
-        });
+    function iconForType(type) {
+        switch (type) {
+            case "GLOBAL_CUSTOMER": return "🌐";
+            case "CUSTOMER": return "🏢";
+            case "ACCOUNT": return "🧾";
+            case "CONTRACT": return "📄";
+            case "BILLING": return "💳";
+            case "ADDRESS": return "📍";
+            case "CONTACT": return "👤";
+            case "PLATFORM": return "🧩";
+            default: return "•";
+        }
+    }
 
-        // re-create descendants
-        const flat = [];
-        walk(tree.data, (n) => flat.push(n));
-        tree.descendants = flat;
-        return tree;
+    function keyAttrs(type, r) {
+        // keep short, readable, business keys
+        if (type === "GLOBAL_CUSTOMER" || type === "CUSTOMER") {
+            return {
+                k1: `mdmCustomerId: ${r.mdmCustomerId || "—"}`,
+                k2: `${(r.customerType || "—")} · ${(r.countryOfRegistration || r.country || "—")}`
+            };
+        }
+        if (type === "ACCOUNT") {
+            const roles = (r.businessRoles || []).join(", ");
+            return {
+                k1: `roles: ${roles || "—"}`,
+                k2: `channel: ${r.salesChannel || "—"}`
+            };
+        }
+        if (type === "CONTRACT") {
+            return {
+                k1: `contractId: ${r.contractId || "—"}`,
+                k2: `start: ${r.startDate || "—"}`
+            };
+        }
+        if (type === "BILLING") {
+            return {
+                k1: `currency: ${r.billingCurrency || r.billingProfileId || "—"}`,
+                k2: `delivery: ${r.invoiceDelivery || "—"}`
+            };
+        }
+        if (type === "ADDRESS") {
+            return {
+                k1: `${r.addressType || "ADDRESS"} · ${(r.city || "—")}`,
+                k2: `${(r.country || "—")} · ${(r.postalcode || "—")}`
+            };
+        }
+        if (type === "CONTACT") {
+            const name = `${r.firstName || ""} ${r.lastName || ""}`.trim() || "—";
+            return {
+                k1: name,
+                k2: `${r.jobTitle || "—"}`
+            };
+        }
+        if (type === "PLATFORM") {
+            return {
+                k1: `${r.type || "—"}`,
+                k2: `${r.provider || "—"}`
+            };
+        }
+        return { k1: "", k2: "" };
     }
 
     function walk(node, fn) {
@@ -612,16 +737,10 @@
         (node.children || []).forEach((c) => walk(c, fn));
     }
 
-    function iso2(x) {
-        return (x || "").toString().toUpperCase();
-    }
-
     // ---------- inspector / readable JSON ----------
     function setSelectedObject(raw, scenario, typeHint) {
-        // if null selection, show scenario customer summary
         const obj = raw || (scenario ? scenario.customer : null) || {};
 
-        // classification pills
         const ct = obj.customerType || (scenario?.customer?.customerType) || "—";
         const ind = obj.industrySector || (scenario?.customer?.industrySector) || "—";
         const ch = obj.salesChannel || pickDominantChannel(scenario) || "—";
@@ -629,18 +748,13 @@
         renderClassificationPills(ct, ind, ch);
         renderBusinessMeaning(ct, ind, ch);
 
-        // object summary
         els.objectSummary.innerHTML = "";
-        const summaryPairs = buildSummaryPairs(obj, typeHint);
-        summaryPairs.forEach(([k, v]) => {
+        buildSummaryPairs(obj, typeHint).forEach(([k, v]) => {
             els.objectSummary.appendChild(kvRow(k, v));
         });
 
-        // readable JSON
         els.readableJson.innerHTML = "";
         els.readableJson.appendChild(buildReadable(obj));
-
-        // raw JSON
         els.rawJson.textContent = JSON.stringify(obj, null, 2);
     }
 
@@ -653,7 +767,6 @@
 
     function renderBusinessMeaning(customerType, industry, channel) {
         const parts = [];
-
         parts.push(`<b>Customer Type:</b> ${escapeHtml(customerType || "—")}<br/>`);
         parts.push(`<b>Sales Channel:</b> ${escapeHtml(channel || "—")}<br/>`);
         parts.push(`<b>Industry:</b> ${escapeHtml(industry || "—")}<br/><br/>`);
@@ -697,7 +810,6 @@
     function buildSummaryPairs(obj, typeHint) {
         const pairs = [];
         const type = typeHint || guessType(obj);
-
         pairs.push(["Object Type", type || "—"]);
 
         if (obj.mdmCustomerId) pairs.push(["mdmCustomerId", obj.mdmCustomerId]);
@@ -723,7 +835,7 @@
 
         if (obj.businessRoles) pairs.push(["roles", obj.businessRoles.join(", ")]);
 
-        return pairs.slice(0, 10);
+        return pairs.slice(0, 12);
     }
 
     function guessType(obj) {
@@ -739,8 +851,6 @@
 
     function buildReadable(obj) {
         const wrap = document.createElement("div");
-
-        // Classification
         wrap.appendChild(section("Classification", [
             ["customerType", obj.customerType],
             ["customerLevel", obj.customerLevel],
@@ -749,8 +859,6 @@
             ["salesManager", obj.salesManager],
             ["country", obj.countryOfRegistration || obj.country],
         ]));
-
-        // Identifiers
         wrap.appendChild(section("Identifiers", [
             ["mdmCustomerId", obj.mdmCustomerId],
             ["parentMdmCustomerId", obj.parentMdmCustomerId],
@@ -762,9 +870,7 @@
             ["contactPersonId", obj.contactPersonId],
             ["platformId", obj.platformId],
         ]));
-
-        // Names
-        wrap.appendChild(section("Names", [
+        wrap.appendChild(section("Names / Labels", [
             ["officialName", obj.officialName],
             ["tradingName", obj.tradingName],
             ["contractName", obj.contractName],
@@ -774,19 +880,16 @@
             ["name", obj.name],
         ]));
 
-        // Communications (only if contact)
         if (Array.isArray(obj.communicationChannels)) {
-            const items = obj.communicationChannels.map((c) => [`${c.type}`, c.value]);
+            const items = obj.communicationChannels.map((c) => [c.type, c.value]);
             wrap.appendChild(section("Communication Channels", items));
         }
-
         return wrap;
     }
 
     function section(title, pairs) {
         const sec = document.createElement("div");
         sec.className = "section";
-
         const h = document.createElement("div");
         h.className = "section-title";
         h.textContent = title;
@@ -827,7 +930,6 @@
         tooltip.style("opacity", 1);
 
         const rows = buildTooltipRows(raw, nodeData.__type);
-
         tooltip.html(`
       <h4>${escapeHtml(nodeData.__type)} · ${escapeHtml(nodeData.__title || "")}</h4>
       ${rows.map(r => `<div class="trow"><div class="tkey">${escapeHtml(r[0])}</div><div class="tval">${escapeHtml(r[1])}</div></div>`).join("")}
@@ -845,7 +947,6 @@
 
     function buildTooltipRows(raw, type) {
         const out = [];
-        // key set prioritization
         const push = (k, v) => {
             if (v == null) return;
             const s = String(v);
@@ -866,7 +967,6 @@
             push("mdmAccountId", raw.mdmAccountId);
             push("roles", (raw.businessRoles || []).join(", "));
             push("salesChannel", raw.salesChannel);
-            push("salesManager", raw.salesManager);
             push("currency", raw.currency);
             push("paymentTerms", raw.paymentTerms);
         } else if (type === "CONTRACT") {
@@ -892,7 +992,6 @@
             push("contactPersonId", raw.contactPersonId);
             push("name", `${raw.firstName || ""} ${raw.lastName || ""}`.trim());
             push("jobTitle", raw.jobTitle);
-            // summarize channels
             if (Array.isArray(raw.communicationChannels)) {
                 raw.communicationChannels.forEach((c) => push(c.type, c.value));
             }
@@ -903,8 +1002,6 @@
             push("provider", raw.provider);
         }
 
-        // cap
-        return out.slice(0, 14).map(([k, v]) => [k, v]);
+        return out.slice(0, 16);
     }
-
-})(); 
+})();

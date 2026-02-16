@@ -529,3 +529,15 @@ svg {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+/* plus/minus toggle on cards */
+.node text.pm {
+    font-size: 16px;
+    font-weight: 900;
+    pointer-events: all;
+    /* important so it can be clicked */
+}
+
+/* improve tooltip readability a bit */
+.tooltip .tval {
+    max-width: 210px;
+}
