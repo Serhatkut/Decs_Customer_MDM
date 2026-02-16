@@ -417,15 +417,17 @@ body {
     font-size: 12px;
     font-weight: 800;
     fill: #111;
-    paint-order: stroke;
-    stroke: rgba(0,0,0,.35);
-    stroke-width: 3px;
+    /* Remove outline/halo framing around text for a cleaner look */
+    paint-order: normal;
+    stroke: none;
 }
 
 .node .pm {
     font-size: 18px;
     font-weight: 900;
     fill: #111;
+    /* Ensure +/- remains clickable even if text overlaps */
+    pointer-events: all;
 }
 
 .node.is-dimmed {
@@ -465,6 +467,12 @@ body {
     fill: var(--c-platform);
 }
 
+.node--PLATFORM text,
+.node--PLATFORM .pm {
+    fill: #111;
+    stroke: none;
+}
+
 /* IMPORTANT: text contrast on dark cards */
 .node--GLOBAL_CUSTOMER text,
 .node--ACCOUNT text,
@@ -482,8 +490,7 @@ body {
 
 .node--GLOBAL_CUSTOMER text {
     fill: #fff;
-    stroke: rgba(0,0,0,.45);
-    stroke-width: 4px;
+    stroke: none;
 }
 
 /* Footer (always visible) */
