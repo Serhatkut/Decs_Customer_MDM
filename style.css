@@ -1,154 +1,50 @@
+:root {
+    --dhl-red: #D40511;
+    --dhl-yellow: #FFCC00;
+    --card-body: #FFF5CC;
+    --grid-line: #e0e0e0;
+}
+
 body {
     margin: 0;
-    font-family: Segoe UI, sans-serif;
-    background: #f5f5f5;
-    overflow: hidden;
-}
-
-.topbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #d40511;
-    color: white;
-    padding: 8px 14px;
-    gap: 15px;
-}
-
-.brand {
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    overflow-x: auto;
-}
-
-.controls select,
-.controls input,
-.controls button {
-    height: 32px;
-    border-radius: 6px;
-    border: none;
-    padding: 0 10px;
-}
-
-.layout {
-    display: flex;
-    height: calc(100vh - 90px);
-}
-
-.sidebar {
-    width: 300px;
-    background: white;
-    border-right: 1px solid #ddd;
-    overflow: auto;
-    padding: 15px;
-    transition: .3s;
-}
-
-.sidebar.collapsed {
-    width: 0;
     padding: 0;
-    overflow: hidden;
-}
-
-.section {
-    margin-bottom: 20px;
-}
-
-.section h3 {
-    margin: 0 0 10px;
-    font-size: 15px;
-    color: #444;
-}
-
-.canvas {
-    flex: 1;
-    background: #fafafa;
-}
-
-svg {
-    width: 100%;
-    height: 100%;
-}
-
-.node {
-    rx: 10;
-    ry: 10;
-    stroke: #333;
-    stroke-width: 1.2px;
-}
-
-.global {
-    fill: #7e57c2;
-}
-
-.customer {
-    fill: #ffcc00;
-}
-
-.account {
-    fill: #d40511;
-}
-
-.contract {
-    fill: #1976d2;
-}
-
-.billing {
-    fill: #3949ab;
-}
-
-.platform {
-    fill: #e0e0e0;
-}
-
-.address {
-    fill: #90a4ae;
-}
-
-.contact {
-    fill: #26a69a;
-}
-
-.footer {
-    height: 60px;
-    background: white;
-    border-top: 1px solid #ddd;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-size: 14px;
+    height: 100vh;
+    font-family: 'Delivery', Arial, sans-serif;
+    background-color: #fff;
+}
+
+#sidebar {
+    width: 380px;
+    background: #f4f4f4;
+    border-right: 5px solid var(--dhl-yellow);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    z-index: 2000;
+}
+
+#viz-container {
+    flex-grow: 1;
+    cursor: grab;
+    background-image: linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.link {
+    fill: none;
+    stroke: var(--dhl-red);
+    stroke-width: 2px;
 }
 
 .legend {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.lg {
-    padding: 4px 10px;
-    border-radius: 8px;
-    color: white;
-    font-size: 13px;
-}
-
-.credit {
-    color: #888;
-}
-
-.card {
-    background: #fafafa;
-    border-radius: 10px;
-    padding: 10px;
-    margin-bottom: 8px;
-    border-left: 5px solid #d40511;
-    font-size: 13px;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0px var(--dhl-yellow);
+    z-index: 1500;
+    pointer-events: none;
 }
