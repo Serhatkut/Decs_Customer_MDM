@@ -675,7 +675,7 @@
         }
 
         const pad = 140;
-        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0)*1.3;
+        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0) * 1.3;
         const tx = vw / 2 - (bbox.x + bbox.width / 2) * scale;
         const ty = vh / 2 - (bbox.y + bbox.height / 2) * scale;
 
@@ -1268,12 +1268,12 @@
             truncateSvgTextToWidth(textNode, maxPx, false);
         }
     }
-// Helper to make a CSS-safe id for use in clipPath URLs
-function cssSafeId(s) {
-    return String(s || "")
-        .replace(/[^a-zA-Z0-9_-]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-}
+    // Helper to make a CSS-safe id for use in clipPath URLs
+    function cssSafeId(s) {
+        return String(s || "")
+            .replace(/[^a-zA-Z0-9_-]/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
+    }
 
 })();
