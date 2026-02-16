@@ -646,7 +646,7 @@
         }
 
         const pad = 140;
-        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0);
+        const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0)*1.33;
         const tx = vw / 2 - (bbox.x + bbox.width / 2) * scale;
         const ty = vh / 2 - (bbox.y + bbox.height / 2) * scale;
 
