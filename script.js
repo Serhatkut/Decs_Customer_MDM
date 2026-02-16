@@ -41,7 +41,7 @@
     let collapsedKeys = new Set();
 
     // D3
-    let svg, rootG, zoom, tooltip;
+    let svg, rootG, zoom, tooltip, resizeObs;
 
     // Fit scheduling
     let fitRequested = false;
@@ -184,7 +184,7 @@
         const onFilterChange = () => {
             filterScenarioListByTopFilters(false);
             applyDQAndMeaning();
-            requestFit();
+            requestFit(true);
             render();
         };
 
@@ -201,26 +201,26 @@
 
         els.toggleInspector.addEventListener("click", () => {
             els.inspector.classList.toggle("is-collapsed");
-            // sidebar has CSS transition; re-fit AFTER width settles
-            requestFit();
-            setTimeout(() => requestFit(true), 230);
-            render(); // no-op safe; but ensures bbox recalculated after collapse
+            // width transition in CSS -> re-fit after it settles
+            requestFit(true);
+            setTimeout(() => requestFit(true), 260);
+            render();
         });
 
         els.collapseAll.addEventListener("click", () => {
             if (!currentScenario) return;
-            const tree = buildTreeForScenario(currentScenario); // collapsedKeys applied inside, but we overwrite below
+            const tree = buildTreeForScenario(currentScenario);
             collapsedKeys = new Set();
             walk(tree.data, (n) => {
                 if (n.__depth >= 1 && n.__hasChildrenOriginal) collapsedKeys.add(n.__stableKey);
             });
-            requestFit();
+            requestFit(true);
             render();
         });
 
         els.expandAll.addEventListener("click", () => {
             collapsedKeys = new Set();
-            requestFit();
+            requestFit(true);
             render();
         });
 
@@ -252,7 +252,6 @@
         const prevSelected = els.scenarioSelector.value;
         initScenarioSelector(filtered.length ? filtered : dataset, prevSelected);
 
-        // If current scenario is now not in dropdown, move to first available
         const stillExists = Array.from(els.scenarioSelector.options).some((o) => o.value === prevSelected);
         if (!stillExists && !isBoot) {
             const next = els.scenarioSelector.options[0]?.value || "";
@@ -265,17 +264,18 @@
         const { fit = false, keepCollapse = false } = opts;
 
         currentScenario = dataset.find((s) => s.scenarioName === name) || dataset[0] || null;
-        hiddenTypes = new Set(); // reset legend per scenario
+        hiddenTypes = new Set();
         if (!keepCollapse) collapsedKeys = new Set();
 
         renderLegend();
         applyDQAndMeaning();
         render();
 
-        // set inspector default selection
+        // default inspector selection
         setSelectedObject(null, currentScenario);
 
-        if (fit) requestFit(true);
+        // IMPORTANT: defer the first fit so layout has real sizes (prevents initial jump/vanish)
+        if (fit) setTimeout(() => requestFit(true), 0);
     }
 
     function applyDQAndMeaning() {
@@ -307,13 +307,9 @@
             if (!a.salesChannel) return;
             counts.set(a.salesChannel, (counts.get(a.salesChannel) || 0) + 1);
         });
-        let best = null,
-            bestN = -1;
+        let best = null, bestN = -1;
         for (const [k, v] of counts.entries()) {
-            if (v > bestN) {
-                bestN = v;
-                best = k;
-            }
+            if (v > bestN) { bestN = v; best = k; }
         }
         return best;
     }
@@ -353,8 +349,8 @@
                 else hiddenTypes.add(t.key);
 
                 item.classList.toggle("off", hiddenTypes.has(t.key));
-                requestFit();
-                render(); // removes links too (we filter links by visible endpoints)
+                requestFit(true);
+                render();
             });
 
             els.legend.appendChild(item);
@@ -371,7 +367,39 @@
         svg = d3.select("#viz").append("svg");
         rootG = svg.append("g");
 
-        zoom = d3.zoom().scaleExtent([0.2, 3.2]).on("zoom", (event) => rootG.attr("transform", event.transform));
+        // Keep svg sized to the canvas; prevents the initial “tiny svg -> wrong fit” jump.
+        const resizeSvg = () => {
+            const w = els.viz.clientWidth;
+            const h = els.viz.clientHeight;
+            if (!w || !h) return;
+            svg.attr("width", w).attr("height", h);
+        };
+
+        resizeSvg();
+
+        // React to layout changes (header/footer/inspector collapse)
+        if (resizeObs) {
+            try { resizeObs.disconnect(); } catch (_) { }
+        }
+        resizeObs = new ResizeObserver(() => {
+            resizeSvg();
+            requestFit(true);
+        });
+        resizeObs.observe(els.viz);
+
+        // Fallback window resize
+        window.addEventListener(
+            "resize",
+            () => {
+                resizeSvg();
+                requestFit(true);
+            },
+            { passive: true }
+        );
+
+        zoom = d3.zoom()
+            .scaleExtent([0.2, 3.2])
+            .on("zoom", (event) => rootG.attr("transform", event.transform));
         svg.call(zoom);
 
         tooltip = d3
@@ -387,12 +415,11 @@
         const tree = buildTreeForScenario(currentScenario);
         const root = d3.hierarchy(tree.data, (d) => d.children);
 
-        // card sizing & layout spacing
         const CARD_W = 250;
         const CARD_H = 88;
 
-        // Increase spacing to avoid overlap (your screenshot showed "cards inside cards")
-        const layout = d3.tree().nodeSize([CARD_W + 80, CARD_H + 72]); // x, y spacing
+        // Extra spacing to avoid overlap
+        const layout = d3.tree().nodeSize([CARD_W + 80, CARD_H + 72]);
         layout(root);
 
         rootG.selectAll("*").remove();
@@ -410,10 +437,8 @@
             .attr("class", "link")
             .attr("fill", "none")
             .attr("d", (d) => {
-                const sx = d.source.x,
-                    sy = d.source.y;
-                const tx = d.target.x,
-                    ty = d.target.y;
+                const sx = d.source.x, sy = d.source.y;
+                const tx = d.target.x, ty = d.target.y;
                 const midY = (sy + ty) / 2;
                 return `M${sx},${sy} L${sx},${midY} L${tx},${midY} L${tx},${ty}`;
             });
@@ -457,12 +482,16 @@
                 if (collapsedKeys.has(d.data.__stableKey)) collapsedKeys.delete(d.data.__stableKey);
                 else collapsedKeys.add(d.data.__stableKey);
 
-                requestFit();
+                requestFit(true);
                 render();
             });
 
         // Title line with icon
-        nodes.append("text").attr("text-anchor", "middle").attr("dy", "-18").text((d) => `${d.data.__icon} ${d.data.__title || ""}`);
+        nodes
+            .append("text")
+            .attr("text-anchor", "middle")
+            .attr("dy", "-18")
+            .text((d) => `${d.data.__icon} ${d.data.__title || ""}`);
 
         // Key attribute lines (2 lines)
         nodes
@@ -483,7 +512,7 @@
 
         applyDimming(nodes);
 
-        // Always keep view sane after a render that requested fitting
+        // Fit after render if requested
         if (fitRequested) {
             fitRequested = false;
             scheduleZoomToFit(true);
@@ -525,14 +554,24 @@
     }
 
     function zoomToFit(force = false) {
-        const g = rootG.node();
+        const g = rootG?.node?.();
         if (!g) return;
-
-        const bbox = g.getBBox();
-        if (!bbox || bbox.width === 0 || bbox.height === 0) return;
 
         const vw = els.viz.clientWidth;
         const vh = els.viz.clientHeight;
+
+        // If layout not ready yet, retry next frame
+        if (!vw || !vh || vw < 80 || vh < 80) {
+            scheduleZoomToFit(true);
+            return;
+        }
+        svg.attr("width", vw).attr("height", vh);
+
+        const bbox = g.getBBox();
+        if (!bbox || bbox.width === 0 || bbox.height === 0) {
+            scheduleZoomToFit(true);
+            return;
+        }
 
         const pad = 140;
         const scale = Math.min(vw / (bbox.width + pad), vh / (bbox.height + pad), 2.0);
@@ -540,6 +579,7 @@
         const ty = vh / 2 - (bbox.y + bbox.height / 2) * scale;
 
         const t = d3.zoomIdentity.translate(tx, ty).scale(scale);
+        svg.interrupt();
         svg.transition().duration(force ? 320 : 220).call(zoom.transform, t);
     }
 
@@ -547,17 +587,27 @@
     function buildTreeForScenario(scenario) {
         const rootCustomer = scenario.customer || {};
         const hasMultiCountry = Array.isArray(scenario.relatedCustomers) && scenario.relatedCustomers.length >= 2;
-        const isStrategic = rootCustomer.customerType === "STRATEGIC_CUSTOMERS" || rootCustomer.customerLevel === "STRATEGIC";
+        const isStrategic =
+            rootCustomer.customerType === "STRATEGIC_CUSTOMERS" || rootCustomer.customerLevel === "STRATEGIC";
 
-        // Not everyone is "global": only strategic + multi-country
+        // Not everyone is global: only strategic + multi-country
         const rootNode =
             isStrategic && hasMultiCountry
-                ? makeNode("GLOBAL_CUSTOMER", stableKey("GLOBAL_CUSTOMER", rootCustomer.mdmCustomerId || "GLOBAL"), rootCustomer.tradingName || rootCustomer.officialName || "Global Customer", rootCustomer)
-                : makeNode("CUSTOMER", stableKey("CUSTOMER", rootCustomer.mdmCustomerId || "CUSTOMER"), rootCustomer.tradingName || rootCustomer.officialName || "Customer", rootCustomer);
+                ? makeNode(
+                    "GLOBAL_CUSTOMER",
+                    stableKey("GLOBAL_CUSTOMER", rootCustomer.mdmCustomerId || "GLOBAL"),
+                    rootCustomer.tradingName || rootCustomer.officialName || "Global Customer",
+                    rootCustomer
+                )
+                : makeNode(
+                    "CUSTOMER",
+                    stableKey("CUSTOMER", rootCustomer.mdmCustomerId || "CUSTOMER"),
+                    rootCustomer.tradingName || rootCustomer.officialName || "Customer",
+                    rootCustomer
+                );
 
         const accounts = scenario.accounts || [];
 
-        // Parent -> children accounts
         const byParent = new Map();
         accounts.forEach((a) => {
             const p = a.parentAccountId || "__ROOT__";
@@ -572,18 +622,21 @@
 
         if (rootNode.__type === "GLOBAL_CUSTOMER") {
             (scenario.relatedCustomers || []).forEach((rc) => {
-                const cn = makeNode("CUSTOMER", stableKey("CUSTOMER", rc.mdmCustomerId), rc.tradingName || rc.officialName || "Country Customer", rc);
+                const cn = makeNode(
+                    "CUSTOMER",
+                    stableKey("CUSTOMER", rc.mdmCustomerId),
+                    rc.tradingName || rc.officialName || "Country Customer",
+                    rc
+                );
                 attachAccountsForCustomer(rc.mdmCustomerId, cn);
                 rootNode.children.push(cn);
             });
 
-            // accounts directly under global (rare, but allowed)
             attachAccountsForCustomer(rootCustomer.mdmCustomerId, rootNode);
         } else {
             attachAccountsForCustomer(rootCustomer.mdmCustomerId, rootNode);
         }
 
-        // collapse handling (stable keys) + depth
         markDepth(rootNode, 0);
         markHasChildrenOriginal(rootNode);
         applyCollapse(rootNode);
@@ -594,31 +647,36 @@
     function buildAccountSubtree(acc, byParent) {
         const node = makeNode("ACCOUNT", stableKey("ACCOUNT", acc.mdmAccountId), acc.tradingName || acc.mdmAccountId, acc);
 
-        // Contacts
         (acc.contactPersons || []).forEach((c) => {
             const nm = `${c.firstName || ""} ${c.lastName || ""}`.trim() || c.contactPersonId;
             node.children.push(makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c));
         });
 
-        // Addresses
         (acc.addresses || []).forEach((a) => {
             const nm = `${a.addressType || "ADDRESS"} · ${a.city || ""}`.trim();
             node.children.push(makeNode("ADDRESS", stableKey("ADDRESS", a.addressId || nm), nm, a));
         });
 
-        // Platform
         if (acc.platformObject) {
             const p = acc.platformObject;
-            node.children.push(makeNode("PLATFORM", stableKey("PLATFORM", p.platformId || p.name || "PLATFORM"), p.name || "Platform", p));
+            node.children.push(
+                makeNode("PLATFORM", stableKey("PLATFORM", p.platformId || p.name || "PLATFORM"), p.name || "Platform", p)
+            );
         }
 
-        // Contracts (+ billing + contact + address under contract)
         (acc.contracts || []).forEach((c) => {
             const cn = makeNode("CONTRACT", stableKey("CONTRACT", c.contractId), c.contractName || "Contract", c);
 
             if (c.billingProfile) {
                 const b = c.billingProfile;
-                cn.children.push(makeNode("BILLING", stableKey("BILLING", b.billingProfileId || b.billingAccountNumber || "BILLING"), b.billingAccountNumber || "Billing Profile", b));
+                cn.children.push(
+                    makeNode(
+                        "BILLING",
+                        stableKey("BILLING", b.billingProfileId || b.billingAccountNumber || "BILLING"),
+                        b.billingAccountNumber || "Billing Profile",
+                        b
+                    )
+                );
             }
 
             (c.contactPersons || []).forEach((cp) => {
@@ -634,7 +692,6 @@
             node.children.push(cn);
         });
 
-        // Sub accounts
         const kids = byParent.get(acc.mdmAccountId) || [];
         kids.forEach((k) => node.children.push(buildAccountSubtree(k, byParent)));
 
@@ -650,9 +707,7 @@
         (node.children || []).forEach((c) => markDepth(c, d + 1));
     }
 
-    // This fixes your bug:
-    // after "Collapse All", accounts lost the "+" because children were cleared,
-    // so __hasChildren became false. We keep a stable __hasChildrenOriginal.
+    // Preserve original child-existence so +/- stays available after “Collapse All”
     function markHasChildrenOriginal(node) {
         node.__hasChildrenOriginal = Array.isArray(node.children) && node.children.length > 0;
         (node.children || []).forEach(markHasChildrenOriginal);
@@ -662,19 +717,16 @@
         const hasChildrenNow = Array.isArray(node.children) && node.children.length > 0;
         const hasSaved = Array.isArray(node.__savedChildren) && node.__savedChildren.length > 0;
 
-        // if expanded, restore saved children if needed
         if (!collapsedKeys.has(node.__stableKey) && !hasChildrenNow && hasSaved) {
             node.children = node.__savedChildren;
             node.__savedChildren = null;
         }
 
-        // apply collapse
         if (collapsedKeys.has(node.__stableKey) && hasChildrenNow) {
             node.__savedChildren = node.children;
             node.children = [];
         }
 
-        // recurse on current visible children
         (node.children || []).forEach(applyCollapse);
     }
 
@@ -700,24 +752,15 @@
 
     function iconForType(type) {
         switch (type) {
-            case "GLOBAL_CUSTOMER":
-                return "🌐";
-            case "CUSTOMER":
-                return "🏢";
-            case "ACCOUNT":
-                return "🧾";
-            case "CONTRACT":
-                return "📄";
-            case "BILLING":
-                return "💳";
-            case "ADDRESS":
-                return "📍";
-            case "CONTACT":
-                return "👤";
-            case "PLATFORM":
-                return "🧩";
-            default:
-                return "•";
+            case "GLOBAL_CUSTOMER": return "🌐";
+            case "CUSTOMER": return "🏢";
+            case "ACCOUNT": return "🧾";
+            case "CONTRACT": return "📄";
+            case "BILLING": return "💳";
+            case "ADDRESS": return "📍";
+            case "CONTACT": return "👤";
+            case "PLATFORM": return "🧩";
+            default: return "•";
         }
     }
 
@@ -739,7 +782,10 @@
             return { k1: `currency: ${r.billingCurrency || "—"}`, k2: `delivery: ${r.invoiceDelivery || "—"}` };
         }
         if (type === "ADDRESS") {
-            return { k1: `${r.addressType || "ADDRESS"} · ${r.city || "—"}`, k2: `${r.country || "—"} · ${r.postalcode || "—"}` };
+            return {
+                k1: `${r.addressType || "ADDRESS"} · ${r.city || "—"}`,
+                k2: `${r.country || "—"} · ${r.postalcode || "—"}`,
+            };
         }
         if (type === "CONTACT") {
             const name = `${r.firstName || ""} ${r.lastName || ""}`.trim() || "—";
@@ -937,7 +983,9 @@
     }
 
     function escapeHtml(str) {
-        return (str || "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m]));
+        return (str || "").replace(/[&<>"']/g, (m) => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;",
+        }[m]));
     }
 
     // ---------- Tooltip ----------
