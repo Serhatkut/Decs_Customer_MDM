@@ -2,155 +2,70 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DHL eCommerce · Customer Master Data Viewer</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DHL eCommerce · MDM Intelligence & Audit</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 
 <body>
-    <!-- Top bar -->
-    <header class="topbar" role="banner">
+    <header class="topbar">
         <div class="brand">
-            <div class="brand-mark">DHL</div>
-            <div class="brand-text">
-                <div class="brand-title">Customer Master Data Viewer</div>
-                <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
+            <span class="dhl-logo">DHL</span>
+            <div class="divider"></div>
+            <span class="app-title">Master Data Intelligence</span>
+        </div>
+
+        <div class="controls-grid">
+            <div class="control-group">
+                <label>Scenario</label>
+                <select id="scenarioSelector" class="custom-select"></select>
+            </div>
+            <div class="control-group">
+                <label>Industry</label>
+                <select id="filterIndustry" class="custom-select"></select>
+            </div>
+            <div class="control-group">
+                <label>Sales Channel</label>
+                <select id="filterSalesChannel" class="custom-select"></select>
             </div>
         </div>
 
-        <div class="top-controls" role="region" aria-label="Scenario and filters">
-            <div class="ctrl">
-                <label class="ctrl-label" for="scenarioSelector">Scenario</label>
-                <select id="scenarioSelector" class="select select-top">
-                    <option value="">-- Choose Scenario --</option>
-                </select>
-            </div>
-
-            <div class="ctrl">
-                <label class="ctrl-label" for="filterCustomerType">Customer Type</label>
-                <select id="filterCustomerType" class="select select-top">
-                    <option value="">All</option>
-                </select>
-            </div>
-
-            <div class="ctrl">
-                <label class="ctrl-label" for="filterIndustry">Industry</label>
-                <select id="filterIndustry" class="select select-top">
-                    <option value="">All</option>
-                </select>
-            </div>
-
-            <div class="ctrl">
-                <label class="ctrl-label" for="filterSalesChannel">Sales Channel</label>
-                <select id="filterSalesChannel" class="select select-top">
-                    <option value="">All</option>
-                </select>
-            </div>
-
-            <button id="clearFilters" class="btn btn-outline btn-top" title="Clear filters">Clear</button>
-        </div>
-
-        <div class="top-actions" role="region" aria-label="Actions">
-            <div class="dq-badge" id="dqBadge" title="Data Quality (computed from reference enums)">
-                <span class="dq-dot" id="dqDot"></span>
-                <span class="dq-text" id="dqText">DQ: N/A</span>
-            </div>
-
-            <button id="collapseAll" class="btn btn-outline btn-top" title="Collapse all nodes">Collapse All</button>
-            <button id="expandAll" class="btn btn-outline btn-top" title="Expand all nodes">Expand All</button>
-            <button id="toggleInspector" class="btn btn-outline btn-top"
-                title="Toggle inspector sidebar">Inspector</button>
-            <button id="resetZoom" class="btn btn-secondary btn-top" title="Zoom-to-fit / reset view">Reset
-                View</button>
+        <div class="actions">
+            <div id="dqGlobalBadge" class="dq-badge">DQ: --</div>
+            <button id="resetZoom" class="btn-icon" title="Reset View">Target</button>
         </div>
     </header>
 
-    <div class="layout">
-        <!-- Sidebar (Inspector) -->
-        <aside class="sidebar" id="inspectorSidebar" aria-label="Inspector">
-            <section class="panel">
-                <div class="panel-title">Search</div>
-                <input id="nodeSearch" class="input" type="text"
-                    placeholder="Search by ID / name (e.g., CUST…, ACC…, CON…, Inditex…)" />
-                <div class="hint">Click any node to inspect. Filters highlight/dim without breaking hierarchy.</div>
-            </section>
-
-            <section class="panel">
-                <div class="panel-title">Selected node</div>
-
-                <div class="selected-top">
-                    <div class="pill strong" id="selCustomerType">—</div>
-                    <div class="pill" id="selIndustry">—</div>
-                    <div class="pill" id="selChannel">—</div>
-                </div>
-
-                <div class="summary">
-                    <div class="row">
-                        <div class="k">Object Type</div>
-                        <div class="v"><span class="pill" id="selType">—</span></div>
-                    </div>
-                    <div class="row">
-                        <div class="k">ID</div>
-                        <div class="v" id="selId">—</div>
-                    </div>
-                    <div class="row">
-                        <div class="k">Name</div>
-                        <div class="v" id="selName">—</div>
-                    </div>
-                    <div class="row">
-                        <div class="k">Country</div>
-                        <div class="v" id="selCountry">—</div>
-                    </div>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <section class="audit-panel">
+                <h3 class="panel-header">Object Inspector</h3>
+                <div id="inspectorContent" class="inspector-empty">
+                    Select a node to audit details
                 </div>
             </section>
 
-            <section class="panel">
-                <div class="panel-title">Business meaning</div>
-                <div class="meaning">
-                    <div class="meaning-kv">
-                        <div class="meaning-k">Customer Type</div>
-                        <div class="meaning-v" id="meaningCustomerType">—</div>
-                    </div>
-                    <div class="meaning-kv">
-                        <div class="meaning-k">Sales Channel</div>
-                        <div class="meaning-v" id="meaningSalesChannel">—</div>
-                    </div>
-                    <div class="meaning-text" id="meaningBody">Select a node to see definitions.</div>
+            <section class="visibility-panel">
+                <h3 class="panel-header">View Layers</h3>
+                <div class="toggle-list">
+                    <label class="switch"><input type="checkbox" id="toggleAddresses"
+                            checked><span>Addresses</span></label>
+                    <label class="switch"><input type="checkbox" id="toggleContacts"
+                            checked><span>Contacts</span></label>
+                    <label class="switch"><input type="checkbox" id="toggleContracts"
+                            checked><span>Contracts</span></label>
                 </div>
             </section>
 
-            <section class="panel">
-                <div class="panel-title">Readable JSON</div>
-                <div class="hint">A friendly view so non-technical readers can understand the content.</div>
-                <div id="readableJson" class="readable-json"></div>
-
-                <details class="raw-json">
-                    <summary>Raw JSON</summary>
-                    <pre id="json-display" class="json-display">{}</pre>
-                </details>
-            </section>
+            <section class="legend-panel" id="legendBar"></section>
         </aside>
 
-        <!-- Canvas -->
-        <main class="canvas" aria-label="Diagram canvas">
-            <div id="viz-container" class="viz-container"></div>
+        <main class="canvas-container">
+            <div id="viz-container"></div>
         </main>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer" role="contentinfo">
-        <div class="footer-left">
-            <div class="legend-title">Object legend</div>
-            <div class="legend" id="legendBar" aria-label="Object legend"></div>
-            <div class="legend-hint">Click a legend item to hide/show that object type.</div>
-        </div>
-        <div class="footer-right">
-            <div class="signature">Serhat Kut, PhD</div>
-        </div>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 
