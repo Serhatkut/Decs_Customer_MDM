@@ -5,146 +5,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DHL eCommerce · Customer Master Data Viewer</title>
-
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 </head>
 
 <body>
     <!-- Top bar -->
-    <header class="topbar">
-        <div class="topbar-left">
-            <div class="brand">
-                <div class="brand-mark">DHL</div>
-                <div class="brand-text">
-                    <div class="brand-title">Customer Master Data Viewer</div>
-                    <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
-                </div>
+    <header class="topbar" role="banner">
+        <div class="brand">
+            <div class="brand-mark">DHL</div>
+            <div class="brand-text">
+                <div class="brand-title">Customer Master Data Viewer</div>
+                <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
             </div>
         </div>
 
-        <div class="topbar-center">
-            <div class="top-controls">
-                <div class="top-control">
-                    <div class="top-label">Scenario</div>
-                    <select id="scenarioSelector" class="select select-top">
-                        <option value="">-- Choose Scenario --</option>
-                    </select>
-                </div>
-
-                <div class="top-control">
-                    <div class="top-label">Customer Type</div>
-                    <select id="filterCustomerType" class="select select-top">
-                        <option value="">All</option>
-                    </select>
-                </div>
-
-                <div class="top-control">
-                    <div class="top-label">Industry</div>
-                    <select id="filterIndustry" class="select select-top">
-                        <option value="">All</option>
-                    </select>
-                </div>
-
-                <div class="top-control">
-                    <div class="top-label">Sales Channel</div>
-                    <select id="filterSalesChannel" class="select select-top">
-                        <option value="">All</option>
-                    </select>
-                </div>
+        <div class="top-controls" role="region" aria-label="Scenario and filters">
+            <div class="ctrl">
+                <label class="ctrl-label" for="scenarioSelector">Scenario</label>
+                <select id="scenarioSelector" class="select select-top">
+                    <option value="">-- Choose Scenario --</option>
+                </select>
             </div>
+
+            <div class="ctrl">
+                <label class="ctrl-label" for="filterCustomerType">Customer Type</label>
+                <select id="filterCustomerType" class="select select-top">
+                    <option value="">All</option>
+                </select>
+            </div>
+
+            <div class="ctrl">
+                <label class="ctrl-label" for="filterIndustry">Industry</label>
+                <select id="filterIndustry" class="select select-top">
+                    <option value="">All</option>
+                </select>
+            </div>
+
+            <div class="ctrl">
+                <label class="ctrl-label" for="filterSalesChannel">Sales Channel</label>
+                <select id="filterSalesChannel" class="select select-top">
+                    <option value="">All</option>
+                </select>
+            </div>
+
+            <button id="clearFilters" class="btn btn-outline btn-top" title="Clear filters">Clear</button>
         </div>
 
-        <div class="topbar-right">
+        <div class="top-actions" role="region" aria-label="Actions">
             <div class="dq-badge" id="dqBadge" title="Data Quality (computed from reference enums)">
                 <span class="dq-dot" id="dqDot"></span>
                 <span class="dq-text" id="dqText">DQ: N/A</span>
             </div>
 
-            <button id="toggleInspector" class="btn btn-outline" title="Toggle inspector sidebar">Inspector</button>
-            <button id="resetZoom" class="btn btn-secondary" title="Zoom-to-fit / reset view">Reset View</button>
+            <button id="collapseAll" class="btn btn-outline btn-top" title="Collapse all nodes">Collapse All</button>
+            <button id="expandAll" class="btn btn-outline btn-top" title="Expand all nodes">Expand All</button>
+            <button id="toggleInspector" class="btn btn-outline btn-top"
+                title="Toggle inspector sidebar">Inspector</button>
+            <button id="resetZoom" class="btn btn-secondary btn-top" title="Zoom-to-fit / reset view">Reset
+                View</button>
         </div>
     </header>
 
     <div class="layout">
         <!-- Sidebar (Inspector) -->
-        <aside class="sidebar" id="inspectorSidebar">
-            <!-- Search -->
+        <aside class="sidebar" id="inspectorSidebar" aria-label="Inspector">
             <section class="panel">
                 <div class="panel-title">Search</div>
                 <input id="nodeSearch" class="input" type="text"
-                    placeholder="Search by ID / name (e.g., CUST…, ACC…, CON…, Inditex, Vinted…)" />
-                <div class="hint">
-                    Click any node to inspect. Filters highlight/dim without breaking hierarchy.
-                </div>
+                    placeholder="Search by ID / name (e.g., CUST…, ACC…, CON…, Inditex…)" />
+                <div class="hint">Click any node to inspect. Filters highlight/dim without breaking hierarchy.</div>
             </section>
 
-            <!-- Selected object -->
             <section class="panel">
-                <div class="panel-title">Selected object</div>
+                <div class="panel-title">Selected node</div>
 
-                <div id="selectedSummary" class="summary-card">
-                    <div class="summary-row">
-                        <div class="summary-k">Object Type</div>
-                        <div class="summary-v"><span class="pill" id="selType">—</span></div>
+                <div class="selected-top">
+                    <div class="pill strong" id="selCustomerType">—</div>
+                    <div class="pill" id="selIndustry">—</div>
+                    <div class="pill" id="selChannel">—</div>
+                </div>
+
+                <div class="summary">
+                    <div class="row">
+                        <div class="k">Object Type</div>
+                        <div class="v"><span class="pill" id="selType">—</span></div>
                     </div>
-                    <div class="summary-row">
-                        <div class="summary-k">mdmCustomerId</div>
-                        <div class="summary-v" id="selMdmCustomerId">—</div>
+                    <div class="row">
+                        <div class="k">ID</div>
+                        <div class="v" id="selId">—</div>
                     </div>
-                    <div class="summary-row">
-                        <div class="summary-k">officialName</div>
-                        <div class="summary-v" id="selOfficialName">—</div>
+                    <div class="row">
+                        <div class="k">Name</div>
+                        <div class="v" id="selName">—</div>
                     </div>
-                    <div class="summary-row">
-                        <div class="summary-k">tradingName</div>
-                        <div class="summary-v" id="selTradingName">—</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-k">country</div>
-                        <div class="summary-v" id="selCountry">—</div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-k">customerType</div>
-                        <div class="summary-v"><span class="pill pill-strong" id="selCustomerType">—</span></div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-k">industry</div>
-                        <div class="summary-v"><span class="pill" id="selIndustry">—</span></div>
-                    </div>
-                    <div class="summary-row">
-                        <div class="summary-k">channel</div>
-                        <div class="summary-v"><span class="pill" id="selChannel">—</span></div>
+                    <div class="row">
+                        <div class="k">Country</div>
+                        <div class="v" id="selCountry">—</div>
                     </div>
                 </div>
             </section>
 
-            <!-- Business meaning -->
             <section class="panel">
                 <div class="panel-title">Business meaning</div>
-                <div class="meaning-card">
-                    <div class="meaning-hint">
-                        This panel explains the selected node in plain language using your master data definitions
-                        (customer type + sales channel mapping).
+                <div class="meaning">
+                    <div class="meaning-kv">
+                        <div class="meaning-k">Customer Type</div>
+                        <div class="meaning-v" id="meaningCustomerType">—</div>
                     </div>
-
-                    <div class="meaning-block">
-                        <div class="meaning-title" id="meaningTitle">—</div>
-                        <div class="meaning-body" id="meaningBody">Select a node to see customer type & channel context.
-                        </div>
+                    <div class="meaning-kv">
+                        <div class="meaning-k">Sales Channel</div>
+                        <div class="meaning-v" id="meaningSalesChannel">—</div>
                     </div>
+                    <div class="meaning-text" id="meaningBody">Select a node to see definitions.</div>
                 </div>
             </section>
 
-            <!-- Readable JSON -->
-            <section class="panel json-panel">
+            <section class="panel">
                 <div class="panel-title">Readable JSON</div>
-                <div class="meaning-hint">
-                    A friendly view of the object so non-technical readers can still understand it.
-                </div>
+                <div class="hint">A friendly view so non-technical readers can understand the content.</div>
                 <div id="readableJson" class="readable-json"></div>
 
-                <!-- fallback raw -->
                 <details class="raw-json">
                     <summary>Raw JSON</summary>
                     <pre id="json-display" class="json-display">{}</pre>
@@ -153,17 +134,18 @@
         </aside>
 
         <!-- Canvas -->
-        <main class="canvas">
+        <main class="canvas" aria-label="Diagram canvas">
             <div id="viz-container" class="viz-container"></div>
         </main>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="legend" id="legendBar">
-            <!-- populated by script -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-left">
+            <div class="legend-title">Object legend</div>
+            <div class="legend" id="legendBar" aria-label="Object legend"></div>
+            <div class="legend-hint">Click a legend item to hide/show that object type.</div>
         </div>
-
         <div class="footer-right">
             <div class="signature">Serhat Kut, PhD</div>
         </div>
