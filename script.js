@@ -498,8 +498,9 @@
             .attr("height", CARD_H);
 
         nodes.select("rect")
-            .style("cursor", "pointer")
+            .style("cursor", (d) => (d.data.__type === "CHILD_ACCOUNTS_GROUP" ? "default" : "pointer"))
             .on("click", (event, d) => {
+                if (d.data.__type === "CHILD_ACCOUNTS_GROUP") return;
                 setSelectedObject(d.data.__raw, currentScenario, d.data.__type);
             });
 
@@ -511,6 +512,7 @@
             .style("cursor", (d) => (d.data.__hasChildrenOriginal ? "pointer" : "default"))
             .on("click", (event, d) => {
                 event.stopPropagation();
+                if (d.data.__type === "CHILD_ACCOUNTS_GROUP") return;
                 if (!d.data.__hasChildrenOriginal) return;
 
                 if (collapsedKeys.has(d.data.__stableKey)) collapsedKeys.delete(d.data.__stableKey);
@@ -537,7 +539,10 @@
             .attr("x", CARD_W / 2 - 21)
             .attr("y", -CARD_H / 2 + 26)
             .attr("text-anchor", "middle")
-            .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
+            .text((d) => {
+                if (d.data.__type === "CHILD_ACCOUNTS_GROUP") return "";
+                return d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : "";
+            })
             .style("pointer-events", "none");
 
         // Title line with icon (icon larger) + truncation for long titles
@@ -788,8 +793,19 @@
             node.children.push(cn);
         });
 
+        // Child accounts: render as a separate lane (one depth deeper) to avoid mixing
+        // account-owned objects (contacts/addresses/contracts/platform) with the hierarchy.
         const kids = byParent.get(acc.mdmAccountId) || [];
-        kids.forEach((k) => node.children.push(buildAccountSubtree(k, byParent)));
+        if (kids.length) {
+            const group = makeNode(
+                "CHILD_ACCOUNTS_GROUP",
+                stableKey("CHILD_ACCOUNTS_GROUP", acc.mdmAccountId),
+                "Child accounts",
+                { parentAccountId: acc.mdmAccountId }
+            );
+            kids.forEach((k) => group.children.push(buildAccountSubtree(k, byParent)));
+            node.children.push(group);
+        }
 
         return node;
     }
@@ -856,6 +872,7 @@
             case "ADDRESS": return "📍";
             case "CONTACT": return "👤";
             case "PLATFORM": return "🧩";
+            case "CHILD_ACCOUNTS_GROUP": return "↧";
             default: return "•";
         }
     }
@@ -866,6 +883,9 @@
                 k1: `mdmCustomerId: ${r.mdmCustomerId || "—"}`,
                 k2: `${r.customerType || "—"} · ${(r.countryOfRegistration || r.country || "—")}`,
             };
+        }
+        if (type === "CHILD_ACCOUNTS_GROUP") {
+            return { k1: "Child accounts", k2: "" };
         }
         if (type === "ACCOUNT") {
             const roles = (r.businessRoles || []).join(", ");
