@@ -2,116 +2,87 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DHL eCommerce · Customer Master Data Viewer</title>
+    <meta charset="UTF-8">
+    <title>DHL Customer Master Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
 <body>
-    <!-- Top bar (brand + controls) -->
+
     <header class="topbar">
-        <div class="brand">
-            <div class="brand-mark">DHL</div>
-            <div class="brand-text">
-                <div class="brand-title">Customer Master Data Viewer</div>
-                <div class="brand-subtitle">DHL eCommerce · Scenarios · MDM Objects · Relationships</div>
-            </div>
-        </div>
 
-        <!-- Controls (formerly in left sidebar) -->
-        <div class="toolbar" aria-label="Scenario and filter controls">
-            <div class="toolbar-group">
-                <div class="toolbar-label">Scenario</div>
-                <select id="scenarioSelector" class="toolbar-select" title="Select scenario">
-                    <option value="">-- Choose Scenario --</option>
-                </select>
-            </div>
+        <div class="brand">DHL Customer Master Data Viewer</div>
 
-            <div class="toolbar-group">
-                <div class="toolbar-label">Customer Type</div>
-                <select id="filterCustomerType" class="toolbar-select"
-                    title="Filter scenarios by customer type"></select>
-            </div>
+        <div class="controls">
 
-            <div class="toolbar-group">
-                <div class="toolbar-label">Industry</div>
-                <select id="filterIndustry" class="toolbar-select" title="Filter scenarios by industry"></select>
-            </div>
+            <select id="scenarioSelect"></select>
 
-            <div class="toolbar-group">
-                <div class="toolbar-label">Sales Channel</div>
-                <select id="filterSalesChannel" class="toolbar-select"
-                    title="Filter scenarios by sales channel"></select>
-            </div>
+            <select id="filterType"></select>
+            <select id="filterIndustry"></select>
+            <select id="filterChannel"></select>
 
-            <div class="toolbar-group toolbar-grow">
-                <div class="toolbar-label">Search (ID / Name)</div>
-                <input id="nodeSearch" class="toolbar-input" type="text"
-                    placeholder="e.g., CUST-…, ACC-…, CON-…, Inditex, Vinted, Shopify…" />
-            </div>
-        </div>
+            <input id="searchBox" placeholder="Search…">
 
-        <div class="topbar-right">
-            <div class="dq-badge" id="dqBadge" title="Data Quality (computed from reference enums)">
-                <span class="dq-dot" id="dqDot"></span>
-                <span class="dq-text" id="dqText">DQ: N/A</span>
-            </div>
+            <button id="collapseAll">Collapse</button>
+            <button id="expandAll">Expand</button>
 
-            <button id="toggleSidebar" class="btn btn-secondary" title="Collapse / expand inspector">Inspector</button>
-            <button id="resetZoom" class="btn btn-secondary" title="Zoom-to-fit / reset view">Reset View</button>
+            <button id="toggleInspector">Inspector</button>
+            <button id="resetZoom">Reset</button>
+
         </div>
     </header>
 
+
     <div class="layout">
-        <!-- Left inspector (collapsible) -->
-        <aside class="sidebar" aria-label="Inspector">
-            <section class="panel">
-                <div class="panel-title">Selected object</div>
 
-                <div id="inspectorMeta" class="inspector-meta">
-                    <div class="kv">
-                        <div class="k">Hover/Click</div>
-                        <div class="v">Select a node to see details</div>
-                    </div>
-                </div>
+        <aside id="sidebar" class="sidebar">
 
-                <div id="inspectorContext" class="inspector-context" style="margin-top:10px;"></div>
-            </section>
+            <div class="section">
+                <h3>Selected Object</h3>
+                <div id="selectedInfo"></div>
+            </div>
 
-            <section class="panel">
-                <div class="panel-title">Business meaning</div>
-                <div class="hint">
-                    This panel explains the selected node in plain language using your master data definitions
-                    (customer type + sales channel mapping).
-                </div>
-                <div id="inspectorDefs" class="inspector-defs"></div>
-            </section>
+            <div class="section">
+                <h3>Business Meaning</h3>
+                <div id="meaningBox"></div>
+            </div>
 
-            <section class="panel">
-                <div class="panel-title">Readable JSON</div>
-                <div class="hint">A friendly view of the object so non-technical readers can still understand it.</div>
-                <div id="prettyJson" class="pretty-json"></div>
-            </section>
+            <div class="section">
+                <h3>Readable View</h3>
+                <div id="prettyJson"></div>
+            </div>
+
         </aside>
 
-        <!-- Canvas -->
+
         <main class="canvas">
-            <div id="viz-container" class="viz-container"></div>
+            <svg id="viz"></svg>
         </main>
+
     </div>
 
-    <!-- Footer (legend + sources) -->
+
     <footer class="footer">
-        <div id="footerLegend" class="legend-footer" aria-label="Legend"></div>
-        <div class="footer-right">
-            <span class="footer-label">Data:</span>
-            <code>/data/customerData.json</code>
-            <code>/data/reference_master_data.json</code>
-            <code>/data/reference_colors.json</code>
+
+        <div class="legend">
+
+            <span class="lg global">Global</span>
+            <span class="lg customer">Customer</span>
+            <span class="lg account">Account</span>
+
+            <label><input type="checkbox" checked data-type="contract">Contract</label>
+            <label><input type="checkbox" checked data-type="billing">Billing</label>
+            <label><input type="checkbox" checked data-type="platform">Platform</label>
+            <label><input type="checkbox" checked data-type="address">Address</label>
+            <label><input type="checkbox" checked data-type="contact">Contact</label>
+
         </div>
+
+        <div class="credit">Serhat Kut, PhD · DHL eCommerce</div>
+
     </footer>
 
     <script src="script.js"></script>
