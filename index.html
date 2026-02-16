@@ -4,107 +4,104 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DHL eCommerce · Customer Master Data Viewer</title>
+    <title>DHL eCommerce – Customer Master Data Viewer</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 </head>
 
 <body>
-    <!-- Top bar -->
+    <!-- TWO-ROW HEADER -->
     <header class="topbar">
-        <div class="topbar-left">
+        <!-- Row 1: Brand + DQ + Actions -->
+        <div class="topbar-row topbar-row1">
             <div class="brand">
-                <div class="brand-mark">DHL eCommerce</div>
+                <div class="brand-badge">DHL eCommerce</div>
                 <div class="brand-text">
                     <div class="brand-title">Customer Master Data Viewer</div>
-                    <div class="brand-subtitle">Scenarios · MDM Objects · Relationships</div>
+                    <div class="brand-sub">Scenarios • MDM Objects • Relationships</div>
                 </div>
+            </div>
+
+            <div class="topbar-actions">
+                <div class="dq" title="Data quality indicator">
+                    <span id="dqDot" class="dq-dot"></span>
+                    <span id="dqText" class="dq-text">DQ: N/A</span>
+                </div>
+
+                <button id="collapseAll" class="btn btn-ghost" type="button">Collapse All</button>
+                <button id="expandAll" class="btn btn-ghost" type="button">Expand All</button>
+                <button id="toggleInspector" class="btn btn-ghost" type="button">Inspector</button>
+                <button id="resetView" class="btn btn-primary" type="button">Reset View</button>
             </div>
         </div>
 
-        <div class="topbar-center">
-            <div class="top-controls">
-                <div class="top-control">
-                    <div class="top-label">Scenario</div>
-                    <select id="scenarioSelector" class="select select-top"></select>
-                </div>
+        <!-- Row 2: Filters -->
+        <div class="topbar-row topbar-row2">
+            <div class="filters">
+                <label class="f">
+                    <span>Scenario</span>
+                    <select id="scenarioSelector"></select>
+                </label>
 
-                <div class="top-control">
-                    <div class="top-label">Customer Type</div>
-                    <select id="filterCustomerType" class="select select-top"></select>
-                </div>
+                <label class="f">
+                    <span>Customer Type</span>
+                    <select id="filterCustomerType"></select>
+                </label>
 
-                <div class="top-control">
-                    <div class="top-label">Industry</div>
-                    <select id="filterIndustry" class="select select-top"></select>
-                </div>
+                <label class="f">
+                    <span>Industry</span>
+                    <select id="filterIndustry"></select>
+                </label>
 
-                <div class="top-control">
-                    <div class="top-label">Sales Channel</div>
-                    <select id="filterSalesChannel" class="select select-top"></select>
-                </div>
+                <label class="f">
+                    <span>Sales Channel</span>
+                    <select id="filterSalesChannel"></select>
+                </label>
 
-                <button id="clearFilters" class="btn btn-ghost" title="Clear filters">Clear</button>
+                <button id="clearFilters" class="btn btn-ghost" type="button">Clear</button>
             </div>
-        </div>
-
-        <div class="topbar-right">
-            <div class="dq-badge" title="Filter match indicator">
-                <span class="dq-dot" id="dqDot"></span>
-                <span class="dq-text" id="dqText">DQ: N/A</span>
-            </div>
-
-            <button id="collapseAll" class="btn btn-secondary" title="Collapse all nodes">Collapse All</button>
-            <button id="expandAll" class="btn btn-secondary" title="Expand all nodes">Expand All</button>
-            <button id="toggleInspector" class="btn btn-outline" title="Toggle inspector sidebar">Inspector</button>
-            <button id="resetView" class="btn btn-primary" title="Zoom-to-fit / reset view">Reset View</button>
         </div>
     </header>
 
-    <div class="layout">
-        <!-- Sidebar (Inspector) -->
-        <aside class="sidebar" id="inspector">
-            <!-- Classification (always on top) -->
-            <section class="panel">
-                <div class="panel-title">Classification</div>
-                <div id="classificationPills" class="pills"></div>
-            </section>
+    <!-- MAIN -->
+    <main class="layout">
+        <aside id="inspector" class="inspector">
+            <div class="inspector-inner">
+                <div class="inspector-section">
+                    <div class="section-h">Classification</div>
+                    <div id="classificationPills" class="pills"></div>
+                </div>
 
-            <!-- Selected object -->
-            <section class="panel">
-                <div class="panel-title">Selected object</div>
-                <div id="objectSummary" class="summary-card"></div>
-            </section>
+                <div class="inspector-section">
+                    <div class="section-h">Selected object</div>
+                    <div id="objectSummary" class="summary"></div>
+                </div>
 
-            <!-- Business meaning -->
-            <section class="panel">
-                <div class="panel-title">Business meaning</div>
-                <div id="meaningBox" class="meaning-card"></div>
-            </section>
+                <div class="inspector-section">
+                    <div class="section-h">Business meaning</div>
+                    <div id="meaningBox" class="meaningBox"></div>
+                </div>
 
-            <!-- Readable JSON -->
-            <section class="panel json-panel">
-                <div class="panel-title">Readable JSON</div>
-                <div id="readableJson" class="readable-json"></div>
-                <details class="raw-json">
-                    <summary>Raw JSON</summary>
-                    <pre id="rawJson" class="json-display">{}</pre>
-                </details>
-            </section>
+                <div class="inspector-section">
+                    <div class="section-h">Readable JSON</div>
+                    <div id="readableJson" class="readable"></div>
+                    <details class="raw">
+                        <summary>Raw JSON</summary>
+                        <pre id="rawJson"></pre>
+                    </details>
+                </div>
+            </div>
         </aside>
 
-        <!-- Canvas -->
-        <main class="canvas">
+        <section class="canvas">
             <div id="viz" class="viz"></div>
-        </main>
-    </div>
+        </section>
+    </main>
 
-    <!-- Footer -->
+    <!-- FOOTER (always visible) -->
     <footer class="footer">
-        <div class="legend" id="legend"></div>
-        <div class="footer-right">
-            <div class="signature">Serhat Kut, PhD</div>
-        </div>
+        <div id="legend" class="legend"></div>
+        <div class="footer-right">Serhat Kut, PhD</div>
     </footer>
 
     <script src="script.js"></script>
