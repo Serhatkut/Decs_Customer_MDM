@@ -401,6 +401,7 @@
             .scaleExtent([0.2, 3.2])
             .on("zoom", (event) => rootG.attr("transform", event.transform));
         svg.call(zoom);
+        svg.style("user-select", "none");
 
         tooltip = d3
             .select("#viz")
@@ -453,9 +454,6 @@
             .append("g")
             .attr("class", (d) => `node node--${d.data.__type}`)
             .attr("transform", (d) => `translate(${d.x},${d.y})`)
-            .on("click", (event, d) => {
-                setSelectedObject(d.data.__raw, currentScenario, d.data.__type);
-            })
             .on("mousemove", (event, d) => showTooltip(event, d.data))
             .on("mouseout", hideTooltip);
 
@@ -466,14 +464,17 @@
             .attr("width", CARD_W)
             .attr("height", CARD_H);
 
-        // PLUS/MINUS toggle (separate from card click)
-        nodes
-            .append("text")
-            .attr("class", "pm")
-            .attr("x", CARD_W / 2 - 18)
-            .attr("y", -CARD_H / 2 + 22)
-            .attr("text-anchor", "middle")
-            .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
+        nodes.select("rect")
+            .style("cursor", "pointer")
+            .on("click", (event, d) => {
+                setSelectedObject(d.data.__raw, currentScenario, d.data.__type);
+            });
+
+        // PLUS/MINUS toggle with a generous hitbox (prevents label overlap from blocking clicks)
+        const pm = nodes
+            .append("g")
+            .attr("class", "pmg")
+            .style("pointer-events", "all")
             .style("cursor", (d) => (d.data.__hasChildrenOriginal ? "pointer" : "default"))
             .on("click", (event, d) => {
                 event.stopPropagation();
@@ -486,11 +487,32 @@
                 render();
             });
 
+        // transparent hitbox
+        pm.append("rect")
+            .attr("class", "pm-hit")
+            .attr("x", CARD_W / 2 - 38)
+            .attr("y", -CARD_H / 2 + 6)
+            .attr("width", 32)
+            .attr("height", 32)
+            .attr("rx", 8)
+            .attr("ry", 8)
+            .attr("fill", "transparent");
+
+        // the visible +/- glyph
+        pm.append("text")
+            .attr("class", "pm")
+            .attr("x", CARD_W / 2 - 22)
+            .attr("y", -CARD_H / 2 + 28)
+            .attr("text-anchor", "middle")
+            .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
+            .style("pointer-events", "none");
+
         // Title line with icon
         nodes
             .append("text")
             .attr("text-anchor", "middle")
             .attr("dy", "-18")
+            .style("pointer-events", "none")
             .text((d) => `${d.data.__icon} ${d.data.__title || ""}`);
 
         // Key attribute lines (2 lines)
@@ -500,6 +522,7 @@
             .attr("dy", "4")
             .style("font-weight", 700)
             .style("font-size", "11px")
+            .style("pointer-events", "none")
             .text((d) => d.data.__k1 || "");
 
         nodes
@@ -508,15 +531,16 @@
             .attr("dy", "22")
             .style("font-weight", 700)
             .style("font-size", "11px")
+            .style("pointer-events", "none")
             .text((d) => d.data.__k2 || "");
-
-        applyDimming(nodes);
 
         // Fit after render if requested
         if (fitRequested) {
             fitRequested = false;
             scheduleZoomToFit(true);
         }
+
+        applyDimming(nodes);
     }
 
     function applyDimming(nodesSel) {
