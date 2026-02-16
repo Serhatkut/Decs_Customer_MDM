@@ -507,32 +507,68 @@
             .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
             .style("pointer-events", "none");
 
-        // Title line with icon
-        nodes
+        // Title line with icon (icon larger) + truncation for long titles
+        const titleText = nodes
             .append("text")
+            .attr("class", "node-title")
             .attr("text-anchor", "middle")
             .attr("dy", "-18")
-            .style("pointer-events", "none")
-            .text((d) => `${d.data.__icon} ${d.data.__title || ""}`);
+            .style("pointer-events", "none");
 
-        // Key attribute lines (2 lines)
-        nodes
+        titleText.each(function (d) {
+            const el = d3.select(this);
+            el.selectAll("*").remove();
+
+            // icon
+            el.append("tspan")
+                .attr("class", "node-icon")
+                .style("font-size", "15px")
+                .text(`${d.data.__icon} `);
+
+            // title
+            const t = el.append("tspan")
+                .attr("class", "node-title-text")
+                .style("font-size", "13px")
+                .style("font-weight", 800)
+                .text(d.data.__title || "");
+
+            // Truncate title to available width (leave room for icon)
+            const maxPx = (CARD_W - 28);
+            truncateSvgTextToWidth(t.node(), maxPx);
+        });
+
+        // Key attribute lines (2 lines) with truncation
+        const k1Text = nodes
             .append("text")
+            .attr("class", "node-k1")
             .attr("text-anchor", "middle")
             .attr("dy", "4")
-            .style("font-weight", 700)
+            .style("font-weight", 800)
             .style("font-size", "11px")
             .style("pointer-events", "none")
             .text((d) => d.data.__k1 || "");
 
-        nodes
+        k1Text.each(function (d) {
+            const str = d.data.__k1 || "";
+            const maxPx = (CARD_W - 22);
+            truncateSvgTextToWidth(this, maxPx, shouldMiddleTruncate(str));
+        });
+
+        const k2Text = nodes
             .append("text")
+            .attr("class", "node-k2")
             .attr("text-anchor", "middle")
             .attr("dy", "22")
-            .style("font-weight", 700)
+            .style("font-weight", 800)
             .style("font-size", "11px")
             .style("pointer-events", "none")
             .text((d) => d.data.__k2 || "");
+
+        k2Text.each(function (d) {
+            const str = d.data.__k2 || "";
+            const maxPx = (CARD_W - 22);
+            truncateSvgTextToWidth(this, maxPx, shouldMiddleTruncate(str));
+        });
 
         // Fit after render if requested
         if (fitRequested) {
@@ -1088,5 +1124,92 @@
             push("provider", raw.provider);
         }
         return out.slice(0, 16);
+    }
+
+    // ---------- SVG text truncation helpers (prevents label overflow) ----------
+    function shouldMiddleTruncate(str) {
+        // Middle-truncate IDs and codes; end-truncate human text.
+        const s = String(str || "");
+        return (
+            s.includes("mdmCustomerId") ||
+            s.includes("mdmAccountId") ||
+            s.includes("contractId") ||
+            s.includes("billingProfileId") ||
+            s.includes("CUST-") ||
+            s.includes("ACC-") ||
+            s.includes("CON-") ||
+            s.includes("BPROF-") ||
+            s.includes("PLT-")
+        );
+    }
+
+    function truncateSvgTextToWidth(textNode, maxPx, middle = false) {
+        if (!textNode) return;
+        const full = (textNode.textContent || "").trim();
+        if (!full) return;
+
+        // If already fits, nothing to do.
+        try {
+            if (textNode.getComputedTextLength() <= maxPx) return;
+        } catch (_) {
+            return;
+        }
+
+        const ell = "…";
+        const minKeep = 6;
+
+        const setText = (s) => {
+            textNode.textContent = s;
+        };
+
+        if (!middle) {
+            // End truncation
+            let lo = 0;
+            let hi = full.length;
+            let best = "";
+            while (lo <= hi) {
+                const midLen = (lo + hi) >> 1;
+                const candidate = full.slice(0, Math.max(0, midLen)) + ell;
+                setText(candidate);
+                const w = textNode.getComputedTextLength();
+                if (w <= maxPx) {
+                    best = candidate;
+                    lo = midLen + 1;
+                } else {
+                    hi = midLen - 1;
+                }
+            }
+            setText(best || (full.slice(0, Math.max(0, minKeep)) + ell));
+            return;
+        }
+
+        // Middle truncation (keeps both ends, good for IDs)
+        let leftKeep = Math.max(minKeep, Math.floor(full.length / 2) - 1);
+        let rightKeep = Math.max(minKeep, Math.floor(full.length / 2) - 1);
+
+        const makeMid = (l, r) => {
+            const a = full.slice(0, Math.max(0, l));
+            const b = full.slice(Math.max(0, full.length - r));
+            return a + ell + b;
+        };
+
+        // Start from a reasonable split and shrink until it fits.
+        let candidate = makeMid(leftKeep, rightKeep);
+        setText(candidate);
+
+        // Guard loop
+        let guard = 0;
+        while (guard++ < 80 && textNode.getComputedTextLength() > maxPx && (leftKeep + rightKeep) > (minKeep * 2)) {
+            if (leftKeep > rightKeep) leftKeep -= 1;
+            else rightKeep -= 1;
+            candidate = makeMid(leftKeep, rightKeep);
+            setText(candidate);
+        }
+
+        // If still too wide, fall back to end truncation.
+        if (textNode.getComputedTextLength() > maxPx) {
+            setText(full);
+            truncateSvgTextToWidth(textNode, maxPx, false);
+        }
     }
 })();
