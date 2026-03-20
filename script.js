@@ -121,16 +121,9 @@
             // ensure dropdown is consistent with default filters
             filterScenarioListByTopFilters(true);
 
-            // default scenario (prefer Relationship Customers if present)
+            // default scenario
             if (dataset.length) {
-                const preferred =
-                    dataset.find(s => s?.customer?.customerType === "RELATIONSHIP_CUSTOMERS") ||
-                    dataset.find(s => (s?.scenarioName || "").toLowerCase().includes("relationship")) ||
-                    dataset[0];
-
-                const preferredName =
-                    preferred?.scenarioName ||
-                    (dataset[0]?.scenarioName ?? "");
+                const preferredName = dataset[0]?.scenarioName ?? "";
 
                 if (preferredName) {
                     els.scenarioSelector.value = preferredName;
