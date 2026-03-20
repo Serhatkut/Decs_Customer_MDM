@@ -1,6 +1,6 @@
 [
   {
-    "scenarioName": "1. Generic Comprehensive Model",
+    "scenarioName": "DHL eCommerce Standard Customer Data Model",
     "customer": {
       "customerType": "STRATEGIC_CUSTOMERS",
       "customerLevel": "STRATEGIC",
