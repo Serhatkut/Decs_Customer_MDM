@@ -332,6 +332,8 @@
         { key: "CUSTOMER", label: "Customer", colorVar: "--c-customer", icon: "🏢" },
         { key: "ACCOUNT", label: "Account", colorVar: "--c-account", icon: "🧾" },
         { key: "CONTRACT", label: "Contract", colorVar: "--c-contract", icon: "📄" },
+        { key: "RATE_CARD", label: "Rate Card", colorVar: "--c-rate-card", icon: "🏷️" },
+        { key: "REFERENCE", label: "Reference", colorVar: "--c-reference", icon: "🆔" },
         { key: "BILLING", label: "Billing", colorVar: "--c-billing", icon: "💳" },
         { key: "ADDRESS", label: "Address", colorVar: "--c-address", icon: "📍" },
         { key: "CONTACT", label: "Contact", colorVar: "--c-contact", icon: "👤" },
@@ -377,6 +379,17 @@
     function initD3() {
         els.viz.innerHTML = "";
         svg = d3.select("#viz").append("svg");
+        const defs = svg.append("defs");
+        defs.append("clipPath")
+            .attr("id", "card-clip")
+            .append("rect")
+            .attr("x", -125) // CARD_W / 2
+            .attr("y", -44)  // CARD_H / 2
+            .attr("width", 250)
+            .attr("height", 88)
+            .attr("rx", 6)
+            .attr("ry", 6);
+
         rootG = svg.append("g");
 
         // Keep svg sized to the canvas; prevents the initial “tiny svg -> wrong fit” jump.
@@ -425,62 +438,155 @@
     function render() {
         if (!currentScenario) return;
 
-        const tree = buildTreeForScenario(currentScenario);
-        const root = d3.hierarchy(tree.data, (d) => d.children);
+        try {
+            console.log("RENDER STARTED for scenario:", currentScenario);
+
+            const tree = buildTreeForScenario(currentScenario);
+            const root = d3.hierarchy(tree.data, (d) => {
+                if (!d.children) return null;
+                const visible = d.children.filter(c => !hiddenTypes.has(c.__type));
+                return visible.length > 0 ? visible : null;
+            });
 
         const CARD_W = 250;
         const CARD_H = 88;
 
         // Extra spacing to avoid overlap
-        const layout = d3.tree().nodeSize([CARD_W + 80, CARD_H + 72]);
+        const layout = d3.tree().nodeSize([CARD_W + 80, CARD_H + 90]);
         layout(root);
 
-        rootG.selectAll("*").remove();
+        // ------------------------------------------------
+        // 1. Enforce strict vertical separation between Golden and Ops
+        // ------------------------------------------------
+        const isGoldenNode = (n) => {
+            if (["GLOBAL_CUSTOMER", "CUSTOMER", "COUNTRY_CUSTOMER"].includes(n.data.__type)) return true;
+            if (["REFERENCE", "ADDRESS", "CONTACT", "COMM_CHANNEL"].includes(n.data.__type)) {
+                let curr = n.parent;
+                while (curr) {
+                    if (curr.data.__type === "ACCOUNT") return false;
+                    if (["GLOBAL_CUSTOMER", "CUSTOMER", "COUNTRY_CUSTOMER"].includes(curr.data.__type)) return true;
+                    curr = curr.parent;
+                }
+            }
+            return false;
+        };
 
-        const isHidden = (node) => hiddenTypes.has(node.data.__type);
+        const nodesData = root.descendants();
+        let maxGoldenYBefore = -Infinity;
+        let minOpsYBefore = Infinity;
+
+        nodesData.forEach(d => {
+            if (isGoldenNode(d)) {
+                if (d.y > maxGoldenYBefore) maxGoldenYBefore = d.y;
+            } else {
+                if (d.y < minOpsYBefore) minOpsYBefore = d.y;
+            }
+        });
+
+        // If both layers exist, push Ops cleanly below Golden
+        if (minOpsYBefore !== Infinity && maxGoldenYBefore !== -Infinity) {
+            // Target Ops to start exactly 1 node-size level (CARD_H + 90) below Max Golden Y
+            const targetMinOpsY = maxGoldenYBefore + CARD_H + 90; 
+            const shiftY = targetMinOpsY - minOpsYBefore;
+            if (shiftY > 0) {
+                nodesData.forEach(d => {
+                    if (!isGoldenNode(d)) {
+                        d.y += shiftY;
+                    }
+                });
+            }
+        }
+        // ------------------------------------------------
+
+        // Manage layer bounding boxes behind the tree
+        let layersG = rootG.select(".layer-bounds");
+        if (layersG.empty()) {
+            layersG = rootG.insert("g", ":first-child").attr("class", "layer-bounds");
+        } else {
+            layersG.selectAll("*").remove(); // clear previous boxes
+        }
+
+        const linkGroup = rootG.select(".link-group");
+        if (linkGroup.empty()) rootG.insert("g", ".layer-bounds + *").attr("class", "link-group");
+
+        const nodeGroup = rootG.select(".node-group");
+        if (nodeGroup.empty()) rootG.append("g").attr("class", "node-group");
+
+        const isHidden = (node) => {
+            let curr = node;
+            while (curr) {
+                if (hiddenTypes.has(curr.data.__type)) return true;
+                curr = curr.parent;
+            }
+            return false;
+        };
 
         // LINKS: only if both ends visible
         const visibleLinks = root.links().filter((l) => !isHidden(l.source) && !isHidden(l.target));
 
-        rootG
+        const linkSelection = rootG.select(".link-group")
             .selectAll(".link")
-            .data(visibleLinks)
-            .enter()
+            .data(visibleLinks, d => `${d.source.data.__stableKey}-${d.target.data.__stableKey}`);
+            
+        linkSelection.exit().remove();
+        
+        linkSelection.enter()
             .append("path")
             .attr("class", "link")
             .attr("fill", "none")
-            .attr("d", (d) => {
-                const sx = d.source.x, sy = d.source.y;
-                const tx = d.target.x, ty = d.target.y;
-                const midY = (sy + ty) / 2;
-                return `M${sx},${sy} L${sx},${midY} L${tx},${midY} L${tx},${ty}`;
-            });
+            .merge(linkSelection)
+            .attr("d", d3.linkVertical()
+                .x((d) => d.x)
+                .y((d) => d.y)
+            );
 
         // NODES: only visible types
         const visibleNodes = root.descendants().filter((n) => !isHidden(n));
 
-        const nodes = rootG
+        const nodeSelection = rootG.select(".node-group")
             .selectAll(".node")
-            .data(visibleNodes, (d) => d.data.__stableKey)
-            .enter()
+            .data(visibleNodes, (d) => d.data.__stableKey);
+
+        nodeSelection.exit().remove();
+
+        const nodes = nodeSelection.enter()
             .append("g")
             .attr("class", (d) => `node node--${d.data.__type}`)
             .attr("transform", (d) => `translate(${d.x},${d.y})`)
             .on("mousemove", (event, d) => showTooltip(event, d.data))
             .on("mouseout", hideTooltip);
 
+        // Update positions
+        nodeSelection.attr("transform", (d) => `translate(${d.x},${d.y})`);
+        
+        // Both enter and update should have the class properly, though enter handles structure.
+        nodeSelection.attr("class", (d) => `node node--${d.data.__type}`);
+
+        // Base card bg
         nodes
             .append("rect")
+            .attr("class", "card-bg")
             .attr("x", -CARD_W / 2)
             .attr("y", -CARD_H / 2)
             .attr("width", CARD_W)
-            .attr("height", CARD_H);
-
-        nodes.select("rect")
+            .attr("height", CARD_H)
+            .attr("rx", 6)
+            .attr("ry", 6)
             .style("cursor", "pointer")
             .on("click", (event, d) => {
                 setSelectedObject(d.data.__raw, currentScenario, d.data.__type);
             });
+
+        // Top Header
+        nodes
+            .append("rect")
+            .attr("class", "card-header")
+            .attr("x", -CARD_W / 2)
+            .attr("y", -CARD_H / 2)
+            .attr("width", CARD_W)
+            .attr("height", 24)
+            .attr("clip-path", "url(#card-clip)")
+            .style("pointer-events", "none");
 
         // PLUS/MINUS toggle with a generous hitbox (prevents label overlap from blocking clicks)
         const pm = nodes
@@ -488,6 +594,7 @@
             .attr("class", "pmg")
             .style("pointer-events", "all")
             .style("cursor", (d) => (d.data.__hasChildrenOriginal ? "pointer" : "default"))
+            .style("visibility", (d) => (d.data.__hasChildrenOriginal ? "visible" : "hidden"))
             .on("click", (event, d) => {
                 event.stopPropagation();
                 if (!d.data.__hasChildrenOriginal) return;
@@ -499,32 +606,34 @@
                 render();
             });
 
-        // transparent hitbox
+        // Background for +/- button
         pm.append("rect")
-            .attr("class", "pm-hit")
-            .attr("x", CARD_W / 2 - 38)
-            .attr("y", -CARD_H / 2 + 6)
-            .attr("width", 32)
-            .attr("height", 32)
-            .attr("rx", 8)
-            .attr("ry", 8)
-            .attr("fill", "transparent");
+            .attr("class", "pm-bg")
+            .attr("x", CARD_W / 2 - 24)
+            .attr("y", -CARD_H / 2 + 12)
+            .attr("width", 20)
+            .attr("height", 20)
+            .attr("rx", 4)
+            .attr("ry", 4)
+            .attr("fill", "#ffffff")
+            .attr("stroke", "#cccccc");
 
         // the visible +/- glyph
         pm.append("text")
             .attr("class", "pm")
-            .attr("x", CARD_W / 2 - 22)
-            .attr("y", -CARD_H / 2 + 28)
+            .attr("x", CARD_W / 2 - 14)
+            .attr("y", -CARD_H / 2 + 27)
+            .style("font-size", "14px")
             .attr("text-anchor", "middle")
             .text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""))
             .style("pointer-events", "none");
 
-        // Title line with icon (icon larger) + truncation for long titles
+        // Title line with icon
         const titleText = nodes
             .append("text")
             .attr("class", "node-title")
             .attr("text-anchor", "middle")
-            .attr("dy", "-18")
+            .attr("dy", -CARD_H / 2 + 16)
             .style("pointer-events", "none");
 
         titleText.each(function (d) {
@@ -554,8 +663,7 @@
             .append("text")
             .attr("class", "node-k1")
             .attr("text-anchor", "middle")
-            .attr("dy", "4")
-            .style("font-weight", 800)
+            .attr("dy", -CARD_H / 2 + 50)
             .style("font-size", "11px")
             .style("pointer-events", "none")
             .text((d) => d.data.__k1 || "");
@@ -570,8 +678,7 @@
             .append("text")
             .attr("class", "node-k2")
             .attr("text-anchor", "middle")
-            .attr("dy", "22")
-            .style("font-weight", 800)
+            .attr("dy", -CARD_H / 2 + 68)
             .style("font-size", "11px")
             .style("pointer-events", "none")
             .text((d) => d.data.__k2 || "");
@@ -582,6 +689,87 @@
             truncateSvgTextToWidth(this, maxPx, shouldMiddleTruncate(str));
         });
 
+        // ------------------------------------------------
+        // Draw Layer Bounding Boxes
+        // ------------------------------------------------
+        let yGoldenMax = -Infinity, yGoldenMin = Infinity;
+        let yOpMax = -Infinity, yOpMin = Infinity;
+        let xGoldenMax = -Infinity, xGoldenMin = Infinity;
+        let xOpMax = -Infinity, xOpMin = Infinity;
+
+        visibleNodes.forEach(n => {
+            const y = n.y;
+            const x = n.x;
+            if (isGoldenNode(n)) {
+                if (y < yGoldenMin) yGoldenMin = y;
+                if (y > yGoldenMax) yGoldenMax = y;
+                if (x < xGoldenMin) xGoldenMin = x;
+                if (x > xGoldenMax) xGoldenMax = x;
+            } else {
+                if (y < yOpMin) yOpMin = y;
+                if (y > yOpMax) yOpMax = y;
+                if (x < xOpMin) xOpMin = x;
+                if (x > xOpMax) xOpMax = x;
+            }
+        });
+
+        // Add padding to bounds
+        const Y_PAD_TOP = CARD_H / 2 + 40;
+        const Y_PAD_BOT_GOLDEN = CARD_H / 2 + 25;
+        const Y_PAD_TOP_OPS = CARD_H / 2 + 35;
+        const Y_PAD_BOT_OPS = CARD_H / 2 + 40;
+        const X_PAD = CARD_W / 2 + 50;
+
+        if (yGoldenMax > -Infinity) {
+            layersG.append("rect")
+                .attr("x", xGoldenMin - X_PAD)
+                .attr("y", yGoldenMin - Y_PAD_TOP)
+                .attr("width", (xGoldenMax - xGoldenMin) + X_PAD * 2)
+                .attr("height", (yGoldenMax - yGoldenMin) + Y_PAD_TOP + Y_PAD_BOT_GOLDEN)
+                .attr("fill", "rgba(212, 5, 17, 0.02)") // VERY faint red
+                .attr("stroke", "#d40511")
+                .attr("stroke-dasharray", "8 8")
+                .attr("stroke-width", 1.5)
+                .attr("rx", 10)
+                .attr("style", "pointer-events: none;");
+
+            layersG.append("text")
+                .attr("x", xGoldenMin - X_PAD + 10)
+                .attr("y", yGoldenMin - Y_PAD_TOP + 24)
+                .attr("fill", "#d40511")
+                .style("font-size", "16px")
+                .style("font-weight", 800)
+                .style("pointer-events", "none")
+                .text("Golden layer");
+        }
+
+        if (yOpMax > -Infinity) {
+            layersG.append("rect")
+                .attr("x", xOpMin - X_PAD)
+                .attr("y", yOpMin - Y_PAD_TOP_OPS)
+                .attr("width", (xOpMax - xOpMin) + X_PAD * 2)
+                .attr("height", (yOpMax - yOpMin) + Y_PAD_TOP_OPS + Y_PAD_BOT_OPS)
+                .attr("fill", "rgba(107, 114, 128, 0.03)") // Faint grey
+                .attr("stroke", "#d40511")
+                .attr("stroke-dasharray", "8 8")
+                .attr("stroke-width", 1.5)
+                .attr("rx", 10)
+                .attr("style", "pointer-events: none;");
+
+            layersG.append("text")
+                .attr("x", xOpMin - X_PAD + 10)
+                .attr("y", yOpMin - Y_PAD_TOP + 24)
+                .attr("fill", "#d40511")
+                .style("font-size", "16px")
+                .style("font-weight", 800)
+                .style("pointer-events", "none")
+                .text("Operational layer");
+        }
+        // ------------------------------------------------
+
+        // Update PM text since nodes isn't a fresh join every time anymore
+        nodeSelection.select(".pm").text((d) => (d.data.__hasChildrenOriginal ? (collapsedKeys.has(d.data.__stableKey) ? "+" : "−") : ""));
+
         // Fit after render if requested
         if (fitRequested) {
             fitRequested = false;
@@ -589,6 +777,10 @@
         }
 
         applyDimming(nodes);
+        } catch (e) {
+            console.error(e);
+            document.getElementById("viz").innerHTML = `<div style="color:red; padding: 20px; font-size: 20px;">D3 ERROR: ${e.message}<br><pre>${e.stack}</pre></div>`;
+        }
     }
 
     function applyDimming(nodesSel) {
@@ -655,10 +847,9 @@
         svg.transition().duration(force ? 320 : 220).call(zoom.transform, t);
     }
 
-    // ---------- tree builder ----------
     function buildTreeForScenario(scenario) {
         const rootCustomer = scenario.customer || {};
-        const hasMultiCountry = Array.isArray(scenario.relatedCustomers) && scenario.relatedCustomers.length >= 2;
+        const hasMultiCountry = Array.isArray(scenario.relatedCustomers) && scenario.relatedCustomers.length >= 1;
         const isStrategic =
             rootCustomer.customerType === "STRATEGIC_CUSTOMERS" || rootCustomer.customerLevel === "STRATEGIC";
 
@@ -692,20 +883,79 @@
             roots.forEach((acc) => parentNode.children.push(buildAccountSubtree(acc, byParent)));
         };
 
-        if (rootNode.__type === "GLOBAL_CUSTOMER") {
-            (scenario.relatedCustomers || []).forEach((rc) => {
+        const byParentCust = new Map();
+        (scenario.relatedCustomers || []).forEach((rc) => {
+            const p = rc.parentMdmCustomerId || rootCustomer.mdmCustomerId;
+            if (!byParentCust.has(p)) byParentCust.set(p, []);
+            byParentCust.get(p).push(rc);
+        });
+
+        const attachCustomers = (parentId, parentNode) => {
+            const children = byParentCust.get(parentId) || [];
+            children.forEach((rc) => {
                 const cn = makeNode(
                     "CUSTOMER",
                     stableKey("CUSTOMER", rc.mdmCustomerId),
                     rc.tradingName || rc.officialName || "Country Customer",
                     rc
                 );
+                (rc.references || []).forEach((r) => {
+                    cn.children.push(makeNode("REFERENCE", stableKey("REFERENCE", r.value), `Ref · ${r.type}`, r));
+                });
+                (rc.addresses || []).forEach((a) => {
+                    const nm = `${a.addressType || "ADDRESS"} · ${a.city || ""}`.trim();
+                    cn.children.push(makeNode("ADDRESS", stableKey("ADDRESS", a.addressId || nm), nm, a));
+                });
+                (rc.contactPersons || []).forEach((c) => {
+                    const nm = `${c.firstName || ""} ${c.lastName || ""}`.trim() || c.contactPersonId;
+                    const cNode = makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c);
+                    (c.communicationChannels || []).forEach((cc) => {
+                         cNode.children.push(makeNode("COMM_CHANNEL", stableKey("COMM_CHANNEL", cc.value), `Channel · ${cc.type}`, cc));
+                    });
+                    cn.children.push(cNode);
+                });
                 attachAccountsForCustomer(rc.mdmCustomerId, cn);
-                rootNode.children.push(cn);
+                attachCustomers(rc.mdmCustomerId, cn); // recursive nesting
+                parentNode.children.push(cn);
+            });
+        };
+
+        if (rootNode.__type === "GLOBAL_CUSTOMER") {
+            // Unpack references for root Global customer
+            (rootCustomer.references || []).forEach((r) => {
+                rootNode.children.push(makeNode("REFERENCE", stableKey("REFERENCE", r.value), `Ref · ${r.type}`, r));
+            });
+            (rootCustomer.addresses || []).forEach((a) => {
+                const nm = `${a.addressType || "ADDRESS"} · ${a.city || ""}`.trim();
+                rootNode.children.push(makeNode("ADDRESS", stableKey("ADDRESS", a.addressId || nm), nm, a));
+            });
+            (rootCustomer.contactPersons || []).forEach((c) => {
+                const nm = `${c.firstName || ""} ${c.lastName || ""}`.trim() || c.contactPersonId;
+                const cNode = makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c);
+                (c.communicationChannels || []).forEach((cc) => {
+                     cNode.children.push(makeNode("COMM_CHANNEL", stableKey("COMM_CHANNEL", cc.value), `Channel · ${cc.type}`, cc));
+                });
+                rootNode.children.push(cNode);
             });
 
+            attachCustomers(rootCustomer.mdmCustomerId, rootNode);
             attachAccountsForCustomer(rootCustomer.mdmCustomerId, rootNode);
         } else {
+            (rootCustomer.references || []).forEach((r) => {
+                rootNode.children.push(makeNode("REFERENCE", stableKey("REFERENCE", r.value), `Ref · ${r.type}`, r));
+            });
+            (rootCustomer.addresses || []).forEach((a) => {
+                const nm = `${a.addressType || "ADDRESS"} · ${a.city || ""}`.trim();
+                rootNode.children.push(makeNode("ADDRESS", stableKey("ADDRESS", a.addressId || nm), nm, a));
+            });
+            (rootCustomer.contactPersons || []).forEach((c) => {
+                const nm = `${c.firstName || ""} ${c.lastName || ""}`.trim() || c.contactPersonId;
+                const cNode = makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c);
+                (c.communicationChannels || []).forEach((cc) => {
+                     cNode.children.push(makeNode("COMM_CHANNEL", stableKey("COMM_CHANNEL", cc.value), `Channel · ${cc.type}`, cc));
+                });
+                rootNode.children.push(cNode);
+            });
             attachAccountsForCustomer(rootCustomer.mdmCustomerId, rootNode);
         }
 
@@ -721,7 +971,16 @@
 
         (acc.contactPersons || []).forEach((c) => {
             const nm = `${c.firstName || ""} ${c.lastName || ""}`.trim() || c.contactPersonId;
-            node.children.push(makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c));
+            const cNode = makeNode("CONTACT", stableKey("CONTACT", c.contactPersonId || nm), nm, c);
+            (c.communicationChannels || []).forEach((cc) => {
+                 cNode.children.push(makeNode("COMM_CHANNEL", stableKey("COMM_CHANNEL", cc.value), `Channel · ${cc.type}`, cc));
+            });
+            node.children.push(cNode);
+        });
+
+        (acc.bankAccounts || []).forEach((b) => {
+            const nm = `Bank Account · ${b.bankName || "Unknown"}`.trim();
+            node.children.push(makeNode("BANK_ACCOUNT", stableKey("BANK_ACCOUNT", b.bankAccountId || nm), nm, b));
         });
 
         (acc.addresses || []).forEach((a) => {
@@ -751,9 +1010,35 @@
                 );
             }
 
+            if (c.rateCards && c.rateCards.length > 0) {
+                c.rateCards.forEach((rc) => {
+                    cn.children.push(
+                        makeNode(
+                            "RATE_CARD",
+                            stableKey("RATE_CARD", rc.rateCardId || "RC"),
+                            rc.rateCardId || "Rate Card",
+                            rc
+                        )
+                    );
+                });
+            } else if (c.rateCard) { // Fallback for single
+                cn.children.push(
+                    makeNode(
+                        "RATE_CARD",
+                        stableKey("RATE_CARD", c.rateCard.rateCardId || "RC"),
+                        c.rateCard.rateCardId || "Rate Card",
+                        c.rateCard
+                    )
+                );
+            }
+
             (c.contactPersons || []).forEach((cp) => {
                 const nm = `${cp.firstName || ""} ${cp.lastName || ""}`.trim() || cp.contactPersonId;
-                cn.children.push(makeNode("CONTACT", stableKey("CONTACT", cp.contactPersonId || nm), nm, cp));
+                const cNode = makeNode("CONTACT", stableKey("CONTACT", cp.contactPersonId || nm), nm, cp);
+                (cp.communicationChannels || []).forEach((cc) => {
+                     cNode.children.push(makeNode("COMM_CHANNEL", stableKey("COMM_CHANNEL", cc.value), `Channel · ${cc.type}`, cc));
+                });
+                cn.children.push(cNode);
             });
 
             (c.addresses || []).forEach((ad) => {
@@ -832,6 +1117,10 @@
             case "ADDRESS": return "📍";
             case "CONTACT": return "👤";
             case "PLATFORM": return "🧩";
+            case "RATE_CARD": return "🏷️";
+            case "COMM_CHANNEL": return "💬";
+            case "BANK_ACCOUNT": return "🏦";
+            case "REFERENCE": return "🆔";
             default: return "•";
         }
     }
@@ -865,6 +1154,18 @@
         }
         if (type === "PLATFORM") {
             return { k1: `${r.type || "—"}`, k2: `${r.provider || "—"}` };
+        }
+        if (type === "RATE_CARD") {
+            return { k1: `policy: ${r.pricePolicyId || "—"}`, k2: `products: ${(r.usedTariffIds || []).join(", ")}` };
+        }
+        if (type === "COMM_CHANNEL") {
+            return { k1: `${r.type || "—"}`, k2: `${r.value || "—"}` };
+        }
+        if (type === "BANK_ACCOUNT") {
+            return { k1: `IBAN: ${r.iban || "—"}`, k2: `bank: ${r.bankName || "—"}` };
+        }
+        if (type === "REFERENCE") {
+            return { k1: `type: ${r.type || "—"}`, k2: `value: ${r.value || "—"}` };
         }
         return { k1: "", k2: "" };
     }

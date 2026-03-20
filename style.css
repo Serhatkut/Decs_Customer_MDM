@@ -1,30 +1,26 @@
 :root {
+    /* DHL Brand Colors */
     --dhl-red: #d40511;
     --dhl-yellow: #ffcc00;
 
-    --bg: #f6f7fb;
+    /* Base Colors */
+    --bg: #f8f9fa;
     --panel: #ffffff;
     --ink: #111827;
     --muted: #6b7280;
     --border: #e5e7eb;
 
-    /* Object colors */
+    /* Semantic Object Colors (mostly for borders/accents now) */
     --c-global: #6d28d9;
-    /* purple */
-    --c-customer: #ffcc00;
-    /* DHL yellow */
+    --c-customer: #f59e0b; /* Amber instead of pure yellow for contrast on white */
     --c-account: #d40511;
-    /* DHL red */
     --c-contract: #2563eb;
-    /* blue */
     --c-billing: #334155;
-    /* slate */
     --c-address: #6b7280;
-    /* grey */
     --c-contact: #0ea5e9;
-    /* sky */
-    --c-platform: #e5e7eb;
-    /* light gray (platform distinct) */
+    --c-platform: #10b981; /* Green for platform */
+    --c-rate-card: #facc15; /* Yellow for rate cards */
+    --c-reference: #8b5cf6; /* Purple for references */
 }
 
 html,
@@ -54,8 +50,9 @@ body {
     align-items: stretch;
     gap: 8px;
     padding: 10px 14px 12px;
-    background: linear-gradient(180deg, var(--dhl-red), #b4030d);
-    border-bottom: 4px solid var(--dhl-yellow);
+    background: var(--dhl-yellow);
+    border-bottom: 2px solid var(--dhl-red);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .topbar-row {
@@ -87,22 +84,24 @@ body {
     font-weight: 900;
     letter-spacing: .2px;
     padding: 8px 10px;
-    border-radius: 10px;
-    background: rgba(255, 204, 0, .95);
-    color: #111;
+    border-radius: 8px;
+    background: var(--dhl-red);
+    color: #fff;
     line-height: 1;
     white-space: nowrap;
 }
 
 .brand-title {
-    font-weight: 800;
-    color: #fff;
+    font-weight: 900;
+    color: var(--ink);
     line-height: 1.1;
+    font-size: 16px;
 }
 
 .brand-sub {
-    color: rgba(255, 255, 255, .85);
+    color: rgba(17, 24, 39, .7);
     font-size: 12px;
+    font-weight: 500;
 }
 
 .topbar-actions {
@@ -126,53 +125,69 @@ body {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    color: #fff;
+    color: var(--ink);
+    font-weight: 600;
     font-size: 12px;
     min-width: 180px;
 }
 
 .f select {
-    height: 34px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, .25);
-    background: rgba(255, 255, 255, .14);
-    color: #fff;
+    height: 36px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    background: rgba(255, 255, 255, .9);
+    color: var(--ink);
     padding: 0 10px;
     outline: none;
+    font-weight: 500;
+    transition: border-color 0.2s, background 0.2s;
 }
 
-.f select option {
-    color: #111;
+.f select:focus {
+    border-color: var(--dhl-red);
+    background: #fff;
+    box-shadow: 0 0 0 2px rgba(212, 5, 17, 0.2);
 }
 
 /* ---------- Buttons ---------- */
 .btn {
-    height: 34px;
-    padding: 0 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, .25);
-    background: rgba(255, 255, 255, .12);
-    color: #fff;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    background: #fff;
+    color: var(--ink);
     cursor: pointer;
     font-weight: 700;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .btn:hover {
-    background: rgba(255, 255, 255, .18);
+    background: #f9f9f9;
+    border-color: rgba(0, 0, 0, .3);
 }
 
 .btn-primary {
-    background: rgba(255, 204, 0, .95);
-    border-color: rgba(255, 204, 0, .95);
-    color: #111;
+    background: var(--dhl-red);
+    border-color: var(--dhl-red);
+    color: #fff;
 }
 
 .btn-primary:hover {
-    background: #ffd633;
+    background: #b4030d;
+    border-color: #b4030d;
 }
 
 .btn-ghost {
-    background: rgba(255, 255, 255, .10);
+    background: rgba(255, 255, 255, .5);
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.btn-ghost:hover {
+    background: rgba(255, 255, 255, .8);
+    border-color: rgba(0, 0, 0, .1);
 }
 
 /* ---------- DQ ---------- */
@@ -180,11 +195,12 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0 10px;
-    height: 34px;
+    padding: 0 12px;
+    height: 36px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, .25);
-    background: rgba(255, 255, 255, .10);
+    border: 1px solid rgba(0, 0, 0, .1);
+    background: rgba(255, 255, 255, .8);
+    color: var(--ink);
 }
 
 .dq-dot {
@@ -400,97 +416,148 @@ body {
 
 /* Links and nodes */
 .link {
-    stroke: #ef4444;
+    stroke: #cbd5e1;
     stroke-width: 2px;
-    opacity: .7;
+    opacity: 1;
+    transition: d 0.4s ease-out;
 }
 
-.node rect {
-    rx: 14;
-    ry: 14;
-    stroke: #11182722;
-    stroke-width: 1px;
-    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, .08));
+.node {
+    transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+.node rect.card-bg {
+    fill: #ffffff;
+    rx: 10;
+    ry: 10;
+    stroke: #e2e8f0;
+    stroke-width: 1.5px;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.06));
+    transition: all 0.2s ease;
+}
+
+.node:hover rect.card-bg {
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.12));
+    stroke: #cbd5e1;
 }
 
 .node text {
     font-size: 12px;
-    font-weight: 800;
-    fill: #111;
-    /* Remove outline/halo framing around text for a cleaner look */
+    font-weight: 500;
+    fill: var(--ink);
     paint-order: normal;
     stroke: none;
+    transition: opacity 0.4s ease-out;
 }
 
 .node .pm {
     font-size: 18px;
     font-weight: 900;
-    fill: #111;
-    /* Ensure +/- remains clickable even if text overlaps */
-    pointer-events: all;
+    fill: #64748b;
+    pointer-events: none;
+    transition: fill 0.2s;
+}
+
+.node:hover .pm {
+    fill: var(--dhl-red);
+}
+
+.node .pm-bg {
+    fill: #ffffff;
+    stroke: #e2e8f0;
+    stroke-width: 1.5px;
+    rx: 6;
+    ry: 6;
+    transition: all 0.2s;
+}
+
+.node .pmg:hover .pm-bg {
+    stroke: var(--dhl-red);
+    fill: #fef2f2;
 }
 
 .node.is-dimmed {
     opacity: .25;
 }
 
-/* Node colors by type */
-.node--GLOBAL_CUSTOMER rect {
-    fill: var(--c-global);
+/* Node accent colors by type (Golden/Operational Diagram matching) */
+/* --- Golden Layer --- */
+.node--GLOBAL_CUSTOMER rect.card-header { fill: #d8b4e2; } /* Light purple */
+.node--GLOBAL_CUSTOMER rect.card-bg { fill: #f4ebf7; stroke: #9b59b6; } /* Light-light purple body */
+.node--GLOBAL_CUSTOMER .node-title-text { fill: #d40511; } /* Red text */
+.node--GLOBAL_CUSTOMER .node-icon { fill: #d40511; }
+
+.node--CUSTOMER rect.card-header { fill: #d40511; } /* Red */
+.node--CUSTOMER rect.card-bg { fill: #ffcc00; stroke: #d40511; } /* DHL Yellow */
+.node--CUSTOMER .node-title-text { fill: #ffffff; }
+.node--CUSTOMER .node-icon { fill: #ffffff; }
+
+/* --- Operational Layer --- */
+.node--ACCOUNT rect.card-header { fill: #ffcc00; } /* Yellow */
+.node--ACCOUNT rect.card-bg { fill: #f8f9fa; stroke: #b0b0b0; }
+.node--ACCOUNT .node-title-text { fill: #111827; }
+.node--ACCOUNT .node-icon { fill: #111827; }
+
+.node--CONTRACT rect.card-header { fill: #000080; } /* Dark Blue */
+.node--CONTRACT rect.card-bg { fill: #e6f0fa; stroke: #000080; }
+.node--CONTRACT .node-title-text { fill: #ffffff; }
+.node--CONTRACT .node-icon { fill: #ffffff; }
+
+.node--ADDRESS rect.card-header { fill: #4b4b4b; } /* Dark Grey */
+.node--ADDRESS rect.card-bg { fill: #e5e5e5; stroke: #4b4b4b; }
+.node--ADDRESS .node-title-text { fill: #ffffff; }
+.node--ADDRESS .node-icon { fill: #ffffff; }
+
+.node--CONTACT rect.card-header { fill: #e0e0e0; } /* Light Grey */
+.node--CONTACT rect.card-bg { fill: #ffffff; stroke: #cccccc; }
+.node--CONTACT .node-title-text { fill: #111827; }
+.node--CONTACT .node-icon { fill: #111827; }
+
+/* Fallbacks */
+.node--BILLING rect.card-header { fill: #334155; }
+.node--BILLING rect.card-bg { fill: #f8f9fa; stroke: #334155; }
+.node--BILLING .node-title-text { fill: #ffffff; }
+.node--BILLING .node-icon { fill: #ffffff; }
+
+.node--PLATFORM rect.card-header { fill: #10b981; }
+.node--PLATFORM rect.card-bg { fill: #ffffff; stroke: #10b981; }
+.node--PLATFORM .node-title-text { fill: #ffffff; }
+.node--PLATFORM .node-icon { fill: #ffffff; }
+
+/* --- Diagram Completion Nodes --- */
+.node--RATE_CARD rect.card-header { fill: #facc15; } /* Yellow header */
+.node--RATE_CARD rect.card-bg { fill: #ffffff; stroke: #d1d5db; }
+.node--RATE_CARD .node-title-text { fill: #111827; }
+.node--RATE_CARD .node-icon { fill: #111827; }
+
+.node--COMM_CHANNEL rect.card-header { fill: #f3f4f6; } /* Light grey */
+.node--COMM_CHANNEL rect.card-bg { fill: #ffffff; stroke: #d1d5db; }
+.node--COMM_CHANNEL .node-title-text { fill: #111827; }
+.node--COMM_CHANNEL .node-icon { fill: #111827; }
+
+.node--BANK_ACCOUNT rect.card-header { fill: #10b981; } /* Finance Green */
+.node--BANK_ACCOUNT rect.card-bg { fill: #ffffff; stroke: #059669; }
+.node--BANK_ACCOUNT .node-title-text { fill: #ffffff; }
+.node--BANK_ACCOUNT .node-icon { fill: #ffffff; }
+
+.node--REFERENCE rect.card-header { fill: #8b5cf6; } /* Purple Reference */
+.node--REFERENCE rect.card-bg { fill: #ffffff; stroke: #7c3aed; }
+.node--REFERENCE .node-title-text { fill: #ffffff; }
+.node--REFERENCE .node-icon { fill: #ffffff; }
+
+/* Specific text overrides for card-bg styles */
+.node .node-title-text {
+    font-weight: 800;
 }
 
-.node--CUSTOMER rect {
-    fill: var(--c-customer);
+.node .node-k1 {
+    font-weight: 600;
+    fill: #334155;
 }
 
-.node--ACCOUNT rect {
-    fill: var(--c-account);
-}
-
-.node--CONTRACT rect {
-    fill: var(--c-contract);
-}
-
-.node--BILLING rect {
-    fill: var(--c-billing);
-}
-
-.node--ADDRESS rect {
-    fill: var(--c-address);
-}
-
-.node--CONTACT rect {
-    fill: var(--c-contact);
-}
-
-.node--PLATFORM rect {
-    fill: var(--c-platform);
-}
-
-.node--PLATFORM text,
-.node--PLATFORM .pm {
-    fill: #111;
-    stroke: none;
-}
-
-/* IMPORTANT: text contrast on dark cards */
-.node--GLOBAL_CUSTOMER text,
-.node--ACCOUNT text,
-.node--CONTRACT text,
-.node--BILLING text {
-    fill: #fff;
-}
-
-.node--GLOBAL_CUSTOMER .pm,
-.node--ACCOUNT .pm,
-.node--CONTRACT .pm,
-.node--BILLING .pm {
-    fill: #fff;
-}
-
-.node--GLOBAL_CUSTOMER text {
-    fill: #fff;
-    stroke: none;
+.node .node-k2 {
+    font-weight: 500;
+    fill: #64748b;
 }
 
 /* Footer (always visible) */
